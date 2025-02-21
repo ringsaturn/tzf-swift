@@ -1,0 +1,4 @@
+version: v2
+plugins:
+  - remote: buf.build/apple/swift:v1.28.2
+    out: Sources/gen/tzf
