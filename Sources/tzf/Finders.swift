@@ -1,6 +1,6 @@
 import Foundation
-import PointInPolygon
 import SwiftProtobuf
+import geometry
 
 public protocol F {
     func dataVersion() -> String
@@ -104,7 +104,7 @@ public class Finder: F {
     private let timezones: Tzf_V1_Timezones
     private struct ProcessedTimezone {
         let name: String
-        let polygons: [(polygon: Polygon, holes: [Polygon])]
+        let polygons: [Polygon]
     }
     private let processedTimezones: [ProcessedTimezone]
 
@@ -124,15 +124,15 @@ public class Finder: F {
         // Pre-process all polygons during initialization
         var processed: [ProcessedTimezone] = []
         for timezone in timezones.timezones {
-            var processedPolygons: [(polygon: Polygon, holes: [Polygon])] = []
+            var processedPolygons: [Polygon] = []
 
             for polygon in timezone.polygons {
-                let points = polygon.points.map { Point(x: Double($0.lng), y: Double($0.lat)) }
+                let exterior = polygon.points.map { Point(x: Double($0.lng), y: Double($0.lat)) }
                 let holes = polygon.holes.map { hole in
-                    Polygon(points: hole.points.map { Point(x: Double($0.lng), y: Double($0.lat)) })
+                    hole.points.map { Point(x: Double($0.lng), y: Double($0.lat)) }
                 }
-                let poly = Polygon(points: points)
-                processedPolygons.append((polygon: poly, holes: holes))
+                let poly = Polygon.new(exterior: exterior, holes: holes)
+                processedPolygons.append(poly)
             }
 
             processed.append(ProcessedTimezone(name: timezone.name, polygons: processedPolygons))
@@ -148,14 +148,8 @@ public class Finder: F {
         let point = Point(x: lng, y: lat)
 
         for timezone in processedTimezones {
-            for (polygon, holes) in timezone.polygons {
-                let poly = Polygon(points: polygon.points, holes: holes)
-                let result = poly.containsPoint(point)
-
-                if case .pointInside = result {
-                    return timezone.name
-                }
-                if case .pointOnBoundary = result {
+            for polygon in timezone.polygons {
+                if polygon.containsPoint(point) {
                     return timezone.name
                 }
             }
@@ -169,15 +163,8 @@ public class Finder: F {
         var results: [String] = []
 
         for timezone in processedTimezones {
-            for (polygon, holes) in timezone.polygons {
-                let poly = Polygon(points: polygon.points, holes: holes)
-                let result = poly.containsPoint(point)
-
-                if case .pointInside = result {
-                    results.append(timezone.name)
-                    break  // Found a match in this timezone, move to next
-                }
-                if case .pointOnBoundary = result {
+            for polygon in timezone.polygons {
+                if polygon.containsPoint(point) {
                     results.append(timezone.name)
                     break  // Found a match in this timezone, move to next
                 }

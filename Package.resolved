@@ -1,5 +1,5 @@
 {
-  "originHash" : "ebc9134edf632054f147193f0966642dcbeabfb272bfa08d3f2b0cf013505d77",
+  "originHash" : "64ff1ed89843545f469f3ded1882bd488e8c28546ddabb05f17ddc6e4f54e00a",
   "pins" : [
     {
       "identity" : "cities-swift",
@@ -35,15 +35,6 @@
       "state" : {
         "revision" : "e8a5db026963f5bfeac842d9d3f2cc8cde323b49",
         "version" : "1.0.0"
-      }
-    },
-    {
-      "identity" : "pointinpolygon",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/jonblatho/PointInPolygon.git",
-      "state" : {
-        "revision" : "a3bba39c02742d6f7cd4aad60ebc3b6eebb97b42",
-        "version" : "2.0.1"
       }
     },
     {
