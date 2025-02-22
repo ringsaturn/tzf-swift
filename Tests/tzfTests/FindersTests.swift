@@ -107,8 +107,9 @@ import Cities
 }
 
 @Test func defaultFinderIterAllCities() async throws {
-    // https://github.com/ringsaturn/cities-swift
-
+    // This test should only run with `swift test -c release` since only release
+    // builds are optimized for performance.
+    #if !DEBUG
     let cities = try Cities()
     let allCities = cities.getAllCities()
     #expect(allCities.count != 0)
@@ -124,4 +125,7 @@ import Cities
         let timezone = try finder.getTimezone(lng: lng, lat: lat)
         #expect(!timezone.isEmpty)
     }
+    #else
+    print("Skipping defaultFinderIterAllCities test in debug mode")
+    #endif
 }
