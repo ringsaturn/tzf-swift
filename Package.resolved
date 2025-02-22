@@ -1,6 +1,15 @@
 {
-  "originHash" : "10c964eac686bf7faed616962f078d13a55be7a65fc641616272934cfc83d340",
+  "originHash" : "ebc9134edf632054f147193f0966642dcbeabfb272bfa08d3f2b0cf013505d77",
   "pins" : [
+    {
+      "identity" : "cities-swift",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/ringsaturn/cities-swift",
+      "state" : {
+        "revision" : "f08de19d9a61b1daedc02e914e1a96f4e246296b",
+        "version" : "0.1.0"
+      }
+    },
     {
       "identity" : "hdrhistogram-swift",
       "kind" : "remoteSourceControl",

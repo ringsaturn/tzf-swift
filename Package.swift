@@ -20,6 +20,7 @@ let package = Package(
         .package(url: "https://github.com/jonblatho/PointInPolygon.git", from: "2.0.1"),
         .package(url: "https://github.com/apple/swift-testing.git", revision: "e76a44f"),
         .package(url: "https://github.com/ordo-one/package-benchmark", from: "1.4.0"),
+        .package(url: "https://github.com/ringsaturn/cities-swift", from: "0.1.0"),
     ],
     targets: [
         // Targets are the basic building blocks of a package, defining a module or a test suite.
@@ -41,7 +42,8 @@ let package = Package(
             name: "tzfTests",
             dependencies: [
                 "tzf",
-                .product(name: "Testing", package: "swift-testing")
+                .product(name: "Testing", package: "swift-testing"),
+                .product(name: "Cities", package: "cities-swift")
             ]
         ),
     ]

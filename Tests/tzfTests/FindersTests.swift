@@ -1,6 +1,8 @@
 import Foundation
 import Testing
 
+import Cities
+
 @testable import tzf
 
 // PreindexFinder Tests
@@ -102,4 +104,56 @@ import Testing
     // Test for multiple results
     let timezones = try finder.getTimezones(lng: 87.5703, lat: 43.8146)
     #expect(!timezones.isEmpty)
+}
+
+@Test func defaultFinderIterAllCities() async throws {
+    // https://github.com/ringsaturn/cities-swift
+
+    /*
+        import Testing
+        @testable import Cities
+
+        // Cities Tests
+        @Test func citiesBasicOperations() async throws {
+            // Initialize Cities
+            let cities = try Cities()
+            #expect(cities.getAllCities().count != 0)
+
+            // Test random city retrieval
+            let randomCity = cities.getRandomCity()
+            #expect(randomCity != nil)
+            #expect(!randomCity!.name.isEmpty)
+        }
+
+        @Test func randomDistribution() async throws {
+            let cities = try Cities()
+            var counts: [String: Int] = [:]
+
+            // Run distribution test
+            for _ in 0..<1000 {
+                if let city = cities.getRandomCity() {
+                    counts[city.name, default: 0] += 1
+                }
+            }
+
+            // Verify distribution
+            #expect(counts.keys.count > 0, "Expected exactly > 0 different cities")
+        }
+    */
+
+    let cities = try Cities()
+    let allCities = cities.getAllCities()
+    #expect(allCities.count != 0)
+
+    let randomCity = cities.getRandomCity()
+    #expect(randomCity != nil)
+    #expect(!randomCity!.name.isEmpty)
+
+    let finder = try DefaultFinder()
+    for city in allCities {
+        let lng = Double(city.lng) ?? 0.0
+        let lat = Double(city.lat) ?? 0.0
+        let timezone = try finder.getTimezone(lng: lng, lat: lat)
+        #expect(!timezone.isEmpty)
+    }
 }
