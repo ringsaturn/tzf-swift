@@ -13,8 +13,18 @@ public struct PreindexFinder: F {
     private let idxZoom: Int32
     private let aggZoom: Int32
 
-    public init(data: Data) throws {
-        preindexData = try Tzf_V1_PreindexTimezones(serializedBytes: data)
+    public init() throws {
+        let bundle = Bundle.module
+
+        guard
+            let preindexURL = bundle.url(
+                forResource: "combined-with-oceans.reduce.preindex", withExtension: "pb")
+        else {
+            throw TZFError.dataError
+        }
+
+        let preindexDataBytes = try Data(contentsOf: preindexURL)
+        preindexData = try Tzf_V1_PreindexTimezones(serializedBytes: preindexDataBytes)
         idxZoom = preindexData.idxZoom
         aggZoom = preindexData.aggZoom
     }
@@ -87,14 +97,24 @@ public class Finder: F {
     }
     private let processedTimezones: [ProcessedTimezone]
 
-    public init(data: Data) throws {
-        self.timezones = try Tzf_V1_Timezones(serializedBytes: [UInt8](data))
-        
+    public init() throws {
+        let bundle: Bundle = Bundle.module
+
+        guard
+            let reduceURL = bundle.url(
+                forResource: "combined-with-oceans.reduce", withExtension: "pb")
+        else {
+            throw TZFError.dataError
+        }
+
+        let reduceData = try Data(contentsOf: reduceURL)
+        self.timezones = try Tzf_V1_Timezones(serializedBytes: [UInt8](reduceData))
+
         // Pre-process all polygons during initialization
         var processed: [ProcessedTimezone] = []
         for timezone in timezones.timezones {
             var processedPolygons: [(polygon: Polygon, holes: [Polygon])] = []
-            
+
             for polygon in timezone.polygons {
                 let points = polygon.points.map { Point(x: Double($0.lng), y: Double($0.lat)) }
                 let holes = polygon.holes.map { hole in
@@ -103,7 +123,7 @@ public class Finder: F {
                 let poly = Polygon(points: points)
                 processedPolygons.append((polygon: poly, holes: holes))
             }
-            
+
             processed.append(ProcessedTimezone(name: timezone.name, polygons: processedPolygons))
         }
         self.processedTimezones = processed
@@ -168,27 +188,16 @@ public enum FinderError: Error {
 public class DefaultFinder: F {
     private let preindexFinder: PreindexFinder
     private let reduceFinder: Finder
-    
+
     public init() throws {
-        // Get bundle for the current module
-        let bundle = Bundle.module
-        
-        guard let preindexURL = bundle.url(forResource: "combined-with-oceans.reduce.preindex", withExtension: "pb"),
-              let reduceURL = bundle.url(forResource: "combined-with-oceans.reduce", withExtension: "pb") else {
-            throw TZFError.dataError
-        }
-        
-        let preindexData = try Data(contentsOf: preindexURL)
-        let reduceData = try Data(contentsOf: reduceURL)
-        
-        self.preindexFinder = try PreindexFinder(data: preindexData)
-        self.reduceFinder = try Finder(data: reduceData)
+        self.preindexFinder = try PreindexFinder()
+        self.reduceFinder = try Finder()
     }
-    
+
     public func dataVersion() -> String {
         return "\(preindexFinder.dataVersion())/\(reduceFinder.dataVersion())"
     }
-    
+
     public func getTimezone(lng: Double, lat: Double) throws -> String {
         do {
             // Try preindex finder first
@@ -198,7 +207,7 @@ public class DefaultFinder: F {
             return try reduceFinder.getTimezone(lng: lng, lat: lat)
         }
     }
-    
+
     public func getTimezones(lng: Double, lat: Double) throws -> [String] {
         do {
             // Try preindex finder first
