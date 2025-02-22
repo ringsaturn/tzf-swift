@@ -1,5 +1,6 @@
 import Foundation
 import Testing
+
 @testable import tzf
 
 // PreindexFinder Tests
@@ -92,7 +93,7 @@ import Testing
 
 @Test func defaultFinderValidCoordinates() async throws {
     // Load test data
-    let finder = try! DefaultFinder();
+    let finder = try! DefaultFinder()
 
     // Test for Beijing
     let timezone = try finder.getTimezone(lng: 116.3833, lat: 39.9167)
