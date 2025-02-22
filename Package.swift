@@ -14,6 +14,9 @@ let package = Package(
         .library(
             name: "tzf",
             targets: ["tzf"]),
+        .executable(
+            name: "demo",
+            targets: ["demo"]),
     ],
     dependencies: [
         .package(url: "https://github.com/apple/swift-protobuf.git", from: "1.28.2"),
@@ -40,6 +43,11 @@ let package = Package(
                 .copy("Resources/combined-with-oceans.reduce.preindex.pb"),
                 .copy("Resources/combined-with-oceans.reduce.pb")
             ]
+        ),
+        .executableTarget(
+            name: "demo",
+            dependencies: ["tzf"],
+            path: "Examples"
         ),
         .testTarget(
             name: "tzfTests",
