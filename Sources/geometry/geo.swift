@@ -1,6 +1,6 @@
 import Foundation
 
-public class Point {
+public struct Point {
     public var x: Double
     public var y: Double
     
@@ -129,98 +129,111 @@ public func segmentAtForVecPoint(_ exterior: [Point], _ index: Int) -> Segment {
 }
 
 public func raycast(_ seg: Segment, _ point: Point) -> RaycastResult {
-    let p = point
+    var py = point.y
+    let px = point.x
     let a = seg.a
     let b = seg.b
     
     // make sure that the point is inside the segment bounds
-    if a.y < b.y && (p.y < a.y || p.y > b.y) {
+    if a.y < b.y && (py < a.y || py > b.y) {
         return RaycastResult(inside: false, on: false)
-    } else if a.y > b.y && (p.y < b.y || p.y > a.y) {
+    } else if a.y > b.y && (py < b.y || py > a.y) {
         return RaycastResult(inside: false, on: false)
     }
     
     // test if point is in on the segment
     if a.y == b.y {
         if a.x == b.x {
-            if p.x == a.x && p.y == a.y {
+            if px == a.x && py == a.y {
                 return RaycastResult(inside: false, on: true)
             }
             return RaycastResult(inside: false, on: false)
         }
-        if p.y == b.y {
+        if py == b.y {
             // horizontal segment
             // check if the point in on the line
             if a.x < b.x {
-                if p.x >= a.x && p.x <= b.x {
+                if px >= a.x && px <= b.x {
                     return RaycastResult(inside: false, on: true)
                 }
             } else {
-                if p.x >= b.x && p.x <= a.x {
+                if px >= b.x && px <= a.x {
                     return RaycastResult(inside: false, on: true)
                 }
             }
         }
     }
     
-    if a.x == b.x && p.x == b.x {
+    if a.x == b.x && px == b.x {
         // vertical segment
         // check if the point in on the line
         if a.y < b.y {
-            if p.y >= a.y && p.y <= b.y {
+            if py >= a.y && py <= b.y {
                 return RaycastResult(inside: false, on: true)
             }
         } else {
-            if p.y >= b.y && p.y <= a.y {
+            if py >= b.y && py <= a.y {
                 return RaycastResult(inside: false, on: true)
             }
         }
     }
     
-    if (p.x - a.x) / (b.x - a.x) == (p.y - a.y) / (b.y - a.y) {
-        return RaycastResult(inside: false, on: true)
+    // Check if point lies on the line segment
+    if abs(b.x - a.x) > Double.ulpOfOne {  // Avoid division by zero
+        let slope = (b.y - a.y) / (b.x - a.x)
+        let yIntercept = a.y - slope * a.x
+        let expectedY = slope * px + yIntercept
+        if abs(expectedY - py) < Double.ulpOfOne {
+            return RaycastResult(inside: false, on: true)
+        }
     }
     
     // do the actual raycast here.
-    while p.y == a.y || p.y == b.y {
-        p.y = p.y.nextUp
+    while py == a.y || py == b.y {
+        py = py.nextUp
     }
     
     if a.y < b.y {
-        if p.y < a.y || p.y > b.y {
+        if py < a.y || py > b.y {
             return RaycastResult(inside: false, on: false)
         }
     } else {
-        if p.y < b.y || p.y > a.y {
+        if py < b.y || py > a.y {
             return RaycastResult(inside: false, on: false)
         }
     }
     
     if a.x > b.x {
-        if p.x >= a.x {
+        if px >= a.x {
             return RaycastResult(inside: false, on: false)
         }
-        if p.x <= b.x {
+        if px <= b.x {
             return RaycastResult(inside: true, on: false)
         }
     } else {
-        if p.x >= b.x {
+        if px >= b.x {
             return RaycastResult(inside: false, on: false)
         }
-        if p.x <= a.x {
+        if px <= a.x {
             return RaycastResult(inside: true, on: false)
         }
     }
     
-    if a.y < b.y {
-        if (p.y - a.y) / (p.x - a.x) >= (b.y - a.y) / (b.x - a.x) {
-            return RaycastResult(inside: true, on: false)
-        }
-    } else {
-        if (p.y - b.y) / (p.x - b.x) >= (a.y - b.y) / (a.x - b.x) {
-            return RaycastResult(inside: true, on: false)
+    let dx = b.x - a.x
+    let dy = b.y - a.y
+    
+    if abs(dx) > Double.ulpOfOne {  // Avoid division by zero
+        if a.y < b.y {
+            let slope = (py - a.y) / (px - a.x)
+            let slopeSegment = dy / dx
+            return RaycastResult(inside: slope >= slopeSegment, on: false)
+        } else {
+            let slope = (py - b.y) / (px - b.x)
+            let slopeSegment = (a.y - b.y) / (a.x - b.x)
+            return RaycastResult(inside: slope >= slopeSegment, on: false)
         }
     }
+    
     return RaycastResult(inside: false, on: false)
 }
 
