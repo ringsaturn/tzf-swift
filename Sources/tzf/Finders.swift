@@ -12,6 +12,7 @@ public struct PreindexFinder: F {
     private let preindexData: Tzf_V1_PreindexTimezones
     private let idxZoom: Int32
     private let aggZoom: Int32
+    private let tileCache: [String: String]
 
     public init() throws {
         let bundle = Bundle.module
@@ -27,6 +28,14 @@ public struct PreindexFinder: F {
         preindexData = try Tzf_V1_PreindexTimezones(serializedBytes: preindexDataBytes)
         idxZoom = preindexData.idxZoom
         aggZoom = preindexData.aggZoom
+        
+        // Initialize the tile cache
+        var cache = [String: String]()
+        for key in preindexData.keys {
+            let tileKey = "\(key.z):\(key.x):\(key.y)"
+            cache[tileKey] = key.name
+        }
+        tileCache = cache
     }
 
     public func dataVersion() -> String {
@@ -65,18 +74,17 @@ public struct PreindexFinder: F {
         // Try each zoom level from aggZoom to idxZoom
         for zoom in aggZoom...idxZoom {
             let (x, y) = lngLatToTile(lng: lng, lat: lat, zoom: zoom)
-
-            // Find matching preindex timezones
-            for preindexTz in preindexData.keys {
-                if preindexTz.z == zoom && preindexTz.x == x && preindexTz.y == y {
-                    results.insert(preindexTz.name)
-                }
-            }
-
-            // If we found any results at this zoom level, we can stop
-            if !results.isEmpty {
+            let tileKey = "\(zoom):\(x):\(y)"
+            
+            // Look up in the cache
+            if let tzName = tileCache[tileKey] {
+                results.insert(tzName)
                 break
             }
+        }
+
+        if results.isEmpty {
+            throw TZFError.noTimezoneFound
         }
 
         return Array(results)
