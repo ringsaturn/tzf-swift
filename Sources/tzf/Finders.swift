@@ -12,7 +12,7 @@ public struct PreindexFinder: F {
     private let preindexData: Tzf_V1_PreindexTimezones
     private let idxZoom: Int32
     private let aggZoom: Int32
-    private let tileCache: [String: String]
+    private let tileCache: [String: [String]]
 
     public init() throws {
         let bundle = Bundle.module
@@ -29,12 +29,22 @@ public struct PreindexFinder: F {
         idxZoom = preindexData.idxZoom
         aggZoom = preindexData.aggZoom
         
-        // Initialize the tile cache
-        var cache = [String: String]()
+        // Initialize the tile cache with arrays of timezone names
+        var cache = [String: [String]]()
         for key in preindexData.keys {
             let tileKey = "\(key.z):\(key.x):\(key.y)"
-            cache[tileKey] = key.name
+            if cache[tileKey] == nil {
+                cache[tileKey] = [key.name]
+            } else {
+                cache[tileKey]?.append(key.name)
+            }
         }
+        
+        // Sort timezone names for each tile
+        for (key, value) in cache {
+            cache[key] = value.sorted()
+        }
+        
         tileCache = cache
     }
 
@@ -64,8 +74,6 @@ public struct PreindexFinder: F {
     }
 
     public func getTimezones(lng: Double, lat: Double) throws -> [String] {
-        var results = Set<String>()
-
         // Check coordinates validity
         guard (-180.0...180.0).contains(lng) && (-90.0...90.0).contains(lat) else {
             throw TZFError.invalidCoordinates
@@ -77,17 +85,12 @@ public struct PreindexFinder: F {
             let tileKey = "\(zoom):\(x):\(y)"
             
             // Look up in the cache
-            if let tzName = tileCache[tileKey] {
-                results.insert(tzName)
-                break
+            if let tzNames = tileCache[tileKey], !tzNames.isEmpty {
+                return tzNames // Already sorted during initialization
             }
         }
 
-        if results.isEmpty {
-            throw TZFError.noTimezoneFound
-        }
-
-        return Array(results)
+        throw TZFError.noTimezoneFound
     }
 }
 
