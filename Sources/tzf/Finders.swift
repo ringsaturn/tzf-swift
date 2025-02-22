@@ -169,7 +169,18 @@ public class DefaultFinder: F {
     private let preindexFinder: PreindexFinder
     private let reduceFinder: Finder
     
-    public init(preindexData: Data, reduceData: Data) throws {
+    public init() throws {
+        // Get bundle for the current module
+        let bundle = Bundle.module
+        
+        guard let preindexURL = bundle.url(forResource: "combined-with-oceans.reduce.preindex", withExtension: "pb"),
+              let reduceURL = bundle.url(forResource: "combined-with-oceans.reduce", withExtension: "pb") else {
+            throw TZFError.dataError
+        }
+        
+        let preindexData = try Data(contentsOf: preindexURL)
+        let reduceData = try Data(contentsOf: reduceURL)
+        
         self.preindexFinder = try PreindexFinder(data: preindexData)
         self.reduceFinder = try Finder(data: reduceData)
     }

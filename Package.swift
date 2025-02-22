@@ -31,16 +31,17 @@ let package = Package(
                 .product(name: "PointInPolygon", package: "PointInPolygon")
             ],
             path: "Sources",
-            sources: ["tzf", "gen"]),
+            sources: ["tzf", "gen"],
+            resources: [
+                .copy("Resources/combined-with-oceans.reduce.preindex.pb"),
+                .copy("Resources/combined-with-oceans.reduce.pb")
+            ]
+        ),
         .testTarget(
             name: "tzfTests",
             dependencies: [
                 "tzf",
                 .product(name: "Testing", package: "swift-testing")
-            ],
-            resources: [
-                .process("TestResources/combined-with-oceans.reduce.pb"),
-                .process("TestResources/combined-with-oceans.reduce.preindex.pb")
             ]
         ),
     ]
