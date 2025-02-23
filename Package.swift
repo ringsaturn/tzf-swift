@@ -23,6 +23,7 @@ let package = Package(
         .package(url: "https://github.com/apple/swift-testing.git", revision: "e76a44f"),
         .package(url: "https://github.com/ordo-one/package-benchmark", from: "1.4.0"),
         .package(url: "https://github.com/ringsaturn/cities-swift", from: "0.1.0"),
+        .package(url: "https://github.com/patrick-zippenfenig/SwiftTimeZoneLookup.git", from: "1.0.7"),
     ],
     targets: [
         .target(
@@ -62,7 +63,8 @@ let package = Package(
             dependencies: [
                 "tzf",
                 .product(name: "Benchmark", package: "package-benchmark"),
-                .product(name: "Cities", package: "cities-swift")
+                .product(name: "Cities", package: "cities-swift"),
+                .product(name: "SwiftTimeZoneLookup", package: "SwiftTimeZoneLookup"),
             ],
             path: "Benchmarks/TimezoneFinderBenchmarks",
             plugins: [

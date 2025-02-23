@@ -1,5 +1,5 @@
 {
-  "originHash" : "64ff1ed89843545f469f3ded1882bd488e8c28546ddabb05f17ddc6e4f54e00a",
+  "originHash" : "1fc33a58d5a4d1777437e9be9ffb5191c4a8f19f97c391138518c792dc4c8eb4",
   "pins" : [
     {
       "identity" : "cities-swift",
@@ -98,6 +98,15 @@
       "state" : {
         "branch" : "e76a44f",
         "revision" : "e76a44fb6e54beb6caa684630da368f05aa01390"
+      }
+    },
+    {
+      "identity" : "swifttimezonelookup",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/patrick-zippenfenig/SwiftTimeZoneLookup.git",
+      "state" : {
+        "revision" : "1a653bcc6d3e0c5650886aba5c5a277cd49f0bbd",
+        "version" : "1.0.7"
       }
     },
     {
