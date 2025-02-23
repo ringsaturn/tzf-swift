@@ -57,5 +57,17 @@ let package = Package(
                 .product(name: "Cities", package: "cities-swift")
             ]
         ),
+        .executableTarget(
+            name: "TimezoneFinderBenchmarks",
+            dependencies: [
+                "tzf",
+                .product(name: "Benchmark", package: "package-benchmark"),
+                .product(name: "Cities", package: "cities-swift")
+            ],
+            path: "Benchmarks/TimezoneFinderBenchmarks",
+            plugins: [
+                .plugin(name: "BenchmarkPlugin", package: "package-benchmark")
+            ]
+        ),
     ]
 )
