@@ -117,3 +117,9 @@ DefaultFinder.getTimezone.random.10000000
 │ Time (wall clock) (ms) *            │       468 │       468 │       469 │       472 │       472 │       472 │       472 │         3 │
 ╘═════════════════════════════════════╧═══════════╧═══════════╧═══════════╧═══════════╧═══════════╧═══════════╧═══════════╧═══════════╛
 ```
+
+## License
+
+This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
+
+The data is licensed under [ODbL-1.0 license](./DATA_LICENSE), which compiled from <https://github.com/evansiroky/timezone-boundary-builder>
