@@ -123,5 +123,5 @@ DefaultFinder.getTimezone.random.10000000
 This project is licensed under the MIT License. See the [LICENSE](LICENSE) file
 for details.
 
-The data is licensed under [ODbL-1.0 license](./DATA_LICENSE), which compiled
+The data is licensed under [ODbL-1.0 license](./LICENSE_DATA), which compiled
 from <https://github.com/evansiroky/timezone-boundary-builder>
