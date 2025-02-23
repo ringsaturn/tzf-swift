@@ -1,5 +1,9 @@
 # tzf-swift: a fast timezone finder for Swift
 
+> [!NOTE]
+>
+> This package use a simplified polygon data and not so accurate around borders.
+
 ## Usage
 
 Add the dependency to your `Package.swift` file:
