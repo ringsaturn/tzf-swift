@@ -49,8 +49,6 @@ Data version: 2025a/2025a
 Just like tzf packages in Go/Rust/Python, the Swift version is also fast, and
 designed for server-side high-performance use cases.
 
-It cost 468ms to find the timezone for 10,000,000 random cities.
-
 Hardware: MacBook Pro with Apple M3 Max.
 
 ```bash
