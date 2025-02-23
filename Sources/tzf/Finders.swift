@@ -155,6 +155,21 @@ public class Finder: F {
             }
         }
 
+        let lngShifts = [0.0, -0.01, 0.01, -0.02, 0.02]
+        let latShifts = [0.0, -0.01, 0.01, -0.02, 0.02]
+        for lngShift in lngShifts {
+            for latShift in latShifts {
+                let shiftedPoint = Point(x: lng + lngShift, y: lat + latShift)
+                for timezone in processedTimezones {
+                    for polygon in timezone.polygons {
+                        if polygon.containsPoint(shiftedPoint) {
+                            return timezone.name
+                        }
+                    }
+                }
+            }
+        }
+
         throw FinderError.noTimezoneFound
     }
 
