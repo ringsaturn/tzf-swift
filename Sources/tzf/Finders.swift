@@ -145,32 +145,8 @@ public class Finder: F {
     }
 
     public func getTimezone(lng: Double, lat: Double) throws -> String {
-        let point = Point(x: lng, y: lat)
-
-        for timezone in processedTimezones {
-            for polygon in timezone.polygons {
-                if polygon.containsPoint(point) {
-                    return timezone.name
-                }
-            }
-        }
-
-        let lngShifts = [0.0, -0.01, 0.01, -0.02, 0.02]
-        let latShifts = [0.0, -0.01, 0.01, -0.02, 0.02]
-        for lngShift in lngShifts {
-            for latShift in latShifts {
-                let shiftedPoint = Point(x: lng + lngShift, y: lat + latShift)
-                for timezone in processedTimezones {
-                    for polygon in timezone.polygons {
-                        if polygon.containsPoint(shiftedPoint) {
-                            return timezone.name
-                        }
-                    }
-                }
-            }
-        }
-
-        throw FinderError.noTimezoneFound
+        // return first result from getTimezones
+        return try getTimezones(lng: lng, lat: lat).first!
     }
 
     public func getTimezones(lng: Double, lat: Double) throws -> [String] {
@@ -187,8 +163,29 @@ public class Finder: F {
         }
 
         if results.isEmpty {
+            let lngShifts = [0.0, -0.01, 0.01, -0.02, 0.02]
+            let latShifts = [0.0, -0.01, 0.01, -0.02, 0.02]
+            for lngShift in lngShifts {
+                for latShift in latShifts {
+                    let shiftedPoint = Point(x: lng + lngShift, y: lat + latShift)
+                    for timezone in processedTimezones {
+                        for polygon in timezone.polygons {
+                            if polygon.containsPoint(shiftedPoint) {
+                                results.append(timezone.name)
+                                break  // Found a match in this timezone, move to next
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        if results.isEmpty {
             throw FinderError.noTimezoneFound
         }
+
+        // sort results by name
+        results.sort()
 
         return results
     }
