@@ -1,0 +1,3 @@
+[submodule "tzf-rel-lite"]
+	path = tzf-rel-lite
+	url = https://github.com/ringsaturn/tzf-rel-lite
