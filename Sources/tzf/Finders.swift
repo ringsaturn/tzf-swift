@@ -19,7 +19,7 @@ public struct PreindexFinder: F {
 
     guard
       let preindexURL = bundle.url(
-        forResource: "combined-with-oceans.reduce.preindex", withExtension: "pb")
+        forResource: "combined-with-oceans.reduce.preindex", withExtension: "bin")
     else {
       throw TZFError.dataError
     }
@@ -113,7 +113,7 @@ public class Finder: F {
 
     guard
       let reduceURL = bundle.url(
-        forResource: "combined-with-oceans.reduce", withExtension: "pb")
+        forResource: "combined-with-oceans.reduce", withExtension: "bin")
     else {
       throw TZFError.dataError
     }

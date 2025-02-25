@@ -38,8 +38,8 @@ let package = Package(
             path: "Sources",
             sources: ["tzf", "gen"],
             resources: [
-                .copy("Resources/combined-with-oceans.reduce.preindex.pb"),
-                .copy("Resources/combined-with-oceans.reduce.pb")
+                .copy("Resources/combined-with-oceans.reduce.preindex.bin"),
+                .copy("Resources/combined-with-oceans.reduce.bin")
             ]
         ),
         .testTarget(
