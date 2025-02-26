@@ -8,7 +8,7 @@ public protocol F {
   func getTimezones(lng: Double, lat: Double) throws -> [String]
 }
 
-public struct PreindexFinder: F {
+public class PreindexFinder: F {
   private let preindexData: Tzf_V1_PreindexTimezones
   private let idxZoom: Int32
   private let aggZoom: Int32
