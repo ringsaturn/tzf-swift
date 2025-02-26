@@ -22,7 +22,7 @@ let benchmarks: @Sendable () -> Void = {
   }
 
   Benchmark(
-    "SwiftTimeZoneLookup.simple.random.10_thousand", configuration: .init(metrics: BenchmarkMetric.all)
+    "OtherPackageToCompare.SwiftTimeZoneLookup.simple.random.10_thousand", configuration: .init(metrics: BenchmarkMetric.all)
   ) { benchmark in
     let cities = try Cities()
     let database = try SwiftTimeZoneLookup()
@@ -37,7 +37,7 @@ let benchmarks: @Sendable () -> Void = {
   }
 
   Benchmark(
-    "SwiftTimeZoneLookup.lookup.random.10_thousand", configuration: .init(metrics: BenchmarkMetric.all)
+    "OtherPackageToCompare.SwiftTimeZoneLookup.lookup.random.10_thousand", configuration: .init(metrics: BenchmarkMetric.all)
   ) { benchmark in
     let cities = try Cities()
     let database = try SwiftTimeZoneLookup()
