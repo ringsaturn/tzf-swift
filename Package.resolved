@@ -1,13 +1,13 @@
 {
-  "originHash" : "1fc33a58d5a4d1777437e9be9ffb5191c4a8f19f97c391138518c792dc4c8eb4",
+  "originHash" : "427949ff77d382a25b40f3e60b2d9f0145c1b2235393133b626cd9c1cdeb3b2f",
   "pins" : [
     {
       "identity" : "cities-swift",
       "kind" : "remoteSourceControl",
-      "location" : "https://github.com/ringsaturn/cities-swift",
+      "location" : "https://github.com/ringsaturn/cities-swift.git",
       "state" : {
-        "revision" : "f08de19d9a61b1daedc02e914e1a96f4e246296b",
-        "version" : "0.1.0"
+        "revision" : "efa0746d68dcb0af9d6e5d2117de9e62e8024642",
+        "version" : "0.1.1"
       }
     },
     {
