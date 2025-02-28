@@ -59,8 +59,17 @@ designed for server-side high-performance use cases.
 
 Hardware: MacBook Pro with Apple M3 Max.
 
-It cost 4395ms to process 1 million queries. You can view full benchmark result
-in [benchmark_baseline.txt](./benchmark_baseline.txt).
+Processing 1 million queries took 4500ms. Benchmark Summary:
+
+| Implementation               | Test Scale | Execution Time (ms) | Success Rate | Operations per Second (op/sec) | Memory Usage (Peak MB) | Instructions (G) |
+| ---------------------------- | ---------- | ------------------- | ------------ | ------------------------------ | ---------------------- | ---------------- |
+| `TZF.DefaultFinder`          | 1,000,000  | 4,717               | 100%         | ~212,000                       | 129                    | 73               |
+| `TZF.Finder`                 | 1,000,000  | 19,000              | 100%         | ~52,632                        | 115                    | 324              |
+| `TZF.PreindexFinder`         | 1,000,000  | 1,548               | ~85%         | ~646,000                       | 129                    | 23               |
+| `SwiftTimeZoneLookup.lookup` | 10,000     | 3,077               | 100%         | ~3,250                         | 105                    | 42               |
+| `SwiftTimeZoneLookup.simple` | 10,000     | 3,209               | 100%         | ~3,116                         | 104                    | 45               |
+
+Full benchmark results can be viewed in [benchmark_baseline.txt](./benchmark_baseline.txt).
 
 ## Related Projects
 
