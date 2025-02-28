@@ -7,10 +7,65 @@ import tzf
 
 let benchmarks: @Sendable () -> Void = {
   Benchmark(
-    "DefaultFinder.getTimezone.random.1_million", configuration: .init(metrics: BenchmarkMetric.all)
+    "TZF.DefaultFinder.getTimezone.random.1_million",
+    configuration: .init(metrics: BenchmarkMetric.all)
   ) { benchmark in
     let cities = try Cities()
     let finder = try DefaultFinder()
+    for _ in benchmark.scaledIterations {
+      for _ in 0..<1_000_000 {
+        let randomCity = cities.getRandomCity()!
+        let lng = Double(randomCity.lng) ?? 0.0
+        let lat = Double(randomCity.lat) ?? 0.0
+        _ = try finder.getTimezone(lng: lng, lat: lat)
+      }
+    }
+  }
+
+  Benchmark(
+    "TZF.PreindexFinder.getTimezone.random.1_million",
+    configuration: .init(metrics: BenchmarkMetric.all)
+  ) { benchmark in
+    let cities = try Cities()
+    let finder = try PreindexFinder()
+    var successCount = 0
+    var errorCount = 0
+    
+    for _ in benchmark.scaledIterations {
+      for _ in 0..<1_000_000 {
+        let randomCity = cities.getRandomCity()!
+        let lng = Double(randomCity.lng) ?? 0.0
+        let lat = Double(randomCity.lat) ?? 0.0
+        
+        do {
+          // Try to get timezone but catch any errors
+          _ = try finder.getTimezone(lng: lng, lat: lat)
+          successCount += 1
+        } catch TZFError.invalidCoordinates {
+          // Skip invalid coordinates
+          errorCount += 1
+          continue
+        } catch TZFError.noTimezoneFound {
+          // Skip when no timezone is found
+          errorCount += 1
+          continue
+        } catch {
+          // Skip any other errors
+          errorCount += 1
+          continue
+        }
+      }
+    }
+    
+    // Optional: Print statistics at the end
+    print("PreindexFinder benchmark stats - Success: \(successCount), Errors: \(errorCount)")
+  }
+
+  Benchmark(
+    "TZF.Finder.getTimezone.random.1_million", configuration: .init(metrics: BenchmarkMetric.all)
+  ) { benchmark in
+    let cities = try Cities()
+    let finder = try Finder()
     for _ in benchmark.scaledIterations {
       for _ in 0..<1_000_000 {
         let randomCity = cities.getRandomCity()!
