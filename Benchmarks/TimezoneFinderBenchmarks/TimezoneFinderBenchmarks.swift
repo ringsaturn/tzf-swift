@@ -30,13 +30,13 @@ let benchmarks: @Sendable () -> Void = {
     let finder = try PreindexFinder()
     var successCount = 0
     var errorCount = 0
-    
+
     for _ in benchmark.scaledIterations {
       for _ in 0..<1_000_000 {
         let randomCity = cities.getRandomCity()!
         let lng = Double(randomCity.lng) ?? 0.0
         let lat = Double(randomCity.lat) ?? 0.0
-        
+
         do {
           // Try to get timezone but catch any errors
           _ = try finder.getTimezone(lng: lng, lat: lat)
@@ -56,7 +56,7 @@ let benchmarks: @Sendable () -> Void = {
         }
       }
     }
-    
+
     // Optional: Print statistics at the end
     print("PreindexFinder benchmark stats - Success: \(successCount), Errors: \(errorCount)")
   }

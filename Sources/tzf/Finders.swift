@@ -37,30 +37,30 @@ import geometry
 /// A protocol defining the interface for timezone finders.
 /// All timezone finder implementations must conform to this protocol.
 public protocol F {
-    /// Returns the version of the timezone data being used.
-    ///
-    /// - Returns: A string representing the data version.
-    func dataVersion() -> String
-    
-    /// Returns the timezone for a given geographic coordinate.
-    ///
-    /// - Parameters:
-    ///   - lng: The longitude coordinate in decimal degrees (-180 to 180)
-    ///   - lat: The latitude coordinate in decimal degrees (-90 to 90)
-    /// - Returns: The IANA timezone identifier as a string
-    /// - Throws: An error if no timezone is found or if coordinates are invalid
-    func getTimezone(lng: Double, lat: Double) throws -> String
-    
-    /// Returns all possible timezones for a given geographic coordinate.
-    /// This is useful for locations near timezone boundaries where multiple
-    /// timezones might be applicable.
-    ///
-    /// - Parameters:
-    ///   - lng: The longitude coordinate in decimal degrees (-180 to 180)
-    ///   - lat: The latitude coordinate in decimal degrees (-90 to 90)
-    /// - Returns: An array of IANA timezone identifiers
-    /// - Throws: An error if no timezone is found or if coordinates are invalid
-    func getTimezones(lng: Double, lat: Double) throws -> [String]
+  /// Returns the version of the timezone data being used.
+  ///
+  /// - Returns: A string representing the data version.
+  func dataVersion() -> String
+
+  /// Returns the timezone for a given geographic coordinate.
+  ///
+  /// - Parameters:
+  ///   - lng: The longitude coordinate in decimal degrees (-180 to 180)
+  ///   - lat: The latitude coordinate in decimal degrees (-90 to 90)
+  /// - Returns: The IANA timezone identifier as a string
+  /// - Throws: An error if no timezone is found or if coordinates are invalid
+  func getTimezone(lng: Double, lat: Double) throws -> String
+
+  /// Returns all possible timezones for a given geographic coordinate.
+  /// This is useful for locations near timezone boundaries where multiple
+  /// timezones might be applicable.
+  ///
+  /// - Parameters:
+  ///   - lng: The longitude coordinate in decimal degrees (-180 to 180)
+  ///   - lat: The latitude coordinate in decimal degrees (-90 to 90)
+  /// - Returns: An array of IANA timezone identifiers
+  /// - Throws: An error if no timezone is found or if coordinates are invalid
+  func getTimezones(lng: Double, lat: Double) throws -> [String]
 }
 
 /// A high-performance timezone finder that uses pre-indexed map tiles for lookups.
@@ -167,15 +167,15 @@ public class PreindexFinder: F {
 
 /// Represents possible errors that can occur during timezone lookup operations.
 public enum TZFError: Error {
-    /// Indicates that the provided coordinates are outside the valid range
-    /// (longitude: -180 to 180, latitude: -90 to 90)
-    case invalidCoordinates
-    
-    /// Indicates that no timezone was found for the given coordinates
-    case noTimezoneFound
-    
-    /// Indicates an error occurred while loading or processing the timezone data
-    case dataError
+  /// Indicates that the provided coordinates are outside the valid range
+  /// (longitude: -180 to 180, latitude: -90 to 90)
+  case invalidCoordinates
+
+  /// Indicates that no timezone was found for the given coordinates
+  case noTimezoneFound
+
+  /// Indicates an error occurred while loading or processing the timezone data
+  case dataError
 }
 
 /// A timezone finder that uses full polygon data for accurate timezone lookups.
