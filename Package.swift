@@ -16,7 +16,7 @@ let package = Package(
             targets: ["tzf"]),
     ],
     dependencies: [
-        .package(url: "https://github.com/apple/swift-protobuf.git", from: "1.28.2"),
+        .package(url: "https://github.com/apple/swift-protobuf.git", from: "1.29.0"),
         .package(url: "https://github.com/apple/swift-testing.git", revision: "e76a44f"),
         .package(url: "https://github.com/ordo-one/package-benchmark", from: "1.4.0"),
         .package(url: "https://github.com/ringsaturn/cities-swift.git", from: "0.1.1"),
