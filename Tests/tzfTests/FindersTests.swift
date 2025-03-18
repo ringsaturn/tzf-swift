@@ -90,6 +90,12 @@ import Testing
 
   let timezone4 = try finder.getTimezone(lng: 0.0, lat: 0.0)
   #expect(timezone4 == "Etc/GMT")
+
+  let timezone5 = try finder.getTimezone(lng: 7.209253, lat: 53.242293)
+  #expect(timezone5 == "Europe/Berlin")
+
+  let timezone6 = try finder.getTimezone(lng: 7.207879, lat: 53.239692)
+  #expect(timezone6 == "Europe/Amsterdam")
 }
 
 @Test func defaultFinderValidCoordinates() async throws {
