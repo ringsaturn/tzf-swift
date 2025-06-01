@@ -1,5 +1,5 @@
 {
-  "originHash" : "ab207073e1ab4be62caf1dd48efc07ba2ca6ad23fb1da8b856d9fb1148c7f21d",
+  "originHash" : "ba9f8278845b18bc9d482ca0472a0768b8ad9bcc91e4ab768414094df00c1a87",
   "pins" : [
     {
       "identity" : "cities-swift",
@@ -24,8 +24,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/ordo-one/package-benchmark",
       "state" : {
-        "revision" : "ec06262cf296aaa4bd40ed654ccdf9a87fe1879f",
-        "version" : "1.29.2"
+        "revision" : "5c4569a9e7e9acac4db43f31e58252539ca71f0b",
+        "version" : "1.29.3"
       }
     },
     {
@@ -69,8 +69,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/apple/swift-protobuf.git",
       "state" : {
-        "revision" : "d72aed98f8253ec1aa9ea1141e28150f408cf17f",
-        "version" : "1.29.0"
+        "revision" : "102a647b573f60f73afdce5613a51d71349fe507",
+        "version" : "1.30.0"
       }
     },
     {
