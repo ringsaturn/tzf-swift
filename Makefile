@@ -11,5 +11,6 @@ fmt:
 	swift format --in-place --recursive Sources Tests Examples Benchmarks
 
 sync:
+	git submodule update
 	cp tzf-rel-lite/combined-with-oceans.reduce.bin Sources/Resources/combined-with-oceans.reduce.bin
 	cp tzf-rel-lite/combined-with-oceans.reduce.preindex.bin Sources/Resources/combined-with-oceans.reduce.preindex.bin
