@@ -11,7 +11,7 @@ jobs:
         swift: ["6.0"]
     runs-on: ${{ matrix.os }}
     steps:
-      - uses: swift-actions/setup-swift@v2
+      - uses: SwiftyLab/setup-swift@latest
         with:
           swift-version: ${{ matrix.swift }}
       - uses: actions/checkout@v5
