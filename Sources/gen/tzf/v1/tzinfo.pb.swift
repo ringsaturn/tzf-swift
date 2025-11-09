@@ -149,7 +149,7 @@ struct Tzf_V1_Timezones: Sendable {
   init() {}
 }
 
-struct Tzf_V1_CompressedPolygon: @unchecked Sendable {
+struct Tzf_V1_CompressedPolygon: Sendable {
   // SwiftProtobuf.Message conformance is added in an extension below. See the
   // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
   // methods supported on all messages.
@@ -241,18 +241,12 @@ struct Tzf_V1_PreindexTimezones: Sendable {
 fileprivate let _protobuf_package = "tzf.v1"
 
 extension Tzf_V1_CompressMethod: SwiftProtobuf._ProtoNameProviding {
-  static let _protobuf_nameMap: SwiftProtobuf._NameMap = [
-    0: .same(proto: "COMPRESS_METHOD_UNSPECIFIED"),
-    1: .same(proto: "COMPRESS_METHOD_POLYLINE"),
-  ]
+  static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{2}\0COMPRESS_METHOD_UNSPECIFIED\0\u{1}COMPRESS_METHOD_POLYLINE\0")
 }
 
 extension Tzf_V1_Point: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = _protobuf_package + ".Point"
-  static let _protobuf_nameMap: SwiftProtobuf._NameMap = [
-    1: .same(proto: "lng"),
-    2: .same(proto: "lat"),
-  ]
+  static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{1}lng\0\u{1}lat\0")
 
   mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
     while let fieldNumber = try decoder.nextFieldNumber() {
@@ -287,10 +281,7 @@ extension Tzf_V1_Point: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementat
 
 extension Tzf_V1_Polygon: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = _protobuf_package + ".Polygon"
-  static let _protobuf_nameMap: SwiftProtobuf._NameMap = [
-    1: .same(proto: "points"),
-    2: .same(proto: "holes"),
-  ]
+  static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{1}points\0\u{1}holes\0")
 
   mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
     while let fieldNumber = try decoder.nextFieldNumber() {
@@ -325,10 +316,7 @@ extension Tzf_V1_Polygon: SwiftProtobuf.Message, SwiftProtobuf._MessageImplement
 
 extension Tzf_V1_Timezone: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = _protobuf_package + ".Timezone"
-  static let _protobuf_nameMap: SwiftProtobuf._NameMap = [
-    1: .same(proto: "polygons"),
-    2: .same(proto: "name"),
-  ]
+  static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{1}polygons\0\u{1}name\0")
 
   mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
     while let fieldNumber = try decoder.nextFieldNumber() {
@@ -363,11 +351,7 @@ extension Tzf_V1_Timezone: SwiftProtobuf.Message, SwiftProtobuf._MessageImplemen
 
 extension Tzf_V1_Timezones: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = _protobuf_package + ".Timezones"
-  static let _protobuf_nameMap: SwiftProtobuf._NameMap = [
-    1: .same(proto: "timezones"),
-    2: .same(proto: "reduced"),
-    3: .same(proto: "version"),
-  ]
+  static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{1}timezones\0\u{1}reduced\0\u{1}version\0")
 
   mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
     while let fieldNumber = try decoder.nextFieldNumber() {
@@ -407,10 +391,7 @@ extension Tzf_V1_Timezones: SwiftProtobuf.Message, SwiftProtobuf._MessageImpleme
 
 extension Tzf_V1_CompressedPolygon: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = _protobuf_package + ".CompressedPolygon"
-  static let _protobuf_nameMap: SwiftProtobuf._NameMap = [
-    1: .same(proto: "points"),
-    2: .same(proto: "holes"),
-  ]
+  static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{1}points\0\u{1}holes\0")
 
   mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
     while let fieldNumber = try decoder.nextFieldNumber() {
@@ -445,10 +426,7 @@ extension Tzf_V1_CompressedPolygon: SwiftProtobuf.Message, SwiftProtobuf._Messag
 
 extension Tzf_V1_CompressedTimezone: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = _protobuf_package + ".CompressedTimezone"
-  static let _protobuf_nameMap: SwiftProtobuf._NameMap = [
-    1: .same(proto: "data"),
-    2: .same(proto: "name"),
-  ]
+  static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{1}data\0\u{1}name\0")
 
   mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
     while let fieldNumber = try decoder.nextFieldNumber() {
@@ -483,11 +461,7 @@ extension Tzf_V1_CompressedTimezone: SwiftProtobuf.Message, SwiftProtobuf._Messa
 
 extension Tzf_V1_CompressedTimezones: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = _protobuf_package + ".CompressedTimezones"
-  static let _protobuf_nameMap: SwiftProtobuf._NameMap = [
-    1: .same(proto: "method"),
-    2: .same(proto: "timezones"),
-    3: .same(proto: "version"),
-  ]
+  static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{1}method\0\u{1}timezones\0\u{1}version\0")
 
   mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
     while let fieldNumber = try decoder.nextFieldNumber() {
@@ -527,12 +501,7 @@ extension Tzf_V1_CompressedTimezones: SwiftProtobuf.Message, SwiftProtobuf._Mess
 
 extension Tzf_V1_PreindexTimezone: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = _protobuf_package + ".PreindexTimezone"
-  static let _protobuf_nameMap: SwiftProtobuf._NameMap = [
-    1: .same(proto: "name"),
-    2: .same(proto: "x"),
-    3: .same(proto: "y"),
-    4: .same(proto: "z"),
-  ]
+  static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{1}name\0\u{1}x\0\u{1}y\0\u{1}z\0")
 
   mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
     while let fieldNumber = try decoder.nextFieldNumber() {
@@ -577,12 +546,7 @@ extension Tzf_V1_PreindexTimezone: SwiftProtobuf.Message, SwiftProtobuf._Message
 
 extension Tzf_V1_PreindexTimezones: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = _protobuf_package + ".PreindexTimezones"
-  static let _protobuf_nameMap: SwiftProtobuf._NameMap = [
-    1: .standard(proto: "idx_zoom"),
-    2: .standard(proto: "agg_zoom"),
-    3: .same(proto: "keys"),
-    4: .same(proto: "version"),
-  ]
+  static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{3}idx_zoom\0\u{3}agg_zoom\0\u{1}keys\0\u{1}version\0")
 
   mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
     while let fieldNumber = try decoder.nextFieldNumber() {

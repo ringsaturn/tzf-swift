@@ -1,4 +1,4 @@
 version: v2
 plugins:
-  - remote: buf.build/apple/swift:v1.28.2
+  - remote: buf.build/apple/swift:v1.33.3
     out: Sources/gen

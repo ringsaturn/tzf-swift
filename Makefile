@@ -10,6 +10,9 @@ bench:
 fmt:
 	swift format --in-place --recursive Sources Tests Examples Benchmarks
 
+pb:
+	buf generate
+
 sync:
 	git submodule update
 	cp tzf-rel-lite/combined-with-oceans.reduce.bin Sources/Resources/combined-with-oceans.reduce.bin
