@@ -1,5 +1,5 @@
 {
-  "originHash" : "b89de32e2c514252fd8c84602c65eb669bb69d6590b6e882a44a183c240dc5b2",
+  "originHash" : "b630aec69b10e31178bd367ecb48fdf92a965325f365dbfd5213af5986a6e33b",
   "pins" : [
     {
       "identity" : "cities-swift",
@@ -24,8 +24,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/ordo-one/package-benchmark",
       "state" : {
-        "revision" : "acfd97b98f5a40d963c89437e1cfaeab8ef10bf9",
-        "version" : "1.29.7"
+        "revision" : "37284ddc58c380d89faf4fe5e6ffb2bbd279710d",
+        "version" : "1.29.10"
       }
     },
     {
