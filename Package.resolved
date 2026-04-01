@@ -1,5 +1,5 @@
 {
-  "originHash" : "0107d4875d3122674f13ac21dde1e5c9a79f922613e532c49e01aacb3058bc0f",
+  "originHash" : "3dfa7b682d340cb2815fa93dba7137031b497b2e25585ab392d4518e61f800c8",
   "pins" : [
     {
       "identity" : "cities-swift",
@@ -15,8 +15,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/HdrHistogram/hdrhistogram-swift",
       "state" : {
-        "revision" : "93a1618c8aa20f6a521a9da656a3e0591889e9dc",
-        "version" : "0.1.3"
+        "revision" : "de0b9b8a27956b9bfc9b4dce7d1c38ad7c579f19",
+        "version" : "0.1.4"
       }
     },
     {
@@ -24,8 +24,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/ordo-one/package-benchmark",
       "state" : {
-        "revision" : "a1075611342d4b164bf6e977edb02a3db4434afd",
-        "version" : "1.29.11"
+        "revision" : "69bde19b29c4365e5a23179add8df4f93c76566c",
+        "version" : "1.31.0"
       }
     },
     {
@@ -69,8 +69,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/apple/swift-protobuf.git",
       "state" : {
-        "revision" : "5596511fce902e649c403cd4d6d5da1254f142b7",
-        "version" : "1.35.1"
+        "revision" : "a008af1a102ff3dd6cc3764bb69bf63226d0f5f6",
+        "version" : "1.36.1"
       }
     },
     {
@@ -105,8 +105,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/patrick-zippenfenig/SwiftTimeZoneLookup.git",
       "state" : {
-        "revision" : "1a653bcc6d3e0c5650886aba5c5a277cd49f0bbd",
-        "version" : "1.0.7"
+        "revision" : "e4db6c3ad57b58d472a05b73cf8ea78352957500",
+        "version" : "1.0.8"
       }
     },
     {
