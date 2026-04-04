@@ -74,6 +74,35 @@ import Testing
   #expect(!finder.dataVersion().isEmpty)
 }
 
+@Test func finderTimezoneGeoJSONExport() async throws {
+  let finder = try! Finder()
+
+  let featureCollection = finder.getTimezoneGeoJSON(timezoneName: "Asia/Shanghai")
+  #expect(featureCollection != nil)
+  #expect(featureCollection?.type == "FeatureCollection")
+  #expect(featureCollection?.features.count == 1)
+  #expect(featureCollection?.features.first?.properties.tzid == "Asia/Shanghai")
+  #expect(
+    !(featureCollection?.features.first?.geometry.coordinates.first?.first?.isEmpty ?? true))
+
+  let missing = finder.getTimezoneGeoJSON(timezoneName: "Mars/Olympus_Mons")
+  #expect(missing == nil)
+}
+
+@Test func finderGeoJSONEncoding() async throws {
+  let finder = try! Finder()
+  let collection = finder.toGeoJSON()
+
+  #expect(collection.type == "FeatureCollection")
+  #expect(!collection.features.isEmpty)
+
+  let compact = try collection.toJSONString()
+  #expect(compact.contains("\"type\":\"FeatureCollection\""))
+
+  let pretty = try collection.toJSONString(pretty: true)
+  #expect(pretty.contains("\n"))
+}
+
 @Test func finderEdgeCases() async throws {
   // Load test data
   let finder = try! Finder()
@@ -109,6 +138,15 @@ import Testing
   // Test for multiple results
   let timezones = try finder.getTimezones(lng: 87.5703, lat: 43.8146)
   #expect(!timezones.isEmpty)
+}
+
+@Test func defaultFinderTimezoneGeoJSONExport() async throws {
+  let finder = try! DefaultFinder()
+  let featureCollection = finder.getTimezoneGeoJSON(timezoneName: "Asia/Shanghai")
+
+  #expect(featureCollection != nil)
+  #expect(featureCollection?.type == "FeatureCollection")
+  #expect(featureCollection?.features.first?.properties.tzid == "Asia/Shanghai")
 }
 
 @Test func defaultFinderIterAllCities() async throws {

@@ -34,6 +34,65 @@ import Foundation
 import SwiftProtobuf
 import geometry
 
+public typealias GeoJSONPolygonCoordinates = [[[Double]]]
+public typealias GeoJSONMultiPolygonCoordinates = [GeoJSONPolygonCoordinates]
+
+/// GeoJSON geometry for timezone boundaries.
+public struct GeoJSONGeometry: Codable {
+  public let type: String
+  public let coordinates: GeoJSONMultiPolygonCoordinates
+
+  public init(type: String, coordinates: GeoJSONMultiPolygonCoordinates) {
+    self.type = type
+    self.coordinates = coordinates
+  }
+}
+
+/// GeoJSON properties that carry timezone name.
+public struct GeoJSONProperties: Codable {
+  public let tzid: String
+
+  public init(tzid: String) {
+    self.tzid = tzid
+  }
+}
+
+/// GeoJSON feature for one timezone.
+public struct GeoJSONFeature: Codable {
+  public let type: String
+  public let properties: GeoJSONProperties
+  public let geometry: GeoJSONGeometry
+
+  public init(type: String, properties: GeoJSONProperties, geometry: GeoJSONGeometry) {
+    self.type = type
+    self.properties = properties
+    self.geometry = geometry
+  }
+}
+
+/// GeoJSON feature collection for timezone boundaries.
+public struct GeoJSONFeatureCollection: Codable {
+  public let type: String
+  public let features: [GeoJSONFeature]
+
+  public init(type: String, features: [GeoJSONFeature]) {
+    self.type = type
+    self.features = features
+  }
+
+  public func toJSONString(pretty: Bool = false) throws -> String {
+    let encoder = JSONEncoder()
+    if pretty {
+      encoder.outputFormatting = [.prettyPrinted]
+    }
+    let data = try encoder.encode(self)
+    guard let output = String(data: data, encoding: .utf8) else {
+      throw TZFError.dataError
+    }
+    return output
+  }
+}
+
 /// A protocol defining the interface for timezone finders.
 /// All timezone finder implementations must conform to this protocol.
 public protocol F {
@@ -234,6 +293,49 @@ public class Finder: F {
     self.processedTimezones = processed
   }
 
+  private func toFeature(timezone: Tzf_V1_Timezone) -> GeoJSONFeature {
+    let coordinates = timezone.polygons.map { polygon in
+      var geoPolygon: [[Double]] = []
+      let exterior = polygon.points.map { [Double($0.lng), Double($0.lat)] }
+      geoPolygon.append(contentsOf: exterior)
+      var fullPolygon: [[[Double]]] = [geoPolygon]
+
+      for hole in polygon.holes {
+        let ring = hole.points.map { [Double($0.lng), Double($0.lat)] }
+        fullPolygon.append(ring)
+      }
+      return fullPolygon
+    }
+
+    return GeoJSONFeature(
+      type: "Feature",
+      properties: GeoJSONProperties(tzid: timezone.name),
+      geometry: GeoJSONGeometry(type: "MultiPolygon", coordinates: coordinates)
+    )
+  }
+
+  /// Convert all timezone polygons to GeoJSON FeatureCollection.
+  public func toGeoJSON() -> GeoJSONFeatureCollection {
+    let features = timezones.timezones.map(toFeature(timezone:))
+    return GeoJSONFeatureCollection(type: "FeatureCollection", features: features)
+  }
+
+  /// Convert one timezone polygon set to GeoJSON FeatureCollection.
+  ///
+  /// - Parameter timezoneName: IANA timezone name, for example "Asia/Tokyo"
+  /// - Returns: One-feature GeoJSON collection when found, nil when missing.
+  public func getTimezoneGeoJSON(timezoneName: String) -> GeoJSONFeatureCollection? {
+    let features = timezones.timezones
+      .filter { $0.name == timezoneName }
+      .map(toFeature(timezone:))
+
+    if features.isEmpty {
+      return nil
+    }
+
+    return GeoJSONFeatureCollection(type: "FeatureCollection", features: features)
+  }
+
   public func dataVersion() -> String {
     return timezones.version
   }
@@ -327,5 +429,18 @@ public class DefaultFinder: F {
       // If preindex finder fails, try reduce finder
       return try reduceFinder.getTimezones(lng: lng, lat: lat)
     }
+  }
+
+  /// Convert all timezone polygons to GeoJSON FeatureCollection.
+  public func toGeoJSON() -> GeoJSONFeatureCollection {
+    return reduceFinder.toGeoJSON()
+  }
+
+  /// Convert one timezone polygon set to GeoJSON FeatureCollection.
+  ///
+  /// - Parameter timezoneName: IANA timezone name, for example "Asia/Tokyo"
+  /// - Returns: One-feature GeoJSON collection when found, nil when missing.
+  public func getTimezoneGeoJSON(timezoneName: String) -> GeoJSONFeatureCollection? {
+    return reduceFinder.getTimezoneGeoJSON(timezoneName: timezoneName)
   }
 }

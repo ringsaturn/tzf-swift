@@ -39,6 +39,12 @@ do {
     // Get data version
     print("Data version:", finder.dataVersion())
 
+    // Export one timezone as GeoJSON FeatureCollection
+    if let shanghaiGeoJSON = finder.getTimezoneGeoJSON(timezoneName: "Asia/Shanghai") {
+        print("Asia/Shanghai features:", shanghaiGeoJSON.features.count)
+        print(try shanghaiGeoJSON.toJSONString(pretty: true))
+    }
+
 } catch {
     print("Error:", error)
 }
