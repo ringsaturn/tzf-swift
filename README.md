@@ -40,9 +40,9 @@ do {
     print("Data version:", finder.dataVersion())
 
     // Export one timezone as GeoJSON FeatureCollection
-    if let shanghaiGeoJSON = finder.getTimezoneGeoJSON(timezoneName: "Asia/Shanghai") {
-        print("Asia/Shanghai features:", shanghaiGeoJSON.features.count)
-        print(try shanghaiGeoJSON.toJSONString(pretty: true))
+    if let macauGeoJSON = finder.getTimezoneGeoJSON(timezoneName: "Asia/Macau") {
+        print("Asia/Macau features:", macauGeoJSON.features.count)
+        print(try macauGeoJSON.toJSONString(pretty: true))
     }
 
 } catch {
@@ -52,7 +52,7 @@ do {
 
 Output:
 
-```
+```txt
 Build of product 'demo' complete! (0.15s)
 Beijing timezone: Asia/Shanghai
 Multiple possible timezones: ["Asia/Shanghai", "Asia/Urumqi"]
@@ -101,6 +101,5 @@ for details.
 
 The data is licensed under [ODbL-1.0 license](./LICENSE_DATA), which compiled
 from <https://github.com/evansiroky/timezone-boundary-builder>
-
 
 [![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fringsaturn%2Ftzf-swift.svg?type=large)](https://app.fossa.com/projects/git%2Bgithub.com%2Fringsaturn%2Ftzf-swift?ref=badge_large)
