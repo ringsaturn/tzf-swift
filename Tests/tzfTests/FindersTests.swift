@@ -38,6 +38,31 @@ import Testing
   #expect(!finder.dataVersion().isEmpty)
 }
 
+@Test func preindexFinderTimezoneGeoJSONExport() async throws {
+  let finder = try! PreindexFinder()
+
+  let featureCollection = finder.getTimezoneGeoJSON(timezoneName: "Asia/Shanghai")
+  #expect(featureCollection != nil)
+  #expect(featureCollection?.type == "FeatureCollection")
+  #expect(featureCollection?.features.count == 1)
+  #expect(featureCollection?.features.first?.properties.tzid == "Asia/Shanghai")
+  #expect(!((featureCollection?.features.first?.geometry.coordinates.isEmpty) ?? true))
+
+  let missing = finder.getTimezoneGeoJSON(timezoneName: "Mars/Olympus_Mons")
+  #expect(missing == nil)
+}
+
+@Test func preindexFinderGeoJSONEncoding() async throws {
+  let finder = try! PreindexFinder()
+  let collection = finder.toGeoJSON()
+
+  #expect(collection.type == "FeatureCollection")
+  #expect(!collection.features.isEmpty)
+
+  let compact = try collection.toJSONString()
+  #expect(compact.contains("\"type\":\"FeatureCollection\""))
+}
+
 // Finder Tests
 @Test func finderValidCoordinates() async throws {
   // Load test data
@@ -147,6 +172,22 @@ import Testing
   #expect(featureCollection != nil)
   #expect(featureCollection?.type == "FeatureCollection")
   #expect(featureCollection?.features.first?.properties.tzid == "Asia/Shanghai")
+}
+
+@Test func protocolFGeoJSONMethods() async throws {
+  let preindex: any F = try PreindexFinder()
+  let finder: any F = try Finder()
+  let defaultFinder: any F = try DefaultFinder()
+
+  for item in [preindex, finder, defaultFinder] {
+    let full = item.toGeoJSON()
+    #expect(full.type == "FeatureCollection")
+    #expect(!full.features.isEmpty)
+
+    let one = item.getTimezoneGeoJSON(timezoneName: "Asia/Shanghai")
+    #expect(one != nil)
+    #expect(one?.features.first?.properties.tzid == "Asia/Shanghai")
+  }
 }
 
 @Test func defaultFinderIterAllCities() async throws {

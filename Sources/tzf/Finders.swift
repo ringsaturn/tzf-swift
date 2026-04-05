@@ -120,6 +120,15 @@ public protocol F {
   /// - Returns: An array of IANA timezone identifiers
   /// - Throws: An error if no timezone is found or if coordinates are invalid
   func getTimezones(lng: Double, lat: Double) throws -> [String]
+
+  /// Convert all timezone boundaries to GeoJSON FeatureCollection.
+  func toGeoJSON() -> GeoJSONFeatureCollection
+
+  /// Convert one timezone boundary set to GeoJSON FeatureCollection.
+  ///
+  /// - Parameter timezoneName: IANA timezone name, for example "Asia/Tokyo"
+  /// - Returns: GeoJSON collection if found, otherwise nil.
+  func getTimezoneGeoJSON(timezoneName: String) -> GeoJSONFeatureCollection?
 }
 
 /// A high-performance timezone finder that uses pre-indexed map tiles for lookups.
@@ -221,6 +230,74 @@ public class PreindexFinder: F {
     }
 
     throw TZFError.noTimezoneFound
+  }
+
+  private func tileToPolygon(x: Int32, y: Int32, z: Int32) -> [[Double]] {
+    let n = pow(2.0, Double(z))
+
+    let lngMin = Double(x) / n * 360.0 - 180.0
+    let latMinRad = atan(sinh((1.0 - Double(y + 1) / n * 2.0) * .pi))
+    let latMin = latMinRad * 180.0 / .pi
+
+    let lngMax = Double(x + 1) / n * 360.0 - 180.0
+    let latMaxRad = atan(sinh((1.0 - Double(y) / n * 2.0) * .pi))
+    let latMax = latMaxRad * 180.0 / .pi
+
+    return [
+      [lngMin, latMin],
+      [lngMax, latMin],
+      [lngMax, latMax],
+      [lngMin, latMax],
+      [lngMin, latMin],
+    ]
+  }
+
+  /// Convert all preindex tiles to GeoJSON FeatureCollection.
+  public func toGeoJSON() -> GeoJSONFeatureCollection {
+    var grouped: [String: GeoJSONMultiPolygonCoordinates] = [:]
+
+    for key in preindexData.keys {
+      let tileRing = tileToPolygon(x: key.x, y: key.y, z: key.z)
+      grouped[key.name, default: []].append([tileRing])
+    }
+
+    let features = grouped.keys.sorted().map { timezoneName in
+      GeoJSONFeature(
+        type: "Feature",
+        properties: GeoJSONProperties(tzid: timezoneName),
+        geometry: GeoJSONGeometry(
+          type: "MultiPolygon",
+          coordinates: grouped[timezoneName] ?? []
+        )
+      )
+    }
+
+    return GeoJSONFeatureCollection(type: "FeatureCollection", features: features)
+  }
+
+  /// Convert one timezone's preindex tiles to GeoJSON FeatureCollection.
+  ///
+  /// - Parameter timezoneName: IANA timezone name, for example "Asia/Tokyo"
+  /// - Returns: GeoJSON collection if found, otherwise nil.
+  public func getTimezoneGeoJSON(timezoneName: String) -> GeoJSONFeatureCollection? {
+    var coordinates: GeoJSONMultiPolygonCoordinates = []
+
+    for key in preindexData.keys where key.name == timezoneName {
+      let tileRing = tileToPolygon(x: key.x, y: key.y, z: key.z)
+      coordinates.append([tileRing])
+    }
+
+    if coordinates.isEmpty {
+      return nil
+    }
+
+    let feature = GeoJSONFeature(
+      type: "Feature",
+      properties: GeoJSONProperties(tzid: timezoneName),
+      geometry: GeoJSONGeometry(type: "MultiPolygon", coordinates: coordinates)
+    )
+
+    return GeoJSONFeatureCollection(type: "FeatureCollection", features: [feature])
   }
 }
 
