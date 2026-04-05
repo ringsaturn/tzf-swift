@@ -21,6 +21,7 @@ let package = Package(
         .package(url: "https://github.com/ordo-one/package-benchmark", from: "1.4.0"),
         .package(url: "https://github.com/ringsaturn/cities-swift.git", from: "0.1.1"),
         .package(url: "https://github.com/patrick-zippenfenig/SwiftTimeZoneLookup.git", from: "1.0.7"),
+        .package(url: "https://github.com/swiftlang/swift-docc-plugin", from: "1.4.5"),
     ],
     targets: [
         .target(
