@@ -17,6 +17,6 @@ do {
         print(try macauGeoJSON.toJSONString(pretty: false))
     }
 } catch {
-    fputs("Error: \(error)\n", stderr)
+    print("Error:", error)
     exit(1)
 }

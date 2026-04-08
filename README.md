@@ -42,7 +42,7 @@ do {
         print(try macauGeoJSON.toJSONString(pretty: false))
     }
 } catch {
-    fputs("Error: \(error)\n", stderr)
+    print("Error:", error)
     exit(1)
 }
 ```
@@ -55,7 +55,7 @@ Beijing timezone: Asia/Shanghai
 Multiple possible timezones: ["Asia/Shanghai", "Asia/Urumqi"]
 Data version: 2026a/2026a
 Asia/Macau features: 1
-{"features":[{"type":"Feature"
+{"features":[{"type":"Feature"...
 ```
 
 ## Performance
