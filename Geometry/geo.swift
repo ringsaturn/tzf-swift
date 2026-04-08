@@ -1,3 +1,4 @@
+/// Rewrite parts of [tidwall/geometry](https://github.com/tidwall/geometry) in Swift.
 import Foundation
 
 public struct Point {
