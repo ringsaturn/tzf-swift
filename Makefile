@@ -39,3 +39,6 @@ docs-subpath:
 		--transform-for-static-hosting \
 		--hosting-base-path $(DOCS_BASE_PATH) \
 		--output-path ./$(DOCS_DIR)
+
+run-demo:
+	swift run demo

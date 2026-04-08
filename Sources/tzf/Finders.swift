@@ -1,35 +1,3 @@
-/// tzf for swift.
-///
-/// A Swift package for timezone lookup by geographic coordinates (longitude/latitude).
-/// This package uses a simplified polygon data structure for timezone boundaries.
-/// The underlying data has been pre-simplified to reduce size and improve performance,
-/// while still maintaining reasonable accuracy for most use cases.
-///
-/// Important Notes:
-/// - The timezone boundary data has been simplified to reduce complexity
-/// - Accuracy may be reduced around timezone borders
-/// - For high-precision requirements, consider using official IANA timezone data
-///
-/// The package offers three finder implementations:
-/// - `PreindexFinder`: Uses pre-indexed map tiles for fast lookups
-/// - `Finder`: Uses polygon-based lookups with simplified boundary data
-/// - `DefaultFinder`: Combines both approaches for optimal results
-///
-/// Other related projects:
-///
-/// | Language or Sever         | Link                                                                    | Note                |
-/// | ------------------------- | ----------------------------------------------------------------------- | ------------------- |
-/// | Go                        | [`ringsaturn/tzf`](https://github.com/ringsaturn/tzf)                   |                     |
-/// | Ruby                      | [`HarlemSquirrel/tzf-rb`](https://github.com/HarlemSquirrel/tzf-rb)     | build with tzf-rs   |
-/// | Rust                      | [`ringsaturn/tzf-rs`](https://github.com/ringsaturn/tzf-rs)             |                     |
-/// | Swift                     | [`ringsaturn/tzf-swift`](https://github.com/ringsaturn/tzf-swift)       |                     |
-/// | Python                    | [`ringsaturn/tzfpy`](https://github.com/ringsaturn/tzfpy)               | build with tzf-rs   |
-/// | HTTP API                  | [`ringsaturn/tzf-server`](https://github.com/ringsaturn/tzf-server)     | build with tzf      |
-/// | HTTP API                  | [`racemap/rust-tz-service`](https://github.com/racemap/rust-tz-service) | build with tzf-rs   |
-/// | Redis Server              | [`ringsaturn/tzf-server`](https://github.com/ringsaturn/tzf-server)     | build with tzf      |
-/// | Redis Server              | [`ringsaturn/redizone`](https://github.com/ringsaturn/redizone)         | build with tzf-rs   |
-/// | JS via Wasm(browser only) | [`ringsaturn/tzf-wasm`](https://github.com/ringsaturn/tzf-wasm)         | build with tzf-rs   |
-/// | Online                    | [`ringsaturn/tzf-web`](https://github.com/ringsaturn/tzf-web)           | build with tzf-wasm |
 import Foundation
 import SwiftProtobuf
 import geometry
@@ -314,7 +282,7 @@ public enum TZFError: Error {
   case dataError
 }
 
-/// A timezone finder that uses full polygon data for accurate timezone lookups.
+/// A timezone finder that uses polygon data for accurate timezone lookups.
 ///
 /// This finder loads the complete timezone boundary data and performs point-in-polygon
 /// tests to determine which timezone(s) a coordinate belongs to. While more accurate
@@ -326,7 +294,7 @@ public enum TZFError: Error {
 /// - Near timezone boundaries, multiple results may be returned due to simplification
 ///
 /// Features:
-/// - Full polygon boundary support (with simplified geometries)
+/// - Polygon boundary support (with simplified geometries)
 /// - Support for timezone holes (enclaves)
 /// - Fallback mechanism for coordinates near timezone boundaries
 /// - Efficient point-in-polygon testing with simplified data
@@ -474,7 +442,7 @@ public enum FinderError: Error {
 ///
 /// This finder first attempts to use the PreindexFinder for fast lookups using
 /// pre-indexed tiles. If that fails, it falls back to the more accurate but slower
-/// Finder implementation that uses full polygon data.
+/// Finder implementation that uses polygon data.
 public class DefaultFinder: F {
   private let preindexFinder: PreindexFinder
   private let reduceFinder: Finder

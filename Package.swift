@@ -26,7 +26,7 @@ let package = Package(
     targets: [
         .target(
             name: "geometry",
-            path: "Sources/geometry"
+            path: "Geometry"
         ),
         // Targets are the basic building blocks of a package, defining a module or a test suite.
         // Targets can depend on other targets in this package and products from dependencies.
@@ -37,7 +37,6 @@ let package = Package(
                 "geometry"
             ],
             path: "Sources",
-            sources: ["tzf", "gen"],
             resources: [
                 .copy("Resources/combined-with-oceans.reduce.preindex.bin"),
                 .copy("Resources/combined-with-oceans.reduce.bin")
@@ -63,6 +62,13 @@ let package = Package(
             plugins: [
                 .plugin(name: "BenchmarkPlugin", package: "package-benchmark")
             ]
+        ),
+        .executableTarget(
+            name: "demo",
+            dependencies: [
+                "tzf",
+            ],
+            path: "Examples/Demo"
         ),
     ]
 )

@@ -22,41 +22,40 @@ dependencies: [
 Then add something like this:
 
 ```swift
+// See Examples/Demo/main.swift
 import Foundation
 import tzf
 
 do {
     let finder = try DefaultFinder()
 
-    // Test for Beijing
     let timezone = try finder.getTimezone(lng: 116.3833, lat: 39.9167)
     print("Beijing timezone:", timezone)
 
-    // Test for a location with multiple possible timezones
     let timezones = try finder.getTimezones(lng: 87.5703, lat: 43.8146)
     print("Multiple possible timezones:", timezones)
 
-    // Get data version
     print("Data version:", finder.dataVersion())
 
-    // Export one timezone as GeoJSON FeatureCollection
     if let macauGeoJSON = finder.getTimezoneGeoJSON(timezoneName: "Asia/Macau") {
         print("Asia/Macau features:", macauGeoJSON.features.count)
-        print(try macauGeoJSON.toJSONString(pretty: true))
+        print(try macauGeoJSON.toJSONString(pretty: false))
     }
-
 } catch {
-    print("Error:", error)
+    fputs("Error: \(error)\n", stderr)
+    exit(1)
 }
 ```
 
 Output:
 
 ```txt
-Build of product 'demo' complete! (0.15s)
+Build of product 'demo' complete! (0.14s)
 Beijing timezone: Asia/Shanghai
 Multiple possible timezones: ["Asia/Shanghai", "Asia/Urumqi"]
-Data version: 2025a/2025a
+Data version: 2026a/2026a
+Asia/Macau features: 1
+{"features":[{"type":"Feature"
 ```
 
 ## Performance
