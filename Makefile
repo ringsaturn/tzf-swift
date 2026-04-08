@@ -1,13 +1,18 @@
-.PHONY: build test bench fmt pb sync docs docs-subpath
+.PHONY: build test bench fmt pb sync docs docs-subpath run-demo clean
+
+SWIFT_SCRATCH_PATH ?= $(HOME)/Library/Caches/tzf-swift/swiftpm
+BENCHMARKS_SCRATCH_PATH ?= $(HOME)/Library/Caches/tzf-swift/benchmarks-swiftpm
+SWIFTPM_BUILD_FLAGS ?= --scratch-path $(SWIFT_SCRATCH_PATH) --disable-index-store
+BENCHMARKS_BUILD_FLAGS ?= --scratch-path $(BENCHMARKS_SCRATCH_PATH) --disable-index-store
 
 build:
-	swift build
+	swift build $(SWIFTPM_BUILD_FLAGS)
 
 test:
-	swift test -c release
+	swift test -c release $(SWIFTPM_BUILD_FLAGS)
 
 bench:
-	cd Benchmarks && swift package benchmark --target TimezoneFinderBenchmarks
+	swift package --package-path Benchmarks $(BENCHMARKS_BUILD_FLAGS) benchmark --target TimezoneFinderBenchmarks
 
 fmt:
 	swift format --in-place --recursive Sources Tests Examples Benchmarks
@@ -25,7 +30,7 @@ DOCS_TARGET ?= tzf
 DOCS_BASE_PATH ?=
 
 docs:
-	swift package --allow-writing-to-directory ./$(DOCS_DIR) generate-documentation \
+	swift package $(SWIFTPM_BUILD_FLAGS) --allow-writing-to-directory ./$(DOCS_DIR) generate-documentation \
 		--target $(DOCS_TARGET) \
 		--disable-indexing \
 		--transform-for-static-hosting \
@@ -33,7 +38,7 @@ docs:
 
 docs-subpath:
 	@test -n "$(DOCS_BASE_PATH)" || (echo "DOCS_BASE_PATH is required, example: make docs-subpath DOCS_BASE_PATH=tzf-swift" && exit 1)
-	swift package --allow-writing-to-directory ./$(DOCS_DIR) generate-documentation \
+	swift package $(SWIFTPM_BUILD_FLAGS) --allow-writing-to-directory ./$(DOCS_DIR) generate-documentation \
 		--target $(DOCS_TARGET) \
 		--disable-indexing \
 		--transform-for-static-hosting \
@@ -41,4 +46,7 @@ docs-subpath:
 		--output-path ./$(DOCS_DIR)
 
 run-demo:
-	swift run demo
+	swift run $(SWIFTPM_BUILD_FLAGS) demo
+
+clean:
+	rm -rf .build Benchmarks/.build $(SWIFT_SCRATCH_PATH) $(BENCHMARKS_SCRATCH_PATH)
