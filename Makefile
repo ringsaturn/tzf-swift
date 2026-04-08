@@ -2,8 +2,15 @@
 
 SWIFT_SCRATCH_PATH ?= $(HOME)/Library/Caches/tzf-swift/swiftpm
 BENCHMARKS_SCRATCH_PATH ?= $(HOME)/Library/Caches/tzf-swift/benchmarks-swiftpm
-SWIFTPM_BUILD_FLAGS ?= --scratch-path $(SWIFT_SCRATCH_PATH) --disable-index-store
-BENCHMARKS_BUILD_FLAGS ?= --scratch-path $(BENCHMARKS_SCRATCH_PATH) --disable-index-store
+NO_INDEX_STORE ?= 0
+
+SWIFTPM_BUILD_FLAGS := --scratch-path $(SWIFT_SCRATCH_PATH)
+BENCHMARKS_BUILD_FLAGS := --scratch-path $(BENCHMARKS_SCRATCH_PATH)
+
+ifeq ($(NO_INDEX_STORE),1)
+SWIFTPM_BUILD_FLAGS += --disable-index-store
+BENCHMARKS_BUILD_FLAGS += --disable-index-store
+endif
 
 build:
 	swift build $(SWIFTPM_BUILD_FLAGS)
