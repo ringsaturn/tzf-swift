@@ -1,5 +1,5 @@
 .DS_Store
-/.build
+.build
 /Packages
 xcuserdata/
 DerivedData/
@@ -10,3 +10,4 @@ tmp/
 .derivedData/
 .vscode/launch.json
 docs/
+.sourcekit-lsp/

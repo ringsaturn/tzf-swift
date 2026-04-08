@@ -7,26 +7,29 @@ jobs:
     name: Swift ${{ matrix.swift }} on ${{ matrix.os }}
     strategy:
       matrix:
-        os: [macos-latest, ubuntu-latest]
-        swift: ["6.1"]
+        include:
+          - os: macos-latest
+            swift: "6.0"
+            run-benchmarks: false
+          - os: ubuntu-latest
+            swift: "6.0"
+            run-benchmarks: false
+          - os: macos-latest
+            swift: "6.1"
+            run-benchmarks: true
+          - os: ubuntu-latest
+            swift: "6.1"
+            run-benchmarks: true
     runs-on: ${{ matrix.os }}
     steps:
       - uses: SwiftyLab/setup-swift@latest
         with:
           swift-version: ${{ matrix.swift }}
       - uses: actions/checkout@v6
-      - name: Install dependencies (Ubuntu)
-        if: runner.os == 'Linux'
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y libjemalloc-dev
-      - name: Install dependencies (macOS)
-        if: runner.os == 'macOS'
-        run: |
-          brew install jemalloc
       - name: Build
         run: make build
       - name: Run tests
         run: make test
       - name: Run benchmarks
+        if: matrix.run-benchmarks
         run: make bench

@@ -77,6 +77,18 @@ Processing 1 million queries took 4500ms. Benchmark Summary:
 
 Full benchmark results can be viewed in [benchmark_baseline.txt](./benchmark_baseline.txt).
 
+### Run Benchmarks
+
+Benchmarks are isolated in the `Benchmarks` subpackage so the main package stays
+compatible with Swift 6.0 while benchmark tooling can use newer SwiftPM
+features.
+
+```bash
+make bench
+# or:
+cd Benchmarks && swift package benchmark --target TimezoneFinderBenchmarks
+```
+
 ## Related Projects
 
 | Language or Sever         | Link                                                                    | Note                |

@@ -1,4 +1,4 @@
-// swift-tools-version: 6.1
+// swift-tools-version: 6.0
 // The swift-tools-version declares the minimum version of Swift required to build this package.
 
 import PackageDescription
@@ -18,9 +18,7 @@ let package = Package(
     dependencies: [
         .package(url: "https://github.com/apple/swift-protobuf.git", from: "1.29.0"),
         .package(url: "https://github.com/apple/swift-testing.git", revision: "e76a44f"),
-        .package(url: "https://github.com/ordo-one/package-benchmark", from: "1.30.0", traits: []),
         .package(url: "https://github.com/ringsaturn/cities-swift.git", from: "0.1.1"),
-        .package(url: "https://github.com/patrick-zippenfenig/SwiftTimeZoneLookup.git", from: "1.0.7"),
         .package(url: "https://github.com/swiftlang/swift-docc-plugin", from: "1.4.5"),
     ],
     targets: [
@@ -48,19 +46,6 @@ let package = Package(
                 "tzf",
                 .product(name: "Testing", package: "swift-testing"),
                 .product(name: "Cities", package: "cities-swift")
-            ]
-        ),
-        .executableTarget(
-            name: "TimezoneFinderBenchmarks",
-            dependencies: [
-                "tzf",
-                .product(name: "Benchmark", package: "package-benchmark"),
-                .product(name: "Cities", package: "cities-swift"),
-                .product(name: "SwiftTimeZoneLookup", package: "SwiftTimeZoneLookup"),
-            ],
-            path: "Benchmarks/TimezoneFinderBenchmarks",
-            plugins: [
-                .plugin(name: "BenchmarkPlugin", package: "package-benchmark")
             ]
         ),
         .executableTarget(
