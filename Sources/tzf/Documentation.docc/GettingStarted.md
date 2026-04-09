@@ -4,6 +4,8 @@ Quick start with tzf-swift.
 
 Add the dependency to your `Package.swift` file:
 
+![GitHub Tag](https://img.shields.io/github/v/tag/ringsaturn/tzf-swift)
+
 ```swift
 dependencies: [
     .package(url: "https://github.com/ringsaturn/tzf-swift.git", from: "{latest_version}")
