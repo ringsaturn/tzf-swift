@@ -1,4 +1,4 @@
-.PHONY: build test bench fmt pb sync docs docs-subpath run-demo clean
+.PHONY: build test bench fmt pb sync docs docs-subpath run-demo demo-output update-demo-docs clean
 
 SWIFT_SCRATCH_PATH ?= $(HOME)/Library/Caches/tzf-swift/swiftpm
 BENCHMARKS_SCRATCH_PATH ?= $(HOME)/Library/Caches/tzf-swift/benchmarks-swiftpm
@@ -54,6 +54,12 @@ docs-subpath:
 
 run-demo:
 	swift run $(SWIFTPM_BUILD_FLAGS) demo
+
+demo-output:
+	./scripts/update-demo-docs.sh --output-only
+
+update-demo-docs:
+	./scripts/update-demo-docs.sh
 
 clean:
 	rm -rf .build Benchmarks/.build $(SWIFT_SCRATCH_PATH) $(BENCHMARKS_SCRATCH_PATH)

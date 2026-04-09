@@ -1,0 +1,5 @@
+Beijing timezone: Asia/Shanghai
+Multiple possible timezones: ["Asia/Shanghai", "Asia/Urumqi"]
+Data version: 2026a/2026a
+Asia/Macau features: 1
+{"type":"FeatureCollection","features":[{"geometry":{"type":"MultiPolygon","coor...

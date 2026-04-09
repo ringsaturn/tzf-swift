@@ -53,7 +53,8 @@ let package = Package(
             dependencies: [
                 "tzf",
             ],
-            path: "Examples/Demo"
+            path: "Examples/Demo",
+            exclude: ["output.txt"]
         ),
     ]
 )
