@@ -1,6 +1,15 @@
 name: Swift
 
-on: [push]
+on:
+  push:
+    paths:
+      - "Package.swift"
+      - "**/*.swift"
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
   build:
