@@ -99,6 +99,81 @@ public protocol F {
   func getTimezoneGeoJSON(timezoneName: String) -> GeoJSONFeatureCollection?
 }
 
+// MARK: - Polyline decode
+
+/// Decodes a Google Maps Encoded Polyline byte sequence into geometry Points.
+/// The encoding stores [lng, lat] pairs as delta-encoded zigzag integers with scale 1e5.
+private func decodePolylineBytes(_ data: Data) -> [Point] {
+  var results: [Point] = []
+  let bytes = [UInt8](data)
+  var i = 0
+
+  func decodeSignedInt() -> Int? {
+    var u: UInt = 0
+    var shift: UInt = 0
+    while i < bytes.count {
+      let b = bytes[i]
+      i += 1
+      if b >= 95 {
+        // continuation chunk (bits 5..9 of current group)
+        u += UInt(b - 95) << shift
+        shift += 5
+      } else if b >= 63 {
+        // terminal chunk
+        u += UInt(b - 63) << shift
+        // zigzag decode: even -> positive, odd -> negative
+        if u & 1 == 0 {
+          return Int(bitPattern: u >> 1)
+        } else {
+          return ~Int(bitPattern: u >> 1)
+        }
+      } else {
+        return nil
+      }
+    }
+    return nil
+  }
+
+  var prevLng: Int = 0
+  var prevLat: Int = 0
+
+  while i < bytes.count {
+    guard let dLng = decodeSignedInt(), let dLat = decodeSignedInt() else { break }
+    prevLng += dLng
+    prevLat += dLat
+    results.append(Point(x: Double(prevLng) / 1e5, y: Double(prevLat) / 1e5))
+  }
+
+  return results
+}
+
+// MARK: - Compressed ring expansion
+
+/// Expands a sequence of CompressedRingSegments into a flat Point array by resolving
+/// edge_forward / edge_reversed references against the pre-decoded shared edge table.
+private func expandCompressedRing(
+  _ segs: [Tzf_V1_CompressedRingSegment], edges: [[Point]]
+) -> [Point] {
+  var pts: [Point] = []
+  for seg in segs {
+    switch seg.content {
+    case .inline(let inline):
+      pts.append(contentsOf: decodePolylineBytes(inline.points))
+    case .edgeForward(let idx):
+      let edge = edges[Int(idx)]
+      pts.append(contentsOf: edge)
+    case .edgeReversed(let idx):
+      let edge = edges[Int(idx)]
+      pts.append(contentsOf: edge.reversed())
+    case nil:
+      break
+    }
+  }
+  return pts
+}
+
+// MARK: - PreindexFinder
+
 /// A high-performance timezone finder that uses pre-indexed map tiles for lookups.
 ///
 /// PreindexFinder uses a tile-based approach (similar to web map tiles) to quickly
@@ -126,7 +201,7 @@ public class PreindexFinder: F {
 
     guard
       let preindexURL = bundle.url(
-        forResource: "combined-with-oceans.reduce.preindex", withExtension: "bin")
+        forResource: "combined-with-oceans.topology.preindex", withExtension: "bin")
     else {
       throw TZFError.dataError
     }
@@ -269,6 +344,8 @@ public class PreindexFinder: F {
   }
 }
 
+// MARK: - Errors
+
 /// Represents possible errors that can occur during timezone lookup operations.
 public enum TZFError: Error {
   /// Indicates that the provided coordinates are outside the valid range
@@ -282,86 +359,87 @@ public enum TZFError: Error {
   case dataError
 }
 
-/// A timezone finder that uses polygon data for accurate timezone lookups.
+/// Represents errors specific to the Finder implementation.
+public enum FinderError: Error {
+  case noTimezoneFound
+}
+
+// MARK: - Finder
+
+/// A timezone finder that performs point-in-polygon tests against topology-compressed
+/// timezone boundary data (CompressedTopoTimezones format).
 ///
-/// This finder loads the complete timezone boundary data and performs point-in-polygon
-/// tests to determine which timezone(s) a coordinate belongs to. While more accurate
-/// than the PreindexFinder, it uses simplified polygon data for better performance.
-///
-/// Important Notes:
-/// - The polygon data has been pre-simplified to reduce complexity
-/// - Accuracy is balanced with performance considerations
-/// - Near timezone boundaries, multiple results may be returned due to simplification
+/// Finder decodes the shared-edge topology and polyline-compressed coordinates from
+/// `combined-with-oceans.topology.compress.topo.bin`, then builds Polygon objects for
+/// efficient containment testing.
 ///
 /// Features:
-/// - Polygon boundary support (with simplified geometries)
-/// - Support for timezone holes (enclaves)
-/// - Fallback mechanism for coordinates near timezone boundaries
-/// - Efficient point-in-polygon testing with simplified data
+/// - Shared-edge deduplication (boundaries stored once, referenced by ID)
+/// - Polyline coordinate compression (delta + zigzag encoding, scale 1e5)
+/// - Polygon boundary support with hole (enclave) handling
+/// - Bounding-box pre-filter for fast rejection
 public class Finder: F {
-  private let timezones: Tzf_V1_Timezones
   private struct ProcessedTimezone {
     let name: String
     let polygons: [Polygon]
   }
   private let processedTimezones: [ProcessedTimezone]
+  private let version: String
 
   public init() throws {
-    let bundle: Bundle = Bundle.module
+    let bundle = Bundle.module
 
     guard
-      let reduceURL = bundle.url(
-        forResource: "combined-with-oceans.reduce", withExtension: "bin")
+      let url = bundle.url(
+        forResource: "combined-with-oceans.topology.compress.topo", withExtension: "bin")
     else {
       throw TZFError.dataError
     }
 
-    let reduceData = try Data(contentsOf: reduceURL)
-    self.timezones = try Tzf_V1_Timezones(serializedBytes: [UInt8](reduceData))
+    let rawData = try Data(contentsOf: url)
+    let topoData = try Tzf_V1_CompressedTopoTimezones(serializedBytes: rawData)
+    self.version = topoData.version
 
-    // Pre-process all polygons during initialization
+    // Decode shared edges once, indexed by edge ID.
+    var edges = [[Point]](repeating: [], count: topoData.sharedEdges.count)
+    for edge in topoData.sharedEdges {
+      edges[Int(edge.id)] = decodePolylineBytes(edge.points)
+    }
+
+    // Build processed timezones with pre-decoded polygons.
     var processed: [ProcessedTimezone] = []
-    for timezone in timezones.timezones {
-      var processedPolygons: [Polygon] = []
-
-      for polygon in timezone.polygons {
-        let exterior = polygon.points.map { Point(x: Double($0.lng), y: Double($0.lat)) }
-        let holes = polygon.holes.map { hole in
-          hole.points.map { Point(x: Double($0.lng), y: Double($0.lat)) }
-        }
-        let poly = Polygon.new(exterior: exterior, holes: holes)
-        processedPolygons.append(poly)
+    for tz in topoData.timezones {
+      var polygons: [Polygon] = []
+      for poly in tz.polygons {
+        let exterior = expandCompressedRing(poly.exterior, edges: edges)
+        let holes = poly.holes.map { expandCompressedRing($0.exterior, edges: edges) }
+        guard !exterior.isEmpty else { continue }
+        polygons.append(Polygon.new(exterior: exterior, holes: holes))
       }
-
-      processed.append(ProcessedTimezone(name: timezone.name, polygons: processedPolygons))
+      processed.append(ProcessedTimezone(name: tz.name, polygons: polygons))
     }
     self.processedTimezones = processed
   }
 
-  private func toFeature(timezone: Tzf_V1_Timezone) -> GeoJSONFeature {
-    let coordinates = timezone.polygons.map { polygon in
-      var geoPolygon: [[Double]] = []
-      let exterior = polygon.points.map { [Double($0.lng), Double($0.lat)] }
-      geoPolygon.append(contentsOf: exterior)
-      var fullPolygon: [[[Double]]] = [geoPolygon]
-
+  private func toFeature(name: String, polygons: [Polygon]) -> GeoJSONFeature {
+    let coordinates = polygons.map { polygon -> GeoJSONPolygonCoordinates in
+      var rings: GeoJSONPolygonCoordinates = []
+      rings.append(polygon.exterior.map { [$0.x, $0.y] })
       for hole in polygon.holes {
-        let ring = hole.points.map { [Double($0.lng), Double($0.lat)] }
-        fullPolygon.append(ring)
+        rings.append(hole.map { [$0.x, $0.y] })
       }
-      return fullPolygon
+      return rings
     }
-
     return GeoJSONFeature(
       type: "Feature",
-      properties: GeoJSONProperties(tzid: timezone.name),
+      properties: GeoJSONProperties(tzid: name),
       geometry: GeoJSONGeometry(type: "MultiPolygon", coordinates: coordinates)
     )
   }
 
   /// Convert all timezone polygons to GeoJSON FeatureCollection.
   public func toGeoJSON() -> GeoJSONFeatureCollection {
-    let features = timezones.timezones.map(toFeature(timezone:))
+    let features = processedTimezones.map { toFeature(name: $0.name, polygons: $0.polygons) }
     return GeoJSONFeatureCollection(type: "FeatureCollection", features: features)
   }
 
@@ -370,24 +448,23 @@ public class Finder: F {
   /// - Parameter timezoneName: IANA timezone name, for example "Asia/Tokyo"
   /// - Returns: One-feature GeoJSON collection when found, nil when missing.
   public func getTimezoneGeoJSON(timezoneName: String) -> GeoJSONFeatureCollection? {
-    let features = timezones.timezones
-      .filter { $0.name == timezoneName }
-      .map(toFeature(timezone:))
-
-    if features.isEmpty {
+    guard let tz = processedTimezones.first(where: { $0.name == timezoneName }) else {
       return nil
     }
-
-    return GeoJSONFeatureCollection(type: "FeatureCollection", features: features)
+    let feature = toFeature(name: tz.name, polygons: tz.polygons)
+    return GeoJSONFeatureCollection(type: "FeatureCollection", features: [feature])
   }
 
   public func dataVersion() -> String {
-    return timezones.version
+    return version
   }
 
   public func getTimezone(lng: Double, lat: Double) throws -> String {
-    // return first result from getTimezones
-    return try getTimezones(lng: lng, lat: lat).first!
+    let result = try getTimezones(lng: lng, lat: lat)
+    guard let first = result.first else {
+      throw FinderError.noTimezoneFound
+    }
+    return first
   }
 
   public func getTimezones(lng: Double, lat: Double) throws -> [String] {
@@ -398,25 +475,28 @@ public class Finder: F {
       for polygon in timezone.polygons {
         if polygon.containsPoint(point) {
           results.append(timezone.name)
-          break  // Found a match in this timezone, move to next
+          break
         }
       }
     }
 
+    // For coordinates on or very near topology-simplified boundaries, try small
+    // offsets as a fallback. This handles edge cases like the intersection of
+    // the International Date Line (lng=±180) and the equator (lat=0).
     if results.isEmpty {
-      let lngShifts = [0.0, -0.01, 0.01, -0.02, 0.02]
-      let latShifts = [0.0, -0.01, 0.01, -0.02, 0.02]
-      for lngShift in lngShifts {
-        for latShift in latShifts {
-          let shiftedPoint = Point(x: lng + lngShift, y: lat + latShift)
+      let shifts = [0.01, -0.01, 0.02, -0.02]
+      outer: for dlng in shifts {
+        for dlat in shifts {
+          let shifted = Point(x: lng + dlng, y: lat + dlat)
           for timezone in processedTimezones {
             for polygon in timezone.polygons {
-              if polygon.containsPoint(shiftedPoint) {
+              if polygon.containsPoint(shifted) {
                 results.append(timezone.name)
-                break  // Found a match in this timezone, move to next
+                break
               }
             }
           }
+          if !results.isEmpty { break outer }
         }
       }
     }
@@ -425,17 +505,12 @@ public class Finder: F {
       throw FinderError.noTimezoneFound
     }
 
-    // sort results by name
     results.sort()
-
     return results
   }
 }
 
-/// Represents errors specific to the Finder implementation.
-public enum FinderError: Error {
-  case noTimezoneFound
-}
+// MARK: - DefaultFinder
 
 /// The default finder implementation that combines both PreindexFinder and Finder
 /// for optimal performance and accuracy.
@@ -445,40 +520,36 @@ public enum FinderError: Error {
 /// Finder implementation that uses polygon data.
 public class DefaultFinder: F {
   private let preindexFinder: PreindexFinder
-  private let reduceFinder: Finder
+  private let topoFinder: Finder
 
   public init() throws {
     self.preindexFinder = try PreindexFinder()
-    self.reduceFinder = try Finder()
+    self.topoFinder = try Finder()
   }
 
   public func dataVersion() -> String {
-    return "\(preindexFinder.dataVersion())/\(reduceFinder.dataVersion())"
+    return "\(preindexFinder.dataVersion())/\(topoFinder.dataVersion())"
   }
 
   public func getTimezone(lng: Double, lat: Double) throws -> String {
     do {
-      // Try preindex finder first
       return try preindexFinder.getTimezone(lng: lng, lat: lat)
     } catch {
-      // If preindex finder fails, try reduce finder
-      return try reduceFinder.getTimezone(lng: lng, lat: lat)
+      return try topoFinder.getTimezone(lng: lng, lat: lat)
     }
   }
 
   public func getTimezones(lng: Double, lat: Double) throws -> [String] {
     do {
-      // Try preindex finder first
       return try preindexFinder.getTimezones(lng: lng, lat: lat)
     } catch {
-      // If preindex finder fails, try reduce finder
-      return try reduceFinder.getTimezones(lng: lng, lat: lat)
+      return try topoFinder.getTimezones(lng: lng, lat: lat)
     }
   }
 
   /// Convert all timezone polygons to GeoJSON FeatureCollection.
   public func toGeoJSON() -> GeoJSONFeatureCollection {
-    return reduceFinder.toGeoJSON()
+    return topoFinder.toGeoJSON()
   }
 
   /// Convert one timezone polygon set to GeoJSON FeatureCollection.
@@ -486,6 +557,6 @@ public class DefaultFinder: F {
   /// - Parameter timezoneName: IANA timezone name, for example "Asia/Tokyo"
   /// - Returns: One-feature GeoJSON collection when found, nil when missing.
   public func getTimezoneGeoJSON(timezoneName: String) -> GeoJSONFeatureCollection? {
-    return reduceFinder.getTimezoneGeoJSON(timezoneName: timezoneName)
+    return topoFinder.getTimezoneGeoJSON(timezoneName: timezoneName)
   }
 }

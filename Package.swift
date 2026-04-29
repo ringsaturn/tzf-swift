@@ -36,8 +36,8 @@ let package = Package(
             ],
             path: "Sources",
             resources: [
-                .copy("Resources/combined-with-oceans.reduce.preindex.bin"),
-                .copy("Resources/combined-with-oceans.reduce.bin")
+                .copy("Resources/combined-with-oceans.topology.preindex.bin"),
+                .copy("Resources/combined-with-oceans.topology.compress.topo.bin")
             ]
         ),
         .testTarget(

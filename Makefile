@@ -29,8 +29,8 @@ pb:
 
 sync:
 	git submodule update
-	cp tzf-rel-lite/combined-with-oceans.reduce.bin Sources/Resources/combined-with-oceans.reduce.bin
-	cp tzf-rel-lite/combined-with-oceans.reduce.preindex.bin Sources/Resources/combined-with-oceans.reduce.preindex.bin
+	cp tzf-dist/combined-with-oceans.topology.compress.topo.bin Sources/Resources/combined-with-oceans.topology.compress.topo.bin
+	cp tzf-dist/combined-with-oceans.topology.preindex.bin Sources/Resources/combined-with-oceans.topology.preindex.bin
 
 DOCS_DIR ?= docs
 DOCS_TARGET ?= tzf

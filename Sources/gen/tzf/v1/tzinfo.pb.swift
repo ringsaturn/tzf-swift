@@ -236,6 +236,268 @@ struct Tzf_V1_PreindexTimezones: Sendable {
   init() {}
 }
 
+/// Wrapper for a sequence of inline points used inside a RingSegment oneof.
+/// (proto3 does not allow repeated fields directly in a oneof.)
+struct Tzf_V1_InlinePoints: Sendable {
+  // SwiftProtobuf.Message conformance is added in an extension below. See the
+  // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
+  // methods supported on all messages.
+
+  var points: [Tzf_V1_Point] = []
+
+  var unknownFields = SwiftProtobuf.UnknownStorage()
+
+  init() {}
+}
+
+/// A ring segment: either inline points or a reference to a shared edge.
+/// Shared edges are stored once in TopoTimezones.shared_edges and referenced
+/// by their index; edge_reversed references the same edge but traversed in
+/// the opposite direction.
+struct Tzf_V1_RingSegment: Sendable {
+  // SwiftProtobuf.Message conformance is added in an extension below. See the
+  // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
+  // methods supported on all messages.
+
+  var content: Tzf_V1_RingSegment.OneOf_Content? = nil
+
+  var inline: Tzf_V1_InlinePoints {
+    get {
+      if case .inline(let v)? = content {return v}
+      return Tzf_V1_InlinePoints()
+    }
+    set {content = .inline(newValue)}
+  }
+
+  /// index into TopoTimezones.shared_edges (canonical direction)
+  var edgeForward: Int32 {
+    get {
+      if case .edgeForward(let v)? = content {return v}
+      return 0
+    }
+    set {content = .edgeForward(newValue)}
+  }
+
+  /// index into TopoTimezones.shared_edges (reversed direction)
+  var edgeReversed: Int32 {
+    get {
+      if case .edgeReversed(let v)? = content {return v}
+      return 0
+    }
+    set {content = .edgeReversed(newValue)}
+  }
+
+  var unknownFields = SwiftProtobuf.UnknownStorage()
+
+  enum OneOf_Content: Equatable, Sendable {
+    case inline(Tzf_V1_InlinePoints)
+    /// index into TopoTimezones.shared_edges (canonical direction)
+    case edgeForward(Int32)
+    /// index into TopoTimezones.shared_edges (reversed direction)
+    case edgeReversed(Int32)
+
+  }
+
+  init() {}
+}
+
+/// A timezone polygon in topology format.
+/// The exterior ring is represented as an ordered sequence of segments.
+/// Holes are nested TopoPolygons.
+struct Tzf_V1_TopoPolygon: Sendable {
+  // SwiftProtobuf.Message conformance is added in an extension below. See the
+  // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
+  // methods supported on all messages.
+
+  var exterior: [Tzf_V1_RingSegment] = []
+
+  var holes: [Tzf_V1_TopoPolygon] = []
+
+  var unknownFields = SwiftProtobuf.UnknownStorage()
+
+  init() {}
+}
+
+/// A timezone in topology format.
+struct Tzf_V1_TopoTimezone: Sendable {
+  // SwiftProtobuf.Message conformance is added in an extension below. See the
+  // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
+  // methods supported on all messages.
+
+  var polygons: [Tzf_V1_TopoPolygon] = []
+
+  var name: String = String()
+
+  var unknownFields = SwiftProtobuf.UnknownStorage()
+
+  init() {}
+}
+
+/// A shared boundary edge stored once in the global edge library.
+/// Rings reference it by index (forward or reversed) instead of repeating
+/// the point sequence.
+struct Tzf_V1_SharedEdge: Sendable {
+  // SwiftProtobuf.Message conformance is added in an extension below. See the
+  // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
+  // methods supported on all messages.
+
+  var id: Int32 = 0
+
+  var points: [Tzf_V1_Point] = []
+
+  var unknownFields = SwiftProtobuf.UnknownStorage()
+
+  init() {}
+}
+
+/// Timezones in topology format with shared-edge deduplication.
+/// Shared timezone boundaries are stored exactly once in shared_edges;
+/// rings reference them by ID rather than duplicating the point sequences.
+/// This format targets full-precision data where ~52% of boundary edges are
+/// shared, reducing the 96 MB full dataset by ~30–35 MB.
+struct Tzf_V1_TopoTimezones: Sendable {
+  // SwiftProtobuf.Message conformance is added in an extension below. See the
+  // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
+  // methods supported on all messages.
+
+  var sharedEdges: [Tzf_V1_SharedEdge] = []
+
+  var timezones: [Tzf_V1_TopoTimezone] = []
+
+  var version: String = String()
+
+  var unknownFields = SwiftProtobuf.UnknownStorage()
+
+  init() {}
+}
+
+/// CompressedSharedEdge stores a shared boundary edge with its point sequence
+/// polyline-encoded (delta + zigzag, same algorithm as CompressedPolygon).
+struct Tzf_V1_CompressedSharedEdge: Sendable {
+  // SwiftProtobuf.Message conformance is added in an extension below. See the
+  // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
+  // methods supported on all messages.
+
+  var id: Int32 = 0
+
+  /// polyline-encoded point sequence
+  var points: Data = Data()
+
+  var unknownFields = SwiftProtobuf.UnknownStorage()
+
+  init() {}
+}
+
+/// CompressedInlinePoints stores a short inline ring segment as polyline bytes.
+struct Tzf_V1_CompressedInlinePoints: Sendable {
+  // SwiftProtobuf.Message conformance is added in an extension below. See the
+  // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
+  // methods supported on all messages.
+
+  /// polyline-encoded point sequence
+  var points: Data = Data()
+
+  var unknownFields = SwiftProtobuf.UnknownStorage()
+
+  init() {}
+}
+
+/// CompressedRingSegment mirrors RingSegment with polyline-encoded inline points.
+struct Tzf_V1_CompressedRingSegment: Sendable {
+  // SwiftProtobuf.Message conformance is added in an extension below. See the
+  // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
+  // methods supported on all messages.
+
+  var content: Tzf_V1_CompressedRingSegment.OneOf_Content? = nil
+
+  var inline: Tzf_V1_CompressedInlinePoints {
+    get {
+      if case .inline(let v)? = content {return v}
+      return Tzf_V1_CompressedInlinePoints()
+    }
+    set {content = .inline(newValue)}
+  }
+
+  var edgeForward: Int32 {
+    get {
+      if case .edgeForward(let v)? = content {return v}
+      return 0
+    }
+    set {content = .edgeForward(newValue)}
+  }
+
+  var edgeReversed: Int32 {
+    get {
+      if case .edgeReversed(let v)? = content {return v}
+      return 0
+    }
+    set {content = .edgeReversed(newValue)}
+  }
+
+  var unknownFields = SwiftProtobuf.UnknownStorage()
+
+  enum OneOf_Content: Equatable, Sendable {
+    case inline(Tzf_V1_CompressedInlinePoints)
+    case edgeForward(Int32)
+    case edgeReversed(Int32)
+
+  }
+
+  init() {}
+}
+
+/// CompressedTopoPolygon mirrors TopoPolygon with compressed ring segments.
+struct Tzf_V1_CompressedTopoPolygon: Sendable {
+  // SwiftProtobuf.Message conformance is added in an extension below. See the
+  // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
+  // methods supported on all messages.
+
+  var exterior: [Tzf_V1_CompressedRingSegment] = []
+
+  var holes: [Tzf_V1_CompressedTopoPolygon] = []
+
+  var unknownFields = SwiftProtobuf.UnknownStorage()
+
+  init() {}
+}
+
+/// CompressedTopoTimezone mirrors TopoTimezone with compressed polygons.
+struct Tzf_V1_CompressedTopoTimezone: Sendable {
+  // SwiftProtobuf.Message conformance is added in an extension below. See the
+  // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
+  // methods supported on all messages.
+
+  var polygons: [Tzf_V1_CompressedTopoPolygon] = []
+
+  var name: String = String()
+
+  var unknownFields = SwiftProtobuf.UnknownStorage()
+
+  init() {}
+}
+
+/// CompressedTopoTimezones combines shared-edge deduplication with polyline
+/// coordinate compression. Shared edge point sequences and inline segments are
+/// stored as polyline bytes instead of repeated Point messages, significantly
+/// reducing file size on top of the deduplication savings.
+struct Tzf_V1_CompressedTopoTimezones: Sendable {
+  // SwiftProtobuf.Message conformance is added in an extension below. See the
+  // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
+  // methods supported on all messages.
+
+  var method: Tzf_V1_CompressMethod = .unspecified
+
+  var sharedEdges: [Tzf_V1_CompressedSharedEdge] = []
+
+  var timezones: [Tzf_V1_CompressedTopoTimezone] = []
+
+  var version: String = String()
+
+  var unknownFields = SwiftProtobuf.UnknownStorage()
+
+  init() {}
+}
+
 // MARK: - Code below here is support for the SwiftProtobuf runtime.
 
 fileprivate let _protobuf_package = "tzf.v1"
@@ -583,6 +845,509 @@ extension Tzf_V1_PreindexTimezones: SwiftProtobuf.Message, SwiftProtobuf._Messag
     if lhs.idxZoom != rhs.idxZoom {return false}
     if lhs.aggZoom != rhs.aggZoom {return false}
     if lhs.keys != rhs.keys {return false}
+    if lhs.version != rhs.version {return false}
+    if lhs.unknownFields != rhs.unknownFields {return false}
+    return true
+  }
+}
+
+extension Tzf_V1_InlinePoints: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
+  static let protoMessageName: String = _protobuf_package + ".InlinePoints"
+  static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{1}points\0")
+
+  mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
+    while let fieldNumber = try decoder.nextFieldNumber() {
+      // The use of inline closures is to circumvent an issue where the compiler
+      // allocates stack space for every case branch when no optimizations are
+      // enabled. https://github.com/apple/swift-protobuf/issues/1034
+      switch fieldNumber {
+      case 1: try { try decoder.decodeRepeatedMessageField(value: &self.points) }()
+      default: break
+      }
+    }
+  }
+
+  func traverse<V: SwiftProtobuf.Visitor>(visitor: inout V) throws {
+    if !self.points.isEmpty {
+      try visitor.visitRepeatedMessageField(value: self.points, fieldNumber: 1)
+    }
+    try unknownFields.traverse(visitor: &visitor)
+  }
+
+  static func ==(lhs: Tzf_V1_InlinePoints, rhs: Tzf_V1_InlinePoints) -> Bool {
+    if lhs.points != rhs.points {return false}
+    if lhs.unknownFields != rhs.unknownFields {return false}
+    return true
+  }
+}
+
+extension Tzf_V1_RingSegment: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
+  static let protoMessageName: String = _protobuf_package + ".RingSegment"
+  static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{1}inline\0\u{3}edge_forward\0\u{3}edge_reversed\0")
+
+  mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
+    while let fieldNumber = try decoder.nextFieldNumber() {
+      // The use of inline closures is to circumvent an issue where the compiler
+      // allocates stack space for every case branch when no optimizations are
+      // enabled. https://github.com/apple/swift-protobuf/issues/1034
+      switch fieldNumber {
+      case 1: try {
+        var v: Tzf_V1_InlinePoints?
+        var hadOneofValue = false
+        if let current = self.content {
+          hadOneofValue = true
+          if case .inline(let m) = current {v = m}
+        }
+        try decoder.decodeSingularMessageField(value: &v)
+        if let v = v {
+          if hadOneofValue {try decoder.handleConflictingOneOf()}
+          self.content = .inline(v)
+        }
+      }()
+      case 2: try {
+        var v: Int32?
+        try decoder.decodeSingularInt32Field(value: &v)
+        if let v = v {
+          if self.content != nil {try decoder.handleConflictingOneOf()}
+          self.content = .edgeForward(v)
+        }
+      }()
+      case 3: try {
+        var v: Int32?
+        try decoder.decodeSingularInt32Field(value: &v)
+        if let v = v {
+          if self.content != nil {try decoder.handleConflictingOneOf()}
+          self.content = .edgeReversed(v)
+        }
+      }()
+      default: break
+      }
+    }
+  }
+
+  func traverse<V: SwiftProtobuf.Visitor>(visitor: inout V) throws {
+    // The use of inline closures is to circumvent an issue where the compiler
+    // allocates stack space for every if/case branch local when no optimizations
+    // are enabled. https://github.com/apple/swift-protobuf/issues/1034 and
+    // https://github.com/apple/swift-protobuf/issues/1182
+    switch self.content {
+    case .inline?: try {
+      guard case .inline(let v)? = self.content else { preconditionFailure() }
+      try visitor.visitSingularMessageField(value: v, fieldNumber: 1)
+    }()
+    case .edgeForward?: try {
+      guard case .edgeForward(let v)? = self.content else { preconditionFailure() }
+      try visitor.visitSingularInt32Field(value: v, fieldNumber: 2)
+    }()
+    case .edgeReversed?: try {
+      guard case .edgeReversed(let v)? = self.content else { preconditionFailure() }
+      try visitor.visitSingularInt32Field(value: v, fieldNumber: 3)
+    }()
+    case nil: break
+    }
+    try unknownFields.traverse(visitor: &visitor)
+  }
+
+  static func ==(lhs: Tzf_V1_RingSegment, rhs: Tzf_V1_RingSegment) -> Bool {
+    if lhs.content != rhs.content {return false}
+    if lhs.unknownFields != rhs.unknownFields {return false}
+    return true
+  }
+}
+
+extension Tzf_V1_TopoPolygon: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
+  static let protoMessageName: String = _protobuf_package + ".TopoPolygon"
+  static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{1}exterior\0\u{1}holes\0")
+
+  mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
+    while let fieldNumber = try decoder.nextFieldNumber() {
+      // The use of inline closures is to circumvent an issue where the compiler
+      // allocates stack space for every case branch when no optimizations are
+      // enabled. https://github.com/apple/swift-protobuf/issues/1034
+      switch fieldNumber {
+      case 1: try { try decoder.decodeRepeatedMessageField(value: &self.exterior) }()
+      case 2: try { try decoder.decodeRepeatedMessageField(value: &self.holes) }()
+      default: break
+      }
+    }
+  }
+
+  func traverse<V: SwiftProtobuf.Visitor>(visitor: inout V) throws {
+    if !self.exterior.isEmpty {
+      try visitor.visitRepeatedMessageField(value: self.exterior, fieldNumber: 1)
+    }
+    if !self.holes.isEmpty {
+      try visitor.visitRepeatedMessageField(value: self.holes, fieldNumber: 2)
+    }
+    try unknownFields.traverse(visitor: &visitor)
+  }
+
+  static func ==(lhs: Tzf_V1_TopoPolygon, rhs: Tzf_V1_TopoPolygon) -> Bool {
+    if lhs.exterior != rhs.exterior {return false}
+    if lhs.holes != rhs.holes {return false}
+    if lhs.unknownFields != rhs.unknownFields {return false}
+    return true
+  }
+}
+
+extension Tzf_V1_TopoTimezone: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
+  static let protoMessageName: String = _protobuf_package + ".TopoTimezone"
+  static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{1}polygons\0\u{1}name\0")
+
+  mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
+    while let fieldNumber = try decoder.nextFieldNumber() {
+      // The use of inline closures is to circumvent an issue where the compiler
+      // allocates stack space for every case branch when no optimizations are
+      // enabled. https://github.com/apple/swift-protobuf/issues/1034
+      switch fieldNumber {
+      case 1: try { try decoder.decodeRepeatedMessageField(value: &self.polygons) }()
+      case 2: try { try decoder.decodeSingularStringField(value: &self.name) }()
+      default: break
+      }
+    }
+  }
+
+  func traverse<V: SwiftProtobuf.Visitor>(visitor: inout V) throws {
+    if !self.polygons.isEmpty {
+      try visitor.visitRepeatedMessageField(value: self.polygons, fieldNumber: 1)
+    }
+    if !self.name.isEmpty {
+      try visitor.visitSingularStringField(value: self.name, fieldNumber: 2)
+    }
+    try unknownFields.traverse(visitor: &visitor)
+  }
+
+  static func ==(lhs: Tzf_V1_TopoTimezone, rhs: Tzf_V1_TopoTimezone) -> Bool {
+    if lhs.polygons != rhs.polygons {return false}
+    if lhs.name != rhs.name {return false}
+    if lhs.unknownFields != rhs.unknownFields {return false}
+    return true
+  }
+}
+
+extension Tzf_V1_SharedEdge: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
+  static let protoMessageName: String = _protobuf_package + ".SharedEdge"
+  static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{1}id\0\u{1}points\0")
+
+  mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
+    while let fieldNumber = try decoder.nextFieldNumber() {
+      // The use of inline closures is to circumvent an issue where the compiler
+      // allocates stack space for every case branch when no optimizations are
+      // enabled. https://github.com/apple/swift-protobuf/issues/1034
+      switch fieldNumber {
+      case 1: try { try decoder.decodeSingularInt32Field(value: &self.id) }()
+      case 2: try { try decoder.decodeRepeatedMessageField(value: &self.points) }()
+      default: break
+      }
+    }
+  }
+
+  func traverse<V: SwiftProtobuf.Visitor>(visitor: inout V) throws {
+    if self.id != 0 {
+      try visitor.visitSingularInt32Field(value: self.id, fieldNumber: 1)
+    }
+    if !self.points.isEmpty {
+      try visitor.visitRepeatedMessageField(value: self.points, fieldNumber: 2)
+    }
+    try unknownFields.traverse(visitor: &visitor)
+  }
+
+  static func ==(lhs: Tzf_V1_SharedEdge, rhs: Tzf_V1_SharedEdge) -> Bool {
+    if lhs.id != rhs.id {return false}
+    if lhs.points != rhs.points {return false}
+    if lhs.unknownFields != rhs.unknownFields {return false}
+    return true
+  }
+}
+
+extension Tzf_V1_TopoTimezones: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
+  static let protoMessageName: String = _protobuf_package + ".TopoTimezones"
+  static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{3}shared_edges\0\u{1}timezones\0\u{1}version\0")
+
+  mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
+    while let fieldNumber = try decoder.nextFieldNumber() {
+      // The use of inline closures is to circumvent an issue where the compiler
+      // allocates stack space for every case branch when no optimizations are
+      // enabled. https://github.com/apple/swift-protobuf/issues/1034
+      switch fieldNumber {
+      case 1: try { try decoder.decodeRepeatedMessageField(value: &self.sharedEdges) }()
+      case 2: try { try decoder.decodeRepeatedMessageField(value: &self.timezones) }()
+      case 3: try { try decoder.decodeSingularStringField(value: &self.version) }()
+      default: break
+      }
+    }
+  }
+
+  func traverse<V: SwiftProtobuf.Visitor>(visitor: inout V) throws {
+    if !self.sharedEdges.isEmpty {
+      try visitor.visitRepeatedMessageField(value: self.sharedEdges, fieldNumber: 1)
+    }
+    if !self.timezones.isEmpty {
+      try visitor.visitRepeatedMessageField(value: self.timezones, fieldNumber: 2)
+    }
+    if !self.version.isEmpty {
+      try visitor.visitSingularStringField(value: self.version, fieldNumber: 3)
+    }
+    try unknownFields.traverse(visitor: &visitor)
+  }
+
+  static func ==(lhs: Tzf_V1_TopoTimezones, rhs: Tzf_V1_TopoTimezones) -> Bool {
+    if lhs.sharedEdges != rhs.sharedEdges {return false}
+    if lhs.timezones != rhs.timezones {return false}
+    if lhs.version != rhs.version {return false}
+    if lhs.unknownFields != rhs.unknownFields {return false}
+    return true
+  }
+}
+
+extension Tzf_V1_CompressedSharedEdge: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
+  static let protoMessageName: String = _protobuf_package + ".CompressedSharedEdge"
+  static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{1}id\0\u{1}points\0")
+
+  mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
+    while let fieldNumber = try decoder.nextFieldNumber() {
+      // The use of inline closures is to circumvent an issue where the compiler
+      // allocates stack space for every case branch when no optimizations are
+      // enabled. https://github.com/apple/swift-protobuf/issues/1034
+      switch fieldNumber {
+      case 1: try { try decoder.decodeSingularInt32Field(value: &self.id) }()
+      case 2: try { try decoder.decodeSingularBytesField(value: &self.points) }()
+      default: break
+      }
+    }
+  }
+
+  func traverse<V: SwiftProtobuf.Visitor>(visitor: inout V) throws {
+    if self.id != 0 {
+      try visitor.visitSingularInt32Field(value: self.id, fieldNumber: 1)
+    }
+    if !self.points.isEmpty {
+      try visitor.visitSingularBytesField(value: self.points, fieldNumber: 2)
+    }
+    try unknownFields.traverse(visitor: &visitor)
+  }
+
+  static func ==(lhs: Tzf_V1_CompressedSharedEdge, rhs: Tzf_V1_CompressedSharedEdge) -> Bool {
+    if lhs.id != rhs.id {return false}
+    if lhs.points != rhs.points {return false}
+    if lhs.unknownFields != rhs.unknownFields {return false}
+    return true
+  }
+}
+
+extension Tzf_V1_CompressedInlinePoints: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
+  static let protoMessageName: String = _protobuf_package + ".CompressedInlinePoints"
+  static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{1}points\0")
+
+  mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
+    while let fieldNumber = try decoder.nextFieldNumber() {
+      // The use of inline closures is to circumvent an issue where the compiler
+      // allocates stack space for every case branch when no optimizations are
+      // enabled. https://github.com/apple/swift-protobuf/issues/1034
+      switch fieldNumber {
+      case 1: try { try decoder.decodeSingularBytesField(value: &self.points) }()
+      default: break
+      }
+    }
+  }
+
+  func traverse<V: SwiftProtobuf.Visitor>(visitor: inout V) throws {
+    if !self.points.isEmpty {
+      try visitor.visitSingularBytesField(value: self.points, fieldNumber: 1)
+    }
+    try unknownFields.traverse(visitor: &visitor)
+  }
+
+  static func ==(lhs: Tzf_V1_CompressedInlinePoints, rhs: Tzf_V1_CompressedInlinePoints) -> Bool {
+    if lhs.points != rhs.points {return false}
+    if lhs.unknownFields != rhs.unknownFields {return false}
+    return true
+  }
+}
+
+extension Tzf_V1_CompressedRingSegment: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
+  static let protoMessageName: String = _protobuf_package + ".CompressedRingSegment"
+  static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{1}inline\0\u{3}edge_forward\0\u{3}edge_reversed\0")
+
+  mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
+    while let fieldNumber = try decoder.nextFieldNumber() {
+      // The use of inline closures is to circumvent an issue where the compiler
+      // allocates stack space for every case branch when no optimizations are
+      // enabled. https://github.com/apple/swift-protobuf/issues/1034
+      switch fieldNumber {
+      case 1: try {
+        var v: Tzf_V1_CompressedInlinePoints?
+        var hadOneofValue = false
+        if let current = self.content {
+          hadOneofValue = true
+          if case .inline(let m) = current {v = m}
+        }
+        try decoder.decodeSingularMessageField(value: &v)
+        if let v = v {
+          if hadOneofValue {try decoder.handleConflictingOneOf()}
+          self.content = .inline(v)
+        }
+      }()
+      case 2: try {
+        var v: Int32?
+        try decoder.decodeSingularInt32Field(value: &v)
+        if let v = v {
+          if self.content != nil {try decoder.handleConflictingOneOf()}
+          self.content = .edgeForward(v)
+        }
+      }()
+      case 3: try {
+        var v: Int32?
+        try decoder.decodeSingularInt32Field(value: &v)
+        if let v = v {
+          if self.content != nil {try decoder.handleConflictingOneOf()}
+          self.content = .edgeReversed(v)
+        }
+      }()
+      default: break
+      }
+    }
+  }
+
+  func traverse<V: SwiftProtobuf.Visitor>(visitor: inout V) throws {
+    // The use of inline closures is to circumvent an issue where the compiler
+    // allocates stack space for every if/case branch local when no optimizations
+    // are enabled. https://github.com/apple/swift-protobuf/issues/1034 and
+    // https://github.com/apple/swift-protobuf/issues/1182
+    switch self.content {
+    case .inline?: try {
+      guard case .inline(let v)? = self.content else { preconditionFailure() }
+      try visitor.visitSingularMessageField(value: v, fieldNumber: 1)
+    }()
+    case .edgeForward?: try {
+      guard case .edgeForward(let v)? = self.content else { preconditionFailure() }
+      try visitor.visitSingularInt32Field(value: v, fieldNumber: 2)
+    }()
+    case .edgeReversed?: try {
+      guard case .edgeReversed(let v)? = self.content else { preconditionFailure() }
+      try visitor.visitSingularInt32Field(value: v, fieldNumber: 3)
+    }()
+    case nil: break
+    }
+    try unknownFields.traverse(visitor: &visitor)
+  }
+
+  static func ==(lhs: Tzf_V1_CompressedRingSegment, rhs: Tzf_V1_CompressedRingSegment) -> Bool {
+    if lhs.content != rhs.content {return false}
+    if lhs.unknownFields != rhs.unknownFields {return false}
+    return true
+  }
+}
+
+extension Tzf_V1_CompressedTopoPolygon: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
+  static let protoMessageName: String = _protobuf_package + ".CompressedTopoPolygon"
+  static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{1}exterior\0\u{1}holes\0")
+
+  mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
+    while let fieldNumber = try decoder.nextFieldNumber() {
+      // The use of inline closures is to circumvent an issue where the compiler
+      // allocates stack space for every case branch when no optimizations are
+      // enabled. https://github.com/apple/swift-protobuf/issues/1034
+      switch fieldNumber {
+      case 1: try { try decoder.decodeRepeatedMessageField(value: &self.exterior) }()
+      case 2: try { try decoder.decodeRepeatedMessageField(value: &self.holes) }()
+      default: break
+      }
+    }
+  }
+
+  func traverse<V: SwiftProtobuf.Visitor>(visitor: inout V) throws {
+    if !self.exterior.isEmpty {
+      try visitor.visitRepeatedMessageField(value: self.exterior, fieldNumber: 1)
+    }
+    if !self.holes.isEmpty {
+      try visitor.visitRepeatedMessageField(value: self.holes, fieldNumber: 2)
+    }
+    try unknownFields.traverse(visitor: &visitor)
+  }
+
+  static func ==(lhs: Tzf_V1_CompressedTopoPolygon, rhs: Tzf_V1_CompressedTopoPolygon) -> Bool {
+    if lhs.exterior != rhs.exterior {return false}
+    if lhs.holes != rhs.holes {return false}
+    if lhs.unknownFields != rhs.unknownFields {return false}
+    return true
+  }
+}
+
+extension Tzf_V1_CompressedTopoTimezone: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
+  static let protoMessageName: String = _protobuf_package + ".CompressedTopoTimezone"
+  static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{1}polygons\0\u{1}name\0")
+
+  mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
+    while let fieldNumber = try decoder.nextFieldNumber() {
+      // The use of inline closures is to circumvent an issue where the compiler
+      // allocates stack space for every case branch when no optimizations are
+      // enabled. https://github.com/apple/swift-protobuf/issues/1034
+      switch fieldNumber {
+      case 1: try { try decoder.decodeRepeatedMessageField(value: &self.polygons) }()
+      case 2: try { try decoder.decodeSingularStringField(value: &self.name) }()
+      default: break
+      }
+    }
+  }
+
+  func traverse<V: SwiftProtobuf.Visitor>(visitor: inout V) throws {
+    if !self.polygons.isEmpty {
+      try visitor.visitRepeatedMessageField(value: self.polygons, fieldNumber: 1)
+    }
+    if !self.name.isEmpty {
+      try visitor.visitSingularStringField(value: self.name, fieldNumber: 2)
+    }
+    try unknownFields.traverse(visitor: &visitor)
+  }
+
+  static func ==(lhs: Tzf_V1_CompressedTopoTimezone, rhs: Tzf_V1_CompressedTopoTimezone) -> Bool {
+    if lhs.polygons != rhs.polygons {return false}
+    if lhs.name != rhs.name {return false}
+    if lhs.unknownFields != rhs.unknownFields {return false}
+    return true
+  }
+}
+
+extension Tzf_V1_CompressedTopoTimezones: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
+  static let protoMessageName: String = _protobuf_package + ".CompressedTopoTimezones"
+  static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{1}method\0\u{3}shared_edges\0\u{1}timezones\0\u{1}version\0")
+
+  mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
+    while let fieldNumber = try decoder.nextFieldNumber() {
+      // The use of inline closures is to circumvent an issue where the compiler
+      // allocates stack space for every case branch when no optimizations are
+      // enabled. https://github.com/apple/swift-protobuf/issues/1034
+      switch fieldNumber {
+      case 1: try { try decoder.decodeSingularEnumField(value: &self.method) }()
+      case 2: try { try decoder.decodeRepeatedMessageField(value: &self.sharedEdges) }()
+      case 3: try { try decoder.decodeRepeatedMessageField(value: &self.timezones) }()
+      case 4: try { try decoder.decodeSingularStringField(value: &self.version) }()
+      default: break
+      }
+    }
+  }
+
+  func traverse<V: SwiftProtobuf.Visitor>(visitor: inout V) throws {
+    if self.method != .unspecified {
+      try visitor.visitSingularEnumField(value: self.method, fieldNumber: 1)
+    }
+    if !self.sharedEdges.isEmpty {
+      try visitor.visitRepeatedMessageField(value: self.sharedEdges, fieldNumber: 2)
+    }
+    if !self.timezones.isEmpty {
+      try visitor.visitRepeatedMessageField(value: self.timezones, fieldNumber: 3)
+    }
+    if !self.version.isEmpty {
+      try visitor.visitSingularStringField(value: self.version, fieldNumber: 4)
+    }
+    try unknownFields.traverse(visitor: &visitor)
+  }
+
+  static func ==(lhs: Tzf_V1_CompressedTopoTimezones, rhs: Tzf_V1_CompressedTopoTimezones) -> Bool {
+    if lhs.method != rhs.method {return false}
+    if lhs.sharedEdges != rhs.sharedEdges {return false}
+    if lhs.timezones != rhs.timezones {return false}
     if lhs.version != rhs.version {return false}
     if lhs.unknownFields != rhs.unknownFields {return false}
     return true
