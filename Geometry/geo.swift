@@ -464,12 +464,15 @@ public struct Polygon {
 
   /// Point-In-Polygon check, the normal way.
   public func containsPointNormal(_ p: Point) -> Bool {
-    if !ringContainsPoint(exterior, extIdx, p, false) {
-      return false
-    }
-    for (i, hole) in holes.enumerated() {
-      if ringContainsPoint(hole, holeIdxs[i], p, false) {
-        return false
+    if extIdx != nil {
+      if !ringContainsPoint(exterior, extIdx, p, false) { return false }
+      for (i, hole) in holes.enumerated() {
+        if ringContainsPoint(hole, holeIdxs[i], p, false) { return false }
+      }
+    } else {
+      if !ringsContainsPoint(exterior, p, false) { return false }
+      for hole in holes {
+        if ringsContainsPoint(hole, p, false) { return false }
       }
     }
     return true
