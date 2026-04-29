@@ -1,3 +1,6 @@
 [submodule "tzf-rel-lite"]
 	path = tzf-rel-lite
 	url = https://github.com/ringsaturn/tzf-rel-lite
+[submodule "tzf-dist"]
+	path = tzf-dist
+	url = https://github.com/ringsaturn/tzf-dist
