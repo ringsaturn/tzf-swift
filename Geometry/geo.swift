@@ -264,24 +264,215 @@ public func ringsContainsPoint(_ ring: [Point], _ point: Point, _ allowOnEdge: B
   return inside
 }
 
+// MARK: - YStripes index
+
+/// Minimum segment count for a ring to get a YStripes index.
+/// Rings smaller than this are cheaper to scan linearly.
+private let yStripesMinSegments = 32
+
+/// Partitions a ring's segments into horizontal stripes so that a PIP query
+/// for latitude y only needs to examine the segments in the one stripe that
+/// contains y.  Reduces average PIP cost from O(n) to O(n/k).
+///
+/// Port of the YStripes index from
+/// [tzf](https://github.com/ringsaturn/tzf/blob/main/internal/geom/ystripes.go).
+struct YStripesIndex {
+  /// Bottom of the ring's Y range.
+  let minY: Double
+  /// Height of the Y range (maxY − minY).
+  let height: Double
+  /// One (start, count) pair per stripe, referencing into `indexes`.
+  let stripes: [(start: Int, count: Int)]
+  /// Segment indices packed stripe-by-stripe.
+  let indexes: [Int]
+  /// Per-segment [minY, maxY] bounding box, indexed by segment number.
+  let yRanges: [(Double, Double)]
+
+  /// Builds a YStripes index for `ring`.
+  ///
+  /// `ring` is a **closed** ring (first == last point), so the number of
+  /// segments is `ring.count - 1`.  Returns `nil` when the ring has fewer
+  /// than 2 segments or a zero Y span.
+  init?(ring: [Point]) {
+    let n = ring.count - 1  // number of segments
+    guard n >= 2 else { return nil }
+
+    // Compute per-segment Y bounding boxes and the global Y range.
+    var yRanges = [(Double, Double)](repeating: (0.0, 0.0), count: n)
+    var minY = Double.infinity
+    var maxY = -Double.infinity
+    for i in 0..<n {
+      let ay = ring[i].y, by = ring[i + 1].y
+      let lo = min(ay, by), hi = max(ay, by)
+      yRanges[i] = (lo, hi)
+      if lo < minY { minY = lo }
+      if hi > maxY { maxY = hi }
+    }
+
+    let height = maxY - minY
+    guard height > 0 else { return nil }
+
+    let stripeCount = YStripesIndex.calcStripeCount(ring: ring, n: n)
+    var stripes = [(start: Int, count: Int)](repeating: (0, 0), count: stripeCount)
+
+    // First pass: count how many segment references each stripe needs.
+    for i in 0..<n {
+      let (lo, hi) = YStripesIndex.segStripeRange(
+        yRanges[i].0, yRanges[i].1, minY, height, stripeCount)
+      for s in lo...hi { stripes[s].count += 1 }
+    }
+
+    // Assign start offsets; reset count to use as fill cursor.
+    var fillPos = [Int](repeating: 0, count: stripeCount)
+    var total = 0
+    for s in 0..<stripeCount {
+      fillPos[s] = total
+      stripes[s] = (start: total, count: 0)
+      total += stripes[s].count  // still 0 after reset — use fillPos instead
+    }
+    // Recount to get the actual totals for filling.
+    var counts = [Int](repeating: 0, count: stripeCount)
+    for i in 0..<n {
+      let (lo, hi) = YStripesIndex.segStripeRange(
+        yRanges[i].0, yRanges[i].1, minY, height, stripeCount)
+      for s in lo...hi { counts[s] += 1 }
+    }
+    total = 0
+    for s in 0..<stripeCount {
+      fillPos[s] = total
+      stripes[s] = (start: total, count: counts[s])
+      total += counts[s]
+    }
+
+    // Second pass: fill the indexes slice.
+    var indexes = [Int](repeating: 0, count: total)
+    var cursors = [Int](repeating: 0, count: stripeCount)
+    for i in 0..<n {
+      let (lo, hi) = YStripesIndex.segStripeRange(
+        yRanges[i].0, yRanges[i].1, minY, height, stripeCount)
+      for s in lo...hi {
+        indexes[stripes[s].start + cursors[s]] = i
+        cursors[s] += 1
+      }
+    }
+
+    self.minY = minY
+    self.height = height
+    self.stripes = stripes
+    self.indexes = indexes
+    self.yRanges = yRanges
+  }
+
+  /// Calls `fn(segmentIndex)` for every segment whose Y range includes `y`.
+  /// Stops when `fn` returns `false`.  No allocation.
+  func forEachCandidate(y: Double, _ fn: (Int) -> Bool) {
+    guard y >= minY && y <= minY + height else { return }
+    let count = stripes.count
+    let s = min(Int((y - minY) / height * Double(count)), count - 1)
+    let stripe = stripes[s]
+    for k in stripe.start..<(stripe.start + stripe.count) {
+      let seg = indexes[k]
+      if y >= yRanges[seg].0 && y <= yRanges[seg].1 {
+        if !fn(seg) { return }
+      }
+    }
+  }
+
+  /// Number of horizontal stripes to use for a ring.
+  ///
+  /// Uses the isoperimetric quotient (circularity score) so that circular
+  /// rings get more stripes and elongated rings get fewer.
+  private static func calcStripeCount(ring: [Point], n: Int) -> Int {
+    var area = 0.0
+    var perim = 0.0
+    for i in 0..<n {
+      let a = ring[i], b = ring[i + 1]
+      area += a.x * b.y - b.x * a.y
+      let dx = b.x - a.x, dy = b.y - a.y
+      perim += (dx * dx + dy * dy).squareRoot()
+    }
+    area = abs(area) * 0.5
+    let score = perim > 0 ? (area * .pi * 4) / (perim * perim) : 0.0
+    let count = Int((Double(n) * score).rounded(.down))
+    return max(count, yStripesMinSegments)
+  }
+
+  /// Maps a segment's [segMinY, segMaxY] to the inclusive stripe range [lo, hi].
+  private static func segStripeRange(
+    _ segMinY: Double, _ segMaxY: Double,
+    _ minY: Double, _ height: Double, _ count: Int
+  ) -> (Int, Int) {
+    guard count > 1 && height > 0 else { return (0, 0) }
+    let last = count - 1
+    let lo = min(max(Int((segMinY - minY) / height * Double(count)), 0), last)
+    let hi = min(max(Int((segMaxY - minY) / height * Double(count)), 0), last)
+    return (lo, hi)
+  }
+}
+
+// MARK: - Indexed ring containment
+
+/// PIP test using a YStripes index when available, linear scan otherwise.
+private func ringContainsPoint(
+  _ ring: [Point], _ idx: YStripesIndex?, _ point: Point, _ allowOnEdge: Bool
+) -> Bool {
+  let n = ring.count - 1
+  guard n >= 3 else { return false }
+
+  var inside = false
+
+  if let idx = idx {
+    idx.forEachCandidate(y: point.y) { i in
+      let seg = Segment(a: ring[i], b: ring[i + 1])
+      let res = raycast(seg, point)
+      if res.on {
+        inside = allowOnEdge
+        return false  // stop iteration
+      }
+      if res.inside { inside.toggle() }
+      return true
+    }
+    return inside
+  }
+
+  // Linear fallback for small rings.
+  let hRect = Rect(
+    min: Point(x: -.infinity, y: point.y),
+    max: Point(x: .infinity, y: point.y))
+  for i in 0..<n {
+    let seg = segmentAtForVecPoint(ring, i)
+    if seg.rect().intersectsRect(hRect) {
+      let res = raycast(seg, point)
+      if res.on {
+        inside = allowOnEdge
+        break
+      }
+      if res.inside { inside.toggle() }
+    }
+  }
+  return inside
+}
+
+// MARK: - Polygon
+
 public struct Polygon {
   public let exterior: [Point]
   public let holes: [[Point]]
   public let rect: Rect
+  let extIdx: YStripesIndex?
+  let holeIdxs: [YStripesIndex?]
 
   /// Point-In-Polygon check, the normal way.
   public func containsPointNormal(_ p: Point) -> Bool {
-    if !ringsContainsPoint(exterior, p, false) {
+    if !ringContainsPoint(exterior, extIdx, p, false) {
       return false
     }
-    var contains = true
-    for hole in holes {
-      if ringsContainsPoint(hole, p, false) {
-        contains = false
-        break
+    for (i, hole) in holes.enumerated() {
+      if ringContainsPoint(hole, holeIdxs[i], p, false) {
+        return false
       }
     }
-    return contains
+    return true
   }
 
   /// Do point-in-polygon search.
@@ -320,6 +511,13 @@ public struct Polygon {
       max: Point(x: maxX, y: maxY)
     )
 
-    return Polygon(exterior: exterior, holes: holes, rect: rect)
+    // Build YStripes index for rings with enough segments to benefit.
+    let extIdx = exterior.count - 1 >= yStripesMinSegments
+      ? YStripesIndex(ring: exterior) : nil
+    let holeIdxs = holes.map { h in
+      h.count - 1 >= yStripesMinSegments ? YStripesIndex(ring: h) : nil
+    }
+
+    return Polygon(exterior: exterior, holes: holes, rect: rect, extIdx: extIdx, holeIdxs: holeIdxs)
   }
 }
