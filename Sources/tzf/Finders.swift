@@ -194,7 +194,7 @@ public class PreindexFinder: F {
   private let preindexData: Tzf_V1_PreindexTimezones
   private let idxZoom: Int32
   private let aggZoom: Int32
-  private let tileCache: [String: [String]]
+  private let tileCache: [Int64: [String]]
 
   public init() throws {
     let bundle = Bundle.module
@@ -211,10 +211,12 @@ public class PreindexFinder: F {
     idxZoom = preindexData.idxZoom
     aggZoom = preindexData.aggZoom
 
-    // Initialize the tile cache with arrays of timezone names
-    var cache = [String: [String]]()
+    // Initialize the tile cache with arrays of timezone names.
+    // Key encoding: zoom(4bit) | x(13bit) | y(13bit) packed into Int64.
+    // At idxZoom=13: x,y ≤ 8191 (13 bits each); zoom ≤ 13 (4 bits). Total 30 bits.
+    var cache = [Int64: [String]]()
     for key in preindexData.keys {
-      let tileKey = "\(key.z):\(key.x):\(key.y)"
+      let tileKey = Int64(key.z) << 26 | Int64(key.x) << 13 | Int64(key.y)
       if cache[tileKey] == nil {
         cache[tileKey] = [key.name]
       } else {
@@ -264,7 +266,7 @@ public class PreindexFinder: F {
     // Try each zoom level from aggZoom to idxZoom
     for zoom in aggZoom...idxZoom {
       let (x, y) = lngLatToTile(lng: lng, lat: lat, zoom: zoom)
-      let tileKey = "\(zoom):\(x):\(y)"
+      let tileKey = Int64(zoom) << 26 | Int64(x) << 13 | Int64(y)
 
       // Look up in the cache
       if let tzNames = tileCache[tileKey], !tzNames.isEmpty {
