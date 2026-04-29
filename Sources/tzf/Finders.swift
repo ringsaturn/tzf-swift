@@ -384,6 +384,7 @@ public class Finder: F {
   private struct ProcessedTimezone {
     let name: String
     let polygons: [Polygon]
+    let unionRect: Rect
   }
   private let processedTimezones: [ProcessedTimezone]
   private let version: String
@@ -418,7 +419,15 @@ public class Finder: F {
         guard !exterior.isEmpty else { continue }
         polygons.append(Polygon.new(exterior: exterior, holes: holes))
       }
-      processed.append(ProcessedTimezone(name: tz.name, polygons: polygons))
+      guard !polygons.isEmpty else { continue }
+      var minX = polygons[0].rect.min.x, minY = polygons[0].rect.min.y
+      var maxX = polygons[0].rect.max.x, maxY = polygons[0].rect.max.y
+      for p in polygons.dropFirst() {
+        minX = min(minX, p.rect.min.x); minY = min(minY, p.rect.min.y)
+        maxX = max(maxX, p.rect.max.x); maxY = max(maxY, p.rect.max.y)
+      }
+      let unionRect = Rect(min: Point(x: minX, y: minY), max: Point(x: maxX, y: maxY))
+      processed.append(ProcessedTimezone(name: tz.name, polygons: polygons, unionRect: unionRect))
     }
     self.processedTimezones = processed
   }
@@ -474,6 +483,7 @@ public class Finder: F {
     var results: [String] = []
 
     for timezone in processedTimezones {
+      guard timezone.unionRect.containsPoint(point) else { continue }
       for polygon in timezone.polygons {
         if polygon.containsPoint(point) {
           results.append(timezone.name)
