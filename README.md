@@ -63,15 +63,15 @@ designed for server-side high-performance use cases.
 
 Hardware: MacBook Pro with Apple M3 Max.
 
-Processing 1 million queries took 4500ms. Benchmark Summary:
+Processing 1 million queries took ~1,300ms. Benchmark Summary (2026a data):
 
 | Implementation               | Test Scale | Execution Time (ms) | Success Rate | Operations per Second (op/sec) | Memory Usage (Peak MB) | Instructions (G) |
 | ---------------------------- | ---------- | ------------------- | ------------ | ------------------------------ | ---------------------- | ---------------- |
-| `TZF.DefaultFinder`          | 1,000,000  | 4,717               | 100%         | ~212,000                       | 129                    | 73               |
-| `TZF.Finder`                 | 1,000,000  | 19,000              | 100%         | ~52,632                        | 115                    | 324              |
-| `TZF.PreindexFinder`         | 1,000,000  | 1,548               | ~85%         | ~646,000                       | 129                    | 23               |
-| `SwiftTimeZoneLookup.lookup` | 10,000     | 3,077               | 100%         | ~3,250                         | 105                    | 42               |
-| `SwiftTimeZoneLookup.simple` | 10,000     | 3,209               | 100%         | ~3,116                         | 104                    | 45               |
+| `TZF.DefaultFinder`          | 1,000,000  | 1,306               | 100%         | ~766,000                       | 284                    | 16               |
+| `TZF.Finder`                 | 1,000,000  | 1,607               | 100%         | ~622,000                       | 269                    | 22               |
+| `TZF.PreindexFinder`         | 1,000,000  | 946                 | ~85%         | ~1,057,000                     | 184                    | 12               |
+| `SwiftTimeZoneLookup.lookup` | 10,000     | 3,279               | 100%         | ~3,050                         | 179                    | 44               |
+| `SwiftTimeZoneLookup.simple` | 10,000     | 3,311               | 100%         | ~3,020                         | 179                    | 44               |
 
 Full benchmark results can be viewed in [benchmark_baseline.txt](./benchmark_baseline.txt).
 
