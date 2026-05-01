@@ -27,7 +27,7 @@ jobs:
       - name: Build static docs for Pages subpath
         run: make docs-subpath DOCS_BASE_PATH="${{ github.event.repository.name }}"
       - name: Upload Pages artifact
-        uses: actions/upload-pages-artifact@v4
+        uses: actions/upload-pages-artifact@v5
         with:
           path: docs
 
