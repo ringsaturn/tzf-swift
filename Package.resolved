@@ -1,5 +1,5 @@
 {
-  "originHash" : "d6bca1669b1123719d856e41f49176e27a2134827ebce81a9bb894248110b48c",
+  "originHash" : "c183a9c0d1eca26856bcf70d3afa935152425d5132731b30b62cae40decee9c1",
   "pins" : [
     {
       "identity" : "cities-swift",
@@ -15,8 +15,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/swiftlang/swift-docc-plugin",
       "state" : {
-        "revision" : "e977f65879f82b375a044c8837597f690c067da6",
-        "version" : "1.4.6"
+        "revision" : "647c708be89f834fa6a6d4945442793a77ddf5b6",
+        "version" : "1.5.0"
       }
     },
     {
@@ -33,8 +33,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/apple/swift-protobuf.git",
       "state" : {
-        "revision" : "a008af1a102ff3dd6cc3764bb69bf63226d0f5f6",
-        "version" : "1.36.1"
+        "revision" : "81558271e243f8f47dfe8e9fdd55f3c2b5413f68",
+        "version" : "1.37.0"
       }
     },
     {
