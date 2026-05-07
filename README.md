@@ -65,14 +65,14 @@ Hardware: MacBook Pro with Apple M3 Max.
 
 Benchmark Summary:
 
-| Implementation               | Test Scale | Execution Time (ms) | Success Rate | Operations per Second (op/sec) | Memory Usage (Peak MB) | Instructions (G) |
-| ---------------------------- | ---------- | ------------------- | ------------ | ------------------------------ | ---------------------- | ---------------- |
-| `TZF.DefaultFinder`          | 1,000,000  | 920                 | 100%         | ~1,086,956                     | 296                    | 13               |
-| `TZF.PreindexFinder`         | 1,000,000  | 685                 | ~85%         | ~1,459,854                     | 184                    | 11               |
-| `TZF.Finder`                 | 1,000,000  | 1,140               | 100%         | ~877,192                       | 282                    | 14               |
-| `LatLongToTimezone`          | 100,000    | 339                 | 100%         | ~294,985                       | 171                    | ~6.9             |
-| `SwiftTimeZoneLookup.simple` | 10,000     | 3,266               | 100%         | ~3,061                         | 175                    | 43               |
-| `SwiftTimeZoneLookup.lookup` | 10,000     | 3,305               | 100%         | ~3,025                         | 175                    | 44               |
+| Implementation               | Test Scale | Execution Time (ms) | Success Rate | Operations per Second (op/sec) | Time per Op | Memory Usage (Peak MB) | Instructions (G) |
+| ---------------------------- | ---------- | ------------------- | ------------ | ------------------------------ | ----------- | ---------------------- | ---------------- |
+| `TZF.DefaultFinder`          | 1,000,000  | 920                 | 100%         | ~1,086,956                     | 920 ns      | 296                    | 13               |
+| `TZF.PreindexFinder`         | 1,000,000  | 685                 | ~85%         | ~1,459,854                     | 685 ns      | 184                    | 11               |
+| `TZF.Finder`                 | 1,000,000  | 1,140               | 100%         | ~877,192                       | 1.1 μs      | 282                    | 14               |
+| `LatLongToTimezone`          | 100,000    | 339                 | 100%         | ~294,985                       | 3.4 μs      | 171                    | ~6.9             |
+| `SwiftTimeZoneLookup.simple` | 10,000     | 3,266               | 100%         | ~3,061                         | 326.6 μs    | 175                    | 43               |
+| `SwiftTimeZoneLookup.lookup` | 10,000     | 3,305               | 100%         | ~3,025                         | 330.5 μs    | 175                    | 44               |
 
 Full benchmark results can be viewed in [benchmark_baseline.txt](./benchmark_baseline.txt).
 

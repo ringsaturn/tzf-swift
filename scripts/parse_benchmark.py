@@ -194,9 +194,22 @@ _HEADERS = [
     "Execution Time (ms)",
     "Success Rate",
     "Operations per Second (op/sec)",
+    "Time per Op",
     "Memory Usage (Peak MB)",
     "Instructions (G)",
 ]
+
+
+def _format_time_per_op(wall_ms, scale):
+    if wall_ms is None or not scale:
+        return "-"
+    ns = (wall_ms / scale) * 1_000_000
+    if ns < 1_000:
+        return f"{ns:.0f} ns"
+    us = ns / 1_000
+    if us < 1_000:
+        return f"{us:.1f} μs"
+    return f"{us / 1_000:.1f} ms"
 
 
 def _build_rows(benchmarks, success_rates):
@@ -220,13 +233,15 @@ def _build_rows(benchmarks, success_rates):
         else:
             ops_str = "-"
 
+        time_per_op_str = _format_time_per_op(wall_ms, scale)
+
         sr = "100%"
         for finder_cls, rate in success_rates.items():
             if finder_cls in name:
                 sr = f"~{rate * 100:.0f}%"
                 break
 
-        rows.append([f"`{display}`", scale_str, wall_str, sr, ops_str, mem_str, instr_str])
+        rows.append([f"`{display}`", scale_str, wall_str, sr, ops_str, time_per_op_str, mem_str, instr_str])
     return rows
 
 
