@@ -353,7 +353,7 @@ struct Tzf_V1_SharedEdge: Sendable {
 /// Timezones in topology format with shared-edge deduplication.
 /// Shared timezone boundaries are stored exactly once in shared_edges;
 /// rings reference them by ID rather than duplicating the point sequences.
-/// This format targets full-precision data where ~52% of boundary edges are
+/// This format targets full-precision data where ~43% of boundary edges are
 /// shared, reducing the 96 MB full dataset by ~30–35 MB.
 struct Tzf_V1_TopoTimezones: Sendable {
   // SwiftProtobuf.Message conformance is added in an extension below. See the
@@ -480,6 +480,8 @@ struct Tzf_V1_CompressedTopoTimezone: Sendable {
 /// coordinate compression. Shared edge point sequences and inline segments are
 /// stored as polyline bytes instead of repeated Point messages, significantly
 /// reducing file size on top of the deduplication savings.
+/// grid_index is an optional embedded 1°×1° candidate-reduction index built
+/// at compress time. When present, Finder uses it to skip full linear scans.
 struct Tzf_V1_CompressedTopoTimezones: Sendable {
   // SwiftProtobuf.Message conformance is added in an extension below. See the
   // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
@@ -490,6 +492,54 @@ struct Tzf_V1_CompressedTopoTimezones: Sendable {
   var sharedEdges: [Tzf_V1_CompressedSharedEdge] = []
 
   var timezones: [Tzf_V1_CompressedTopoTimezone] = []
+
+  var version: String = String()
+
+  var gridIndex: Tzf_V1_GridIndex {
+    get {return _gridIndex ?? Tzf_V1_GridIndex()}
+    set {_gridIndex = newValue}
+  }
+  /// Returns true if `gridIndex` has been explicitly set.
+  var hasGridIndex: Bool {return self._gridIndex != nil}
+  /// Clears the value of `gridIndex`. Subsequent reads from it will return its default value.
+  mutating func clearGridIndex() {self._gridIndex = nil}
+
+  var unknownFields = SwiftProtobuf.UnknownStorage()
+
+  init() {}
+
+  fileprivate var _gridIndex: Tzf_V1_GridIndex? = nil
+}
+
+/// GridIndexCell records the timezone indices that intersect a single 1°×1° cell.
+/// tz_indices are 0-based positions into the timezones array of the companion
+/// CompressedTopoTimezones (or Timezones) file, matching the order used by Finder.items.
+struct Tzf_V1_GridIndexCell: Sendable {
+  // SwiftProtobuf.Message conformance is added in an extension below. See the
+  // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
+  // methods supported on all messages.
+
+  /// floor(longitude), -180..179
+  var lng: Int32 = 0
+
+  /// floor(latitude), -90..89
+  var lat: Int32 = 0
+
+  var tzIndices: [UInt32] = []
+
+  var unknownFields = SwiftProtobuf.UnknownStorage()
+
+  init() {}
+}
+
+/// GridIndex is the complete 1°×1° candidate-reduction index.
+/// Only cells with at least one intersecting timezone are stored.
+struct Tzf_V1_GridIndex: Sendable {
+  // SwiftProtobuf.Message conformance is added in an extension below. See the
+  // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
+  // methods supported on all messages.
+
+  var cells: [Tzf_V1_GridIndexCell] = []
 
   var version: String = String()
 
@@ -1311,7 +1361,7 @@ extension Tzf_V1_CompressedTopoTimezone: SwiftProtobuf.Message, SwiftProtobuf._M
 
 extension Tzf_V1_CompressedTopoTimezones: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = _protobuf_package + ".CompressedTopoTimezones"
-  static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{1}method\0\u{3}shared_edges\0\u{1}timezones\0\u{1}version\0")
+  static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{1}method\0\u{3}shared_edges\0\u{1}timezones\0\u{1}version\0\u{3}grid_index\0")
 
   mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
     while let fieldNumber = try decoder.nextFieldNumber() {
@@ -1323,12 +1373,17 @@ extension Tzf_V1_CompressedTopoTimezones: SwiftProtobuf.Message, SwiftProtobuf._
       case 2: try { try decoder.decodeRepeatedMessageField(value: &self.sharedEdges) }()
       case 3: try { try decoder.decodeRepeatedMessageField(value: &self.timezones) }()
       case 4: try { try decoder.decodeSingularStringField(value: &self.version) }()
+      case 5: try { try decoder.decodeSingularMessageField(value: &self._gridIndex) }()
       default: break
       }
     }
   }
 
   func traverse<V: SwiftProtobuf.Visitor>(visitor: inout V) throws {
+    // The use of inline closures is to circumvent an issue where the compiler
+    // allocates stack space for every if/case branch local when no optimizations
+    // are enabled. https://github.com/apple/swift-protobuf/issues/1034 and
+    // https://github.com/apple/swift-protobuf/issues/1182
     if self.method != .unspecified {
       try visitor.visitSingularEnumField(value: self.method, fieldNumber: 1)
     }
@@ -1341,6 +1396,9 @@ extension Tzf_V1_CompressedTopoTimezones: SwiftProtobuf.Message, SwiftProtobuf._
     if !self.version.isEmpty {
       try visitor.visitSingularStringField(value: self.version, fieldNumber: 4)
     }
+    try { if let v = self._gridIndex {
+      try visitor.visitSingularMessageField(value: v, fieldNumber: 5)
+    } }()
     try unknownFields.traverse(visitor: &visitor)
   }
 
@@ -1348,6 +1406,82 @@ extension Tzf_V1_CompressedTopoTimezones: SwiftProtobuf.Message, SwiftProtobuf._
     if lhs.method != rhs.method {return false}
     if lhs.sharedEdges != rhs.sharedEdges {return false}
     if lhs.timezones != rhs.timezones {return false}
+    if lhs.version != rhs.version {return false}
+    if lhs._gridIndex != rhs._gridIndex {return false}
+    if lhs.unknownFields != rhs.unknownFields {return false}
+    return true
+  }
+}
+
+extension Tzf_V1_GridIndexCell: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
+  static let protoMessageName: String = _protobuf_package + ".GridIndexCell"
+  static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{1}lng\0\u{1}lat\0\u{3}tz_indices\0")
+
+  mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
+    while let fieldNumber = try decoder.nextFieldNumber() {
+      // The use of inline closures is to circumvent an issue where the compiler
+      // allocates stack space for every case branch when no optimizations are
+      // enabled. https://github.com/apple/swift-protobuf/issues/1034
+      switch fieldNumber {
+      case 1: try { try decoder.decodeSingularSInt32Field(value: &self.lng) }()
+      case 2: try { try decoder.decodeSingularSInt32Field(value: &self.lat) }()
+      case 3: try { try decoder.decodeRepeatedUInt32Field(value: &self.tzIndices) }()
+      default: break
+      }
+    }
+  }
+
+  func traverse<V: SwiftProtobuf.Visitor>(visitor: inout V) throws {
+    if self.lng != 0 {
+      try visitor.visitSingularSInt32Field(value: self.lng, fieldNumber: 1)
+    }
+    if self.lat != 0 {
+      try visitor.visitSingularSInt32Field(value: self.lat, fieldNumber: 2)
+    }
+    if !self.tzIndices.isEmpty {
+      try visitor.visitPackedUInt32Field(value: self.tzIndices, fieldNumber: 3)
+    }
+    try unknownFields.traverse(visitor: &visitor)
+  }
+
+  static func ==(lhs: Tzf_V1_GridIndexCell, rhs: Tzf_V1_GridIndexCell) -> Bool {
+    if lhs.lng != rhs.lng {return false}
+    if lhs.lat != rhs.lat {return false}
+    if lhs.tzIndices != rhs.tzIndices {return false}
+    if lhs.unknownFields != rhs.unknownFields {return false}
+    return true
+  }
+}
+
+extension Tzf_V1_GridIndex: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
+  static let protoMessageName: String = _protobuf_package + ".GridIndex"
+  static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{1}cells\0\u{1}version\0")
+
+  mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
+    while let fieldNumber = try decoder.nextFieldNumber() {
+      // The use of inline closures is to circumvent an issue where the compiler
+      // allocates stack space for every case branch when no optimizations are
+      // enabled. https://github.com/apple/swift-protobuf/issues/1034
+      switch fieldNumber {
+      case 1: try { try decoder.decodeRepeatedMessageField(value: &self.cells) }()
+      case 2: try { try decoder.decodeSingularStringField(value: &self.version) }()
+      default: break
+      }
+    }
+  }
+
+  func traverse<V: SwiftProtobuf.Visitor>(visitor: inout V) throws {
+    if !self.cells.isEmpty {
+      try visitor.visitRepeatedMessageField(value: self.cells, fieldNumber: 1)
+    }
+    if !self.version.isEmpty {
+      try visitor.visitSingularStringField(value: self.version, fieldNumber: 2)
+    }
+    try unknownFields.traverse(visitor: &visitor)
+  }
+
+  static func ==(lhs: Tzf_V1_GridIndex, rhs: Tzf_V1_GridIndex) -> Bool {
+    if lhs.cells != rhs.cells {return false}
     if lhs.version != rhs.version {return false}
     if lhs.unknownFields != rhs.unknownFields {return false}
     return true

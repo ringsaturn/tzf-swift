@@ -5,6 +5,11 @@ import Cities
 import SwiftTimeZoneLookup
 import tzf
 
+#if canImport(CoreLocation)
+  import CoreLocation
+  import LatLongToTimezone
+#endif
+
 let benchmarks: @Sendable () -> Void = {
   Benchmark(
     "TZF.DefaultFinder.getTimezone.random.1_million",
@@ -66,15 +71,41 @@ let benchmarks: @Sendable () -> Void = {
   ) { benchmark in
     let cities = try Cities()
     let finder = try Finder()
+    var successCount = 0
+    var errorCount = 0
     for _ in benchmark.scaledIterations {
       for _ in 0..<1_000_000 {
         let randomCity = cities.getRandomCity()!
         let lng = Double(randomCity.lng) ?? 0.0
         let lat = Double(randomCity.lat) ?? 0.0
-        _ = try finder.getTimezone(lng: lng, lat: lat)
+        do {
+          _ = try finder.getTimezone(lng: lng, lat: lat)
+          successCount += 1
+        } catch {
+          errorCount += 1
+        }
+      }
+    }
+    print("Finder benchmark stats - Success: \(successCount), Errors: \(errorCount)")
+  }
+
+#if canImport(CoreLocation)
+  Benchmark(
+    "OtherPackageToCompare.LatLongToTimezone.latLngToTimezoneString.random.100_thousand",
+    configuration: .init(metrics: BenchmarkMetric.all)
+  ) { benchmark in
+    let cities = try Cities()
+    for _ in benchmark.scaledIterations {
+      for _ in 0..<100_000 {
+        let randomCity = cities.getRandomCity()!
+        let lng = CLLocationDegrees(randomCity.lng) ?? 0.0
+        let lat = CLLocationDegrees(randomCity.lat) ?? 0.0
+        let coord = CLLocationCoordinate2D(latitude: lat, longitude: lng)
+        _ = TimezoneMapper.latLngToTimezoneString(coord)
       }
     }
   }
+#endif
 
   Benchmark(
     "OtherPackageToCompare.SwiftTimeZoneLookup.simple.random.10_thousand",

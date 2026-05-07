@@ -1,5 +1,5 @@
 {
-  "originHash" : "7fd018347210b3c7918a050a930f72fa272f28fedc238dbd1af40b50f026c8db",
+  "originHash" : "6e61b5aece9e91ef996a477da3ee6aec73871d93d5b34bf3fb642948833f2f3f",
   "pins" : [
     {
       "identity" : "cities-swift",
@@ -17,6 +17,15 @@
       "state" : {
         "revision" : "de0b9b8a27956b9bfc9b4dce7d1c38ad7c579f19",
         "version" : "0.1.4"
+      }
+    },
+    {
+      "identity" : "latlongtotimezone",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/drtimcooper/LatLongToTimezone.git",
+      "state" : {
+        "revision" : "b3e68efb56d08f3baea57f3043145e7ab75568fe",
+        "version" : "1.1.7"
       }
     },
     {

@@ -194,7 +194,13 @@ public class PreindexFinder: F {
   private let preindexData: Tzf_V1_PreindexTimezones
   private let idxZoom: Int32
   private let aggZoom: Int32
-  private let tileCache: [Int64: [String]]
+  // One dictionary instead of two: halves hash lookups per zoom level.
+  // Value ≥ 0 → single timezone index into tzNames.
+  // Value < 0 → -(spanIdx+1), spanIdx indexes multiSpans for (start,count) into multiStore.
+  private let tileData: [Int64: Int32]
+  private let multiSpans: [(start: Int32, count: Int32)]
+  private let tzNames: [String]
+  private let multiStore: [Int32]
 
   public init() throws {
     let bundle = Bundle.module
@@ -211,25 +217,47 @@ public class PreindexFinder: F {
     idxZoom = preindexData.idxZoom
     aggZoom = preindexData.aggZoom
 
-    // Initialize the tile cache with arrays of timezone names.
-    // Key encoding: zoom(4bit) | x(13bit) | y(13bit) packed into Int64.
-    // At idxZoom=13: x,y ≤ 8191 (13 bits each); zoom ≤ 13 (4 bits). Total 30 bits.
-    var cache = [Int64: [String]]()
+    // Build name index.
+    var nameIndex = [String: Int32]()
+    var namesArr = [String]()
     for key in preindexData.keys {
-      let tileKey = Int64(key.z) << 26 | Int64(key.x) << 13 | Int64(key.y)
-      if cache[tileKey] == nil {
-        cache[tileKey] = [key.name]
-      } else {
-        cache[tileKey]?.append(key.name)
+      if nameIndex[key.name] == nil {
+        nameIndex[key.name] = Int32(namesArr.count)
+        namesArr.append(key.name)
       }
     }
 
-    // Sort timezone names for each tile
-    for (key, value) in cache {
-      cache[key] = value.sorted()
+    // Group name indices by tile key, then sort alphabetically within each tile.
+    // Key encoding: zoom(4bit) | x(13bit) | y(13bit) packed into Int64.
+    var rawCache = [Int64: [Int32]]()
+    for key in preindexData.keys {
+      let tileKey = Int64(key.z) << 26 | Int64(key.x) << 13 | Int64(key.y)
+      rawCache[tileKey, default: []].append(nameIndex[key.name]!)
+    }
+    for k in rawCache.keys { rawCache[k]?.sort { namesArr[Int($0)] < namesArr[Int($1)] } }
+
+    // Build single combined dictionary: one lookup per zoom level instead of two.
+    // Single-tz tiles: value = nameIdx (≥ 0).
+    // Multi-tz tiles:  value = -(spanIdx+1) (< 0); spanIdx indexes multiSpansArr.
+    var data = [Int64: Int32]()
+    var spansArr = [(start: Int32, count: Int32)]()
+    var store = [Int32]()
+    data.reserveCapacity(rawCache.count)
+    for (tileKey, idxs) in rawCache {
+      if idxs.count == 1 {
+        data[tileKey] = idxs[0]
+      } else {
+        let spanIdx = Int32(spansArr.count)
+        spansArr.append((start: Int32(store.count), count: Int32(idxs.count)))
+        store.append(contentsOf: idxs)
+        data[tileKey] = -(spanIdx + 1)
+      }
     }
 
-    tileCache = cache
+    tileData = data
+    multiSpans = spansArr
+    tzNames = namesArr
+    multiStore = store
   }
 
   public func dataVersion() -> String {
@@ -249,31 +277,56 @@ public class PreindexFinder: F {
     return (x, y)
   }
 
-  public func getTimezone(lng: Double, lat: Double) throws -> String {
-    let timezones = try getTimezones(lng: lng, lat: lat)
-    guard let timezone = timezones.first else {
-      throw TZFError.noTimezoneFound
-    }
-    return timezone
+  @inline(__always)
+  private func tileKey(zoom: Int32, highX: Int32, highY: Int32) -> Int64 {
+    let shift = idxZoom - zoom
+    return Int64(zoom) << 26 | Int64(highX >> shift) << 13 | Int64(highY >> shift)
   }
 
-  public func getTimezones(lng: Double, lat: Double) throws -> [String] {
-    // Check coordinates validity
+  @inline(__always)
+  private func firstName(for val: Int32) -> String {
+    if val >= 0 { return tzNames[Int(val)] }
+    let span = multiSpans[Int(-(val + 1))]
+    return tzNames[Int(multiStore[Int(span.start)])]
+  }
+
+  // Non-throwing fast path used by DefaultFinder — mirrors Go's FuzzyFinder.GetTimezoneName.
+  // One dict lookup per zoom level (vs two previously); returns nil on miss.
+  @inline(__always)
+  func fuzzyGetTimezone(lng: Double, lat: Double) -> String? {
+    let (highX, highY) = lngLatToTile(lng: lng, lat: lat, zoom: idxZoom)
+    for zoom in aggZoom...idxZoom {
+      if let val = tileData[tileKey(zoom: zoom, highX: highX, highY: highY)] {
+        return firstName(for: val)
+      }
+    }
+    return nil
+  }
+
+  public func getTimezone(lng: Double, lat: Double) throws -> String {
     guard (-180.0...180.0).contains(lng) && (-90.0...90.0).contains(lat) else {
       throw TZFError.invalidCoordinates
     }
-
-    // Try each zoom level from aggZoom to idxZoom
+    let (highX, highY) = lngLatToTile(lng: lng, lat: lat, zoom: idxZoom)
     for zoom in aggZoom...idxZoom {
-      let (x, y) = lngLatToTile(lng: lng, lat: lat, zoom: zoom)
-      let tileKey = Int64(zoom) << 26 | Int64(x) << 13 | Int64(y)
-
-      // Look up in the cache
-      if let tzNames = tileCache[tileKey], !tzNames.isEmpty {
-        return tzNames  // Already sorted during initialization
+      if let val = tileData[tileKey(zoom: zoom, highX: highX, highY: highY)] {
+        return firstName(for: val)
       }
     }
+    throw TZFError.noTimezoneFound
+  }
 
+  public func getTimezones(lng: Double, lat: Double) throws -> [String] {
+    guard (-180.0...180.0).contains(lng) && (-90.0...90.0).contains(lat) else {
+      throw TZFError.invalidCoordinates
+    }
+    let (highX, highY) = lngLatToTile(lng: lng, lat: lat, zoom: idxZoom)
+    for zoom in aggZoom...idxZoom {
+      guard let val = tileData[tileKey(zoom: zoom, highX: highX, highY: highY)] else { continue }
+      if val >= 0 { return [tzNames[Int(val)]] }
+      let span = multiSpans[Int(-(val + 1))]
+      return (span.start..<(span.start + span.count)).map { tzNames[Int(multiStore[Int($0)])] }
+    }
     throw TZFError.noTimezoneFound
   }
 
@@ -380,6 +433,7 @@ public enum FinderError: Error {
 /// - Polyline coordinate compression (delta + zigzag encoding, scale 1e5)
 /// - Polygon boundary support with hole (enclave) handling
 /// - Bounding-box pre-filter for fast rejection
+/// - Optional 1°×1° grid index for O(1) candidate reduction (embedded in data file)
 public class Finder: F {
   private struct ProcessedTimezone {
     let name: String
@@ -388,6 +442,13 @@ public class Finder: F {
   }
   private let processedTimezones: [ProcessedTimezone]
   private let version: String
+  // Flat grid storage: no per-cell heap allocation, no ARC on lookup.
+  // gridIndex maps packed(floor(lng), floor(lat)) → (start, count) into candidateStore.
+  // Key: low 16 bits = Int16(floor(lng)), high 16 bits = Int16(floor(lat)).
+  // nil when the data file has no embedded GridIndex (falls back to linear scan).
+  private struct GridSpan { let start: Int32; let count: Int32 }
+  private let gridIndex: [Int32: GridSpan]?
+  private let candidateStore: [Int32]
 
   public init() throws {
     let bundle = Bundle.module
@@ -430,6 +491,26 @@ public class Finder: F {
       processed.append(ProcessedTimezone(name: tz.name, polygons: polygons, unionRect: unionRect))
     }
     self.processedTimezones = processed
+
+    // Decode the embedded GridIndex into flat storage for O(1) cell lookup with no ARC.
+    // candidateStore is one contiguous [Int32]; gridIndex maps packed keys to (start,count)
+    // spans — GridSpan is a struct, so dict lookups incur no retain/release.
+    if topoData.hasGridIndex {
+      var store = [Int32]()
+      var indexMap = [Int32: GridSpan]()
+      indexMap.reserveCapacity(topoData.gridIndex.cells.count)
+      for cell in topoData.gridIndex.cells {
+        let key = Int32(Int16(cell.lng)) | (Int32(Int16(cell.lat)) << 16)
+        let start = Int32(store.count)
+        for idx in cell.tzIndices { store.append(Int32(idx)) }
+        indexMap[key] = GridSpan(start: start, count: Int32(cell.tzIndices.count))
+      }
+      self.gridIndex = indexMap
+      self.candidateStore = store
+    } else {
+      self.gridIndex = nil
+      self.candidateStore = []
+    }
   }
 
   private func toFeature(name: String, polygons: [Polygon]) -> GeoJSONFeature {
@@ -471,52 +552,63 @@ public class Finder: F {
   }
 
   public func getTimezone(lng: Double, lat: Double) throws -> String {
-    let result = try getTimezones(lng: lng, lat: lat)
-    guard let first = result.first else {
-      throw FinderError.noTimezoneFound
+    let point = Point(x: lng, y: lat)
+    if let index = gridIndex {
+      let key = Int32(Int16(floor(lng))) | (Int32(Int16(floor(lat))) << 16)
+      if let span = index[key] {
+        // Single-candidate shortcut: grid guarantees exactly one timezone for this cell.
+        if span.count == 1 {
+          return processedTimezones[Int(candidateStore[Int(span.start)])].name
+        }
+        for i in span.start..<(span.start + span.count) {
+          let tz = processedTimezones[Int(candidateStore[Int(i)])]
+          guard tz.unionRect.containsPoint(point) else { continue }
+          for polygon in tz.polygons {
+            if polygon.containsPoint(point) { return tz.name }
+          }
+        }
+        // PIP found no match among candidates — fall through to full scan.
+      }
+      // Cell absent or PIP miss: full linear scan as fallback (matches Go/Rust behaviour).
     }
-    return first
+    for tz in processedTimezones {
+      guard tz.unionRect.containsPoint(point) else { continue }
+      for polygon in tz.polygons {
+        if polygon.containsPoint(point) { return tz.name }
+      }
+    }
+    throw FinderError.noTimezoneFound
   }
 
   public func getTimezones(lng: Double, lat: Double) throws -> [String] {
     let point = Point(x: lng, y: lat)
     var results: [String] = []
 
-    for timezone in processedTimezones {
-      guard timezone.unionRect.containsPoint(point) else { continue }
-      for polygon in timezone.polygons {
-        if polygon.containsPoint(point) {
-          results.append(timezone.name)
-          break
-        }
-      }
-    }
-
-    // For coordinates on or very near topology-simplified boundaries, try small
-    // offsets as a fallback. This handles edge cases like the intersection of
-    // the International Date Line (lng=±180) and the equator (lat=0).
-    if results.isEmpty {
-      let shifts = [0.01, -0.01, 0.02, -0.02]
-      outer: for dlng in shifts {
-        for dlat in shifts {
-          let shifted = Point(x: lng + dlng, y: lat + dlat)
-          for timezone in processedTimezones {
-            for polygon in timezone.polygons {
-              if polygon.containsPoint(shifted) {
-                results.append(timezone.name)
-                break
-              }
-            }
+    if let index = gridIndex {
+      let key = Int32(Int16(floor(lng))) | (Int32(Int16(floor(lat))) << 16)
+      if let span = index[key], span.count > 0 {
+        for i in span.start..<(span.start + span.count) {
+          let tz = processedTimezones[Int(candidateStore[Int(i)])]
+          guard tz.unionRect.containsPoint(point) else { continue }
+          for polygon in tz.polygons {
+            if polygon.containsPoint(point) { results.append(tz.name); break }
           }
-          if !results.isEmpty { break outer }
         }
+        if !results.isEmpty {
+          results.sort()
+          return results
+        }
+        // Cell present but PIP found nothing — fall through to full scan.
+      }
+      // Cell absent or PIP miss: full linear scan as fallback.
+    }
+    for tz in processedTimezones {
+      guard tz.unionRect.containsPoint(point) else { continue }
+      for polygon in tz.polygons {
+        if polygon.containsPoint(point) { results.append(tz.name); break }
       }
     }
-
-    if results.isEmpty {
-      throw FinderError.noTimezoneFound
-    }
-
+    if results.isEmpty { throw FinderError.noTimezoneFound }
     results.sort()
     return results
   }
@@ -544,11 +636,10 @@ public class DefaultFinder: F {
   }
 
   public func getTimezone(lng: Double, lat: Double) throws -> String {
-    do {
-      return try preindexFinder.getTimezone(lng: lng, lat: lat)
-    } catch {
-      return try topoFinder.getTimezone(lng: lng, lat: lat)
+    if let result = preindexFinder.fuzzyGetTimezone(lng: lng, lat: lat) {
+      return result
     }
+    return try topoFinder.getTimezone(lng: lng, lat: lat)
   }
 
   public func getTimezones(lng: Double, lat: Double) throws -> [String] {

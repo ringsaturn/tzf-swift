@@ -1,4 +1,4 @@
-.PHONY: build test bench fmt pb sync docs docs-subpath run-demo demo-output update-demo-docs clean
+.PHONY: build test bench bench-table fmt pb sync docs docs-subpath run-demo demo-output update-demo-docs clean
 
 SWIFT_SCRATCH_PATH ?= $(HOME)/Library/Caches/tzf-swift/swiftpm
 BENCHMARKS_SCRATCH_PATH ?= $(HOME)/Library/Caches/tzf-swift/benchmarks-swiftpm
@@ -19,7 +19,11 @@ test:
 	swift test -c release $(SWIFTPM_BUILD_FLAGS)
 
 bench:
-	swift package --package-path Benchmarks $(BENCHMARKS_BUILD_FLAGS) benchmark --target TimezoneFinderBenchmarks
+	swift package --package-path Benchmarks $(BENCHMARKS_BUILD_FLAGS) benchmark --target TimezoneFinderBenchmarks | tee benchmark_baseline.txt
+	make bench-table
+
+bench-table: benchmark_baseline.txt
+	python3 scripts/parse_benchmark.py benchmark_baseline.txt
 
 fmt:
 	swift format --in-place --recursive Sources Tests Examples Benchmarks
