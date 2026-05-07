@@ -2,10 +2,13 @@
 
 import Benchmark
 import Cities
-import CoreLocation
-import LatLongToTimezone
 import SwiftTimeZoneLookup
 import tzf
+
+#if canImport(CoreLocation)
+  import CoreLocation
+  import LatLongToTimezone
+#endif
 
 let benchmarks: @Sendable () -> Void = {
   Benchmark(
@@ -86,6 +89,7 @@ let benchmarks: @Sendable () -> Void = {
     print("Finder benchmark stats - Success: \(successCount), Errors: \(errorCount)")
   }
 
+#if canImport(CoreLocation)
   Benchmark(
     "OtherPackageToCompare.LatLongToTimezone.latLngToTimezoneString.random.100_thousand",
     configuration: .init(metrics: BenchmarkMetric.all)
@@ -101,6 +105,7 @@ let benchmarks: @Sendable () -> Void = {
       }
     }
   }
+#endif
 
   Benchmark(
     "OtherPackageToCompare.SwiftTimeZoneLookup.simple.random.10_thousand",
