@@ -63,7 +63,7 @@ designed for server-side high-performance use cases.
 
 Hardware: MacBook Pro with Apple M3 Max.
 
-Benchmark Summary (2026a data):
+Benchmark Summary:
 
 | Implementation               | Test Scale | Execution Time (ms) | Success Rate | Operations per Second (op/sec) | Memory Usage (Peak MB) | Instructions (G) |
 | ---------------------------- | ---------- | ------------------- | ------------ | ------------------------------ | ---------------------- | ---------------- |
