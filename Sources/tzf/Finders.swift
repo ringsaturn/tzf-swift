@@ -194,13 +194,13 @@ public class PreindexFinder: F {
   private let preindexData: Tzf_V1_PreindexTimezones
   private let idxZoom: Int32
   private let aggZoom: Int32
-  // Mirrors Go's FuzzyFinder: single-timezone tiles and multi-timezone tiles stored
-  // separately so lookup returns an Int32 index (no ARC) rather than [String].
-  private struct TileSpan { let start: Int32; let count: Int32 }
-  private let tileSingle: [Int64: Int32]   // tile → index into tzNames
-  private let tileMulti: [Int64: TileSpan]  // tile → span into multiStore
-  private let tzNames: [String]             // all unique timezone names
-  private let multiStore: [Int32]           // flat name-index array for multi-tz tiles
+  // One dictionary instead of two: halves hash lookups per zoom level.
+  // Value ≥ 0 → single timezone index into tzNames.
+  // Value < 0 → -(spanIdx+1), spanIdx indexes multiSpans for (start,count) into multiStore.
+  private let tileData: [Int64: Int32]
+  private let multiSpans: [(start: Int32, count: Int32)]
+  private let tzNames: [String]
+  private let multiStore: [Int32]
 
   public init() throws {
     let bundle = Bundle.module
@@ -236,23 +236,26 @@ public class PreindexFinder: F {
     }
     for k in rawCache.keys { rawCache[k]?.sort { namesArr[Int($0)] < namesArr[Int($1)] } }
 
-    // Split into single-tz (Int32 index, no ARC) and multi-tz (flat span) maps.
-    var single = [Int64: Int32]()
-    var multi = [Int64: TileSpan]()
+    // Build single combined dictionary: one lookup per zoom level instead of two.
+    // Single-tz tiles: value = nameIdx (≥ 0).
+    // Multi-tz tiles:  value = -(spanIdx+1) (< 0); spanIdx indexes multiSpansArr.
+    var data = [Int64: Int32]()
+    var spansArr = [(start: Int32, count: Int32)]()
     var store = [Int32]()
-    single.reserveCapacity(rawCache.count)
+    data.reserveCapacity(rawCache.count)
     for (tileKey, idxs) in rawCache {
       if idxs.count == 1 {
-        single[tileKey] = idxs[0]
+        data[tileKey] = idxs[0]
       } else {
-        let start = Int32(store.count)
+        let spanIdx = Int32(spansArr.count)
+        spansArr.append((start: Int32(store.count), count: Int32(idxs.count)))
         store.append(contentsOf: idxs)
-        multi[tileKey] = TileSpan(start: start, count: Int32(idxs.count))
+        data[tileKey] = -(spanIdx + 1)
       }
     }
 
-    tileSingle = single
-    tileMulti = multi
+    tileData = data
+    multiSpans = spansArr
     tzNames = namesArr
     multiStore = store
   }
@@ -274,18 +277,28 @@ public class PreindexFinder: F {
     return (x, y)
   }
 
+  @inline(__always)
+  private func tileKey(zoom: Int32, highX: Int32, highY: Int32) -> Int64 {
+    let shift = idxZoom - zoom
+    return Int64(zoom) << 26 | Int64(highX >> shift) << 13 | Int64(highY >> shift)
+  }
+
+  @inline(__always)
+  private func firstName(for val: Int32) -> String {
+    if val >= 0 { return tzNames[Int(val)] }
+    let span = multiSpans[Int(-(val + 1))]
+    return tzNames[Int(multiStore[Int(span.start)])]
+  }
+
   // Non-throwing fast path used by DefaultFinder — mirrors Go's FuzzyFinder.GetTimezoneName.
-  // Skips coordinate validation and [String] allocation; returns nil on cache miss.
+  // One dict lookup per zoom level (vs two previously); returns nil on miss.
   @inline(__always)
   func fuzzyGetTimezone(lng: Double, lat: Double) -> String? {
-    // Compute tile coords once at the finest zoom, then right-shift for coarser levels
-    // (mirrors Rust's deg2num-once approach — avoids repeated sin/cos/atan per zoom).
     let (highX, highY) = lngLatToTile(lng: lng, lat: lat, zoom: idxZoom)
     for zoom in aggZoom...idxZoom {
-      let shift = idxZoom - zoom
-      let key = Int64(zoom) << 26 | Int64(highX >> shift) << 13 | Int64(highY >> shift)
-      if let idx = tileSingle[key] { return tzNames[Int(idx)] }
-      if let span = tileMulti[key] { return tzNames[Int(multiStore[Int(span.start)])] }
+      if let val = tileData[tileKey(zoom: zoom, highX: highX, highY: highY)] {
+        return firstName(for: val)
+      }
     }
     return nil
   }
@@ -296,10 +309,9 @@ public class PreindexFinder: F {
     }
     let (highX, highY) = lngLatToTile(lng: lng, lat: lat, zoom: idxZoom)
     for zoom in aggZoom...idxZoom {
-      let shift = idxZoom - zoom
-      let key = Int64(zoom) << 26 | Int64(highX >> shift) << 13 | Int64(highY >> shift)
-      if let idx = tileSingle[key] { return tzNames[Int(idx)] }
-      if let span = tileMulti[key] { return tzNames[Int(multiStore[Int(span.start)])] }
+      if let val = tileData[tileKey(zoom: zoom, highX: highX, highY: highY)] {
+        return firstName(for: val)
+      }
     }
     throw TZFError.noTimezoneFound
   }
@@ -310,12 +322,10 @@ public class PreindexFinder: F {
     }
     let (highX, highY) = lngLatToTile(lng: lng, lat: lat, zoom: idxZoom)
     for zoom in aggZoom...idxZoom {
-      let shift = idxZoom - zoom
-      let key = Int64(zoom) << 26 | Int64(highX >> shift) << 13 | Int64(highY >> shift)
-      if let idx = tileSingle[key] { return [tzNames[Int(idx)]] }
-      if let span = tileMulti[key] {
-        return (span.start..<(span.start + span.count)).map { tzNames[Int(multiStore[Int($0)])] }
-      }
+      guard let val = tileData[tileKey(zoom: zoom, highX: highX, highY: highY)] else { continue }
+      if val >= 0 { return [tzNames[Int(val)]] }
+      let span = multiSpans[Int(-(val + 1))]
+      return (span.start..<(span.start + span.count)).map { tzNames[Int(multiStore[Int($0)])] }
     }
     throw TZFError.noTimezoneFound
   }
