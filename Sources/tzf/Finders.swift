@@ -380,6 +380,7 @@ public enum FinderError: Error {
 /// - Polyline coordinate compression (delta + zigzag encoding, scale 1e5)
 /// - Polygon boundary support with hole (enclave) handling
 /// - Bounding-box pre-filter for fast rejection
+/// - Optional 1°×1° grid index for O(1) candidate reduction (embedded in data file)
 public class Finder: F {
   private struct ProcessedTimezone {
     let name: String
@@ -388,6 +389,10 @@ public class Finder: F {
   }
   private let processedTimezones: [ProcessedTimezone]
   private let version: String
+  // grid maps packed(floor(lng), floor(lat)) → candidate timezone indices.
+  // Key: low 16 bits = Int16(floor(lng)), high 16 bits = Int16(floor(lat)).
+  // nil when the data file has no embedded GridIndex (falls back to linear scan).
+  private let grid: [Int32: [Int32]]?
 
   public init() throws {
     let bundle = Bundle.module
@@ -430,6 +435,29 @@ public class Finder: F {
       processed.append(ProcessedTimezone(name: tz.name, polygons: polygons, unionRect: unionRect))
     }
     self.processedTimezones = processed
+
+    // Decode the embedded GridIndex into a flat hash map for O(1) cell lookup.
+    if topoData.hasGridIndex {
+      var gridMap = [Int32: [Int32]]()
+      gridMap.reserveCapacity(topoData.gridIndex.cells.count)
+      for cell in topoData.gridIndex.cells {
+        let key = Int32(Int16(cell.lng)) | (Int32(Int16(cell.lat)) << 16)
+        gridMap[key] = cell.tzIndices.map { Int32($0) }
+      }
+      self.grid = gridMap
+    } else {
+      self.grid = nil
+    }
+  }
+
+  // Returns (candidates, loaded): loaded=false → no grid, fall back to linear scan.
+  // loaded=true, candidates=nil → cell absent from index (no timezones).
+  // loaded=true, candidates=[...] → restrict PIP to these indices.
+  @inline(__always)
+  private func gridCandidates(lng: Double, lat: Double) -> ([Int32]?, Bool) {
+    guard let grid = grid else { return (nil, false) }
+    let key = Int32(Int16(floor(lng))) | (Int32(Int16(floor(lat))) << 16)
+    return (grid[key], true)
   }
 
   private func toFeature(name: String, polygons: [Polygon]) -> GeoJSONFeature {
@@ -471,6 +499,15 @@ public class Finder: F {
   }
 
   public func getTimezone(lng: Double, lat: Double) throws -> String {
+    // Single-candidate shortcut: when the grid maps this cell to exactly one
+    // timezone and the point is well away from the antimeridian and poles,
+    // skip PIP entirely — the grid guarantee is sufficient.
+    if let grid = grid, lng > -179, lng < 179, lat > -89, lat < 89 {
+      let key = Int32(Int16(floor(lng))) | (Int32(Int16(floor(lat))) << 16)
+      if let candidates = grid[key], candidates.count == 1 {
+        return processedTimezones[Int(candidates[0])].name
+      }
+    }
     let result = try getTimezones(lng: lng, lat: lat)
     guard let first = result.first else {
       throw FinderError.noTimezoneFound
@@ -482,12 +519,29 @@ public class Finder: F {
     let point = Point(x: lng, y: lat)
     var results: [String] = []
 
-    for timezone in processedTimezones {
-      guard timezone.unionRect.containsPoint(point) else { continue }
-      for polygon in timezone.polygons {
-        if polygon.containsPoint(point) {
-          results.append(timezone.name)
-          break
+    let (candidates, gridLoaded) = gridCandidates(lng: lng, lat: lat)
+
+    if gridLoaded, let candidates = candidates, !candidates.isEmpty {
+      // Grid index path: PIP over candidate timezones only.
+      for idx in candidates {
+        let timezone = processedTimezones[Int(idx)]
+        guard timezone.unionRect.containsPoint(point) else { continue }
+        for polygon in timezone.polygons {
+          if polygon.containsPoint(point) {
+            results.append(timezone.name)
+            break
+          }
+        }
+      }
+    } else {
+      // Fallback: full linear scan (no grid loaded, or cell absent from index).
+      for timezone in processedTimezones {
+        guard timezone.unionRect.containsPoint(point) else { continue }
+        for polygon in timezone.polygons {
+          if polygon.containsPoint(point) {
+            results.append(timezone.name)
+            break
+          }
         }
       }
     }
