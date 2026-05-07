@@ -131,6 +131,28 @@ def _get_instructions_g(metrics):
     return None
 
 
+# ── Benchmark ordering ────────────────────────────────────────────────────────
+
+# Desired display order matches the definition order in TimezoneFinderBenchmarks.swift.
+# The benchmark runner executes alphabetically; this list restores the original order.
+_BENCHMARK_ORDER = [
+    "TZF.DefaultFinder",
+    "TZF.PreindexFinder",
+    "TZF.Finder",
+    "LatLongToTimezone",
+    "SwiftTimeZoneLookup.simple",
+    "SwiftTimeZoneLookup.lookup",
+]
+
+
+def _sort_key(benchmark):
+    display = _display_name(benchmark["name"])
+    for i, prefix in enumerate(_BENCHMARK_ORDER):
+        if display.startswith(prefix):
+            return i
+    return len(_BENCHMARK_ORDER)
+
+
 # ── Name helpers ──────────────────────────────────────────────────────────────
 
 _SCALE_PATTERNS = [
@@ -209,6 +231,7 @@ def _build_rows(benchmarks, success_rates):
 
 
 def render_markdown_table(benchmarks, success_rates):
+    benchmarks = sorted(benchmarks, key=_sort_key)
     rows = _build_rows(benchmarks, success_rates)
     if not rows:
         return ""

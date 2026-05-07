@@ -67,12 +67,12 @@ Benchmark Summary:
 
 | Implementation               | Test Scale | Execution Time (ms) | Success Rate | Operations per Second (op/sec) | Memory Usage (Peak MB) | Instructions (G) |
 | ---------------------------- | ---------- | ------------------- | ------------ | ------------------------------ | ---------------------- | ---------------- |
-| `LatLongToTimezone`          | 100,000    | 339                 | 100%         | ~294,985                       | 171                    | ~6.9             |
-| `SwiftTimeZoneLookup.lookup` | 10,000     | 3,305               | 100%         | ~3,025                         | 175                    | 44               |
-| `SwiftTimeZoneLookup.simple` | 10,000     | 3,266               | 100%         | ~3,061                         | 175                    | 43               |
 | `TZF.DefaultFinder`          | 1,000,000  | 920                 | 100%         | ~1,086,956                     | 296                    | 13               |
-| `TZF.Finder`                 | 1,000,000  | 1,140               | 100%         | ~877,192                       | 282                    | 14               |
 | `TZF.PreindexFinder`         | 1,000,000  | 685                 | ~85%         | ~1,459,854                     | 184                    | 11               |
+| `TZF.Finder`                 | 1,000,000  | 1,140               | 100%         | ~877,192                       | 282                    | 14               |
+| `LatLongToTimezone`          | 100,000    | 339                 | 100%         | ~294,985                       | 171                    | ~6.9             |
+| `SwiftTimeZoneLookup.simple` | 10,000     | 3,266               | 100%         | ~3,061                         | 175                    | 43               |
+| `SwiftTimeZoneLookup.lookup` | 10,000     | 3,305               | 100%         | ~3,025                         | 175                    | 44               |
 
 Full benchmark results can be viewed in [benchmark_baseline.txt](./benchmark_baseline.txt).
 
