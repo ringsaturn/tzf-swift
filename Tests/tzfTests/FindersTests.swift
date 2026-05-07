@@ -129,7 +129,6 @@ import Testing
 }
 
 @Test func finderEdgeCases() async throws {
-  // Load test data
   let finder = try! Finder()
 
   // Test International Date Line

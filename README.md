@@ -63,15 +63,16 @@ designed for server-side high-performance use cases.
 
 Hardware: MacBook Pro with Apple M3 Max.
 
-Processing 1 million queries took ~1,300ms. Benchmark Summary (2026a data):
+Benchmark Summary (2026a data):
 
 | Implementation               | Test Scale | Execution Time (ms) | Success Rate | Operations per Second (op/sec) | Memory Usage (Peak MB) | Instructions (G) |
 | ---------------------------- | ---------- | ------------------- | ------------ | ------------------------------ | ---------------------- | ---------------- |
-| `TZF.DefaultFinder`          | 1,000,000  | 1,306               | 100%         | ~766,000                       | 284                    | 16               |
-| `TZF.Finder`                 | 1,000,000  | 1,607               | 100%         | ~622,000                       | 269                    | 22               |
-| `TZF.PreindexFinder`         | 1,000,000  | 946                 | ~85%         | ~1,057,000                     | 184                    | 12               |
-| `SwiftTimeZoneLookup.lookup` | 10,000     | 3,279               | 100%         | ~3,050                         | 179                    | 44               |
-| `SwiftTimeZoneLookup.simple` | 10,000     | 3,311               | 100%         | ~3,020                         | 179                    | 44               |
+| `LatLongToTimezone`          | 100,000    | 333                 | 100%         | ~300,300                       | 173                    | ~6.8             |
+| `SwiftTimeZoneLookup.lookup` | 10,000     | 3,297               | 100%         | ~3,033                         | 175                    | 44               |
+| `SwiftTimeZoneLookup.simple` | 10,000     | 3,287               | 100%         | ~3,042                         | 175                    | 44               |
+| `TZF.DefaultFinder`          | 1,000,000  | 1,173               | 100%         | ~852,514                       | 297                    | 15               |
+| `TZF.Finder`                 | 1,000,000  | 1,111               | 100%         | ~900,090                       | 280                    | 14               |
+| `TZF.PreindexFinder`         | 1,000,000  | 925                 | ~85%         | ~1,081,081                     | 184                    | 12               |
 
 Full benchmark results can be viewed in [benchmark_baseline.txt](./benchmark_baseline.txt).
 

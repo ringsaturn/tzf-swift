@@ -389,10 +389,13 @@ public class Finder: F {
   }
   private let processedTimezones: [ProcessedTimezone]
   private let version: String
-  // grid maps packed(floor(lng), floor(lat)) → candidate timezone indices.
+  // Flat grid storage: no per-cell heap allocation, no ARC on lookup.
+  // gridIndex maps packed(floor(lng), floor(lat)) → (start, count) into candidateStore.
   // Key: low 16 bits = Int16(floor(lng)), high 16 bits = Int16(floor(lat)).
   // nil when the data file has no embedded GridIndex (falls back to linear scan).
-  private let grid: [Int32: [Int32]]?
+  private struct GridSpan { let start: Int32; let count: Int32 }
+  private let gridIndex: [Int32: GridSpan]?
+  private let candidateStore: [Int32]
 
   public init() throws {
     let bundle = Bundle.module
@@ -436,28 +439,25 @@ public class Finder: F {
     }
     self.processedTimezones = processed
 
-    // Decode the embedded GridIndex into a flat hash map for O(1) cell lookup.
+    // Decode the embedded GridIndex into flat storage for O(1) cell lookup with no ARC.
+    // candidateStore is one contiguous [Int32]; gridIndex maps packed keys to (start,count)
+    // spans — GridSpan is a struct, so dict lookups incur no retain/release.
     if topoData.hasGridIndex {
-      var gridMap = [Int32: [Int32]]()
-      gridMap.reserveCapacity(topoData.gridIndex.cells.count)
+      var store = [Int32]()
+      var indexMap = [Int32: GridSpan]()
+      indexMap.reserveCapacity(topoData.gridIndex.cells.count)
       for cell in topoData.gridIndex.cells {
         let key = Int32(Int16(cell.lng)) | (Int32(Int16(cell.lat)) << 16)
-        gridMap[key] = cell.tzIndices.map { Int32($0) }
+        let start = Int32(store.count)
+        for idx in cell.tzIndices { store.append(Int32(idx)) }
+        indexMap[key] = GridSpan(start: start, count: Int32(cell.tzIndices.count))
       }
-      self.grid = gridMap
+      self.gridIndex = indexMap
+      self.candidateStore = store
     } else {
-      self.grid = nil
+      self.gridIndex = nil
+      self.candidateStore = []
     }
-  }
-
-  // Returns (candidates, loaded): loaded=false → no grid, fall back to linear scan.
-  // loaded=true, candidates=nil → cell absent from index (no timezones).
-  // loaded=true, candidates=[...] → restrict PIP to these indices.
-  @inline(__always)
-  private func gridCandidates(lng: Double, lat: Double) -> ([Int32]?, Bool) {
-    guard let grid = grid else { return (nil, false) }
-    let key = Int32(Int16(floor(lng))) | (Int32(Int16(floor(lat))) << 16)
-    return (grid[key], true)
   }
 
   private func toFeature(name: String, polygons: [Polygon]) -> GeoJSONFeature {
@@ -499,78 +499,63 @@ public class Finder: F {
   }
 
   public func getTimezone(lng: Double, lat: Double) throws -> String {
-    // Single-candidate shortcut: when the grid maps this cell to exactly one
-    // timezone and the point is well away from the antimeridian and poles,
-    // skip PIP entirely — the grid guarantee is sufficient.
-    if let grid = grid, lng > -179, lng < 179, lat > -89, lat < 89 {
+    let point = Point(x: lng, y: lat)
+    if let index = gridIndex {
       let key = Int32(Int16(floor(lng))) | (Int32(Int16(floor(lat))) << 16)
-      if let candidates = grid[key], candidates.count == 1 {
-        return processedTimezones[Int(candidates[0])].name
+      if let span = index[key] {
+        // Single-candidate shortcut: grid guarantees exactly one timezone for this cell.
+        if span.count == 1 {
+          return processedTimezones[Int(candidateStore[Int(span.start)])].name
+        }
+        for i in span.start..<(span.start + span.count) {
+          let tz = processedTimezones[Int(candidateStore[Int(i)])]
+          guard tz.unionRect.containsPoint(point) else { continue }
+          for polygon in tz.polygons {
+            if polygon.containsPoint(point) { return tz.name }
+          }
+        }
+        // PIP found no match among candidates — fall through to full scan.
+      }
+      // Cell absent or PIP miss: full linear scan as fallback (matches Go/Rust behaviour).
+    }
+    for tz in processedTimezones {
+      guard tz.unionRect.containsPoint(point) else { continue }
+      for polygon in tz.polygons {
+        if polygon.containsPoint(point) { return tz.name }
       }
     }
-    let result = try getTimezones(lng: lng, lat: lat)
-    guard let first = result.first else {
-      throw FinderError.noTimezoneFound
-    }
-    return first
+    throw FinderError.noTimezoneFound
   }
 
   public func getTimezones(lng: Double, lat: Double) throws -> [String] {
     let point = Point(x: lng, y: lat)
     var results: [String] = []
 
-    let (candidates, gridLoaded) = gridCandidates(lng: lng, lat: lat)
-
-    if gridLoaded, let candidates = candidates, !candidates.isEmpty {
-      // Grid index path: PIP over candidate timezones only.
-      for idx in candidates {
-        let timezone = processedTimezones[Int(idx)]
-        guard timezone.unionRect.containsPoint(point) else { continue }
-        for polygon in timezone.polygons {
-          if polygon.containsPoint(point) {
-            results.append(timezone.name)
-            break
+    if let index = gridIndex {
+      let key = Int32(Int16(floor(lng))) | (Int32(Int16(floor(lat))) << 16)
+      if let span = index[key], span.count > 0 {
+        for i in span.start..<(span.start + span.count) {
+          let tz = processedTimezones[Int(candidateStore[Int(i)])]
+          guard tz.unionRect.containsPoint(point) else { continue }
+          for polygon in tz.polygons {
+            if polygon.containsPoint(point) { results.append(tz.name); break }
           }
         }
-      }
-    } else {
-      // Fallback: full linear scan (no grid loaded, or cell absent from index).
-      for timezone in processedTimezones {
-        guard timezone.unionRect.containsPoint(point) else { continue }
-        for polygon in timezone.polygons {
-          if polygon.containsPoint(point) {
-            results.append(timezone.name)
-            break
-          }
+        if !results.isEmpty {
+          results.sort()
+          return results
         }
+        // Cell present but PIP found nothing — fall through to full scan.
+      }
+      // Cell absent or PIP miss: full linear scan as fallback.
+    }
+    for tz in processedTimezones {
+      guard tz.unionRect.containsPoint(point) else { continue }
+      for polygon in tz.polygons {
+        if polygon.containsPoint(point) { results.append(tz.name); break }
       }
     }
-
-    // For coordinates on or very near topology-simplified boundaries, try small
-    // offsets as a fallback. This handles edge cases like the intersection of
-    // the International Date Line (lng=±180) and the equator (lat=0).
-    if results.isEmpty {
-      let shifts = [0.01, -0.01, 0.02, -0.02]
-      outer: for dlng in shifts {
-        for dlat in shifts {
-          let shifted = Point(x: lng + dlng, y: lat + dlat)
-          for timezone in processedTimezones {
-            for polygon in timezone.polygons {
-              if polygon.containsPoint(shifted) {
-                results.append(timezone.name)
-                break
-              }
-            }
-          }
-          if !results.isEmpty { break outer }
-        }
-      }
-    }
-
-    if results.isEmpty {
-      throw FinderError.noTimezoneFound
-    }
-
+    if results.isEmpty { throw FinderError.noTimezoneFound }
     results.sort()
     return results
   }
