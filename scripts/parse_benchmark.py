@@ -104,7 +104,9 @@ def _get_wall_ms(metrics):
         if "(ms)" in key:
             return val
         if "(μs)" in key or "(µs)" in key:
-            return val / 1000
+            return val / 1_000
+        if "(ns)" in key:
+            return val / 1_000_000
     return None
 
 
@@ -119,15 +121,21 @@ def _get_memory_mb(metrics):
     return None
 
 
-def _get_instructions_g(metrics):
+def _get_instructions_str(metrics):
     for key, val in metrics.items():
         if "Instructions" not in key:
             continue
         if "(G)" in key:
-            return f"{int(val)}"
+            return f"{int(val)} G"
         if "(M)" in key:
-            g = val / 1000
-            return f"~{g:.1f}"
+            g = val / 1_000
+            return f"~{g:.1f} G"
+        if "(K)" in key:
+            m = val / 1_000
+            return f"~{m:.1f} M"
+        # Raw count (no unit suffix) — typical for per-call benchmarks
+        k = val / 1_000
+        return f"~{k:.1f} K"
     return None
 
 
@@ -137,11 +145,17 @@ def _get_instructions_g(metrics):
 # The benchmark runner executes alphabetically; this list restores the original order.
 _BENCHMARK_ORDER = [
     "TZF.DefaultFinder",
+    "TZF.DefaultFinder (per call)",
     "TZF.PreindexFinder",
+    "TZF.PreindexFinder (per call)",
     "TZF.Finder",
+    "TZF.Finder (per call)",
     "LatLongToTimezone",
+    "LatLongToTimezone (per call)",
     "SwiftTimeZoneLookup.simple",
+    "SwiftTimeZoneLookup.simple (per call)",
     "SwiftTimeZoneLookup.lookup",
+    "SwiftTimeZoneLookup.lookup (per call)",
 ]
 
 
@@ -161,6 +175,8 @@ _SCALE_PATTERNS = [
     (r"\.(\d+)_hundred\b", 100),
 ]
 
+_PER_CALL_PATTERN = re.compile(r"\.per_call$")
+
 # Method names that are implementation details, not part of the display name.
 _METHOD_SUFFIXES = ["getTimezone", "getTimezones", "latLngToTimezoneString"]
 
@@ -173,9 +189,13 @@ def _extract_scale(name):
     return None
 
 
+def _is_per_call(name):
+    return bool(_PER_CALL_PATTERN.search(name))
+
+
 def _display_name(name):
-    # Strip the .random.N_scale suffix
-    n = re.sub(r"\.random\.\d+_\w+$", "", name)
+    # Strip the .random.N_scale suffix or .per_call suffix
+    n = re.sub(r"(\.random\.\d+_\w+|\.per_call)$", "", name)
     # Strip known method suffixes
     for suffix in _METHOD_SUFFIXES:
         if n.endswith("." + suffix):
@@ -183,6 +203,9 @@ def _display_name(name):
             break
     # Strip grouping prefix used in the benchmark file
     n = re.sub(r"^OtherPackageToCompare\.", "", n)
+    # Annotate per-call benchmarks so they remain distinguishable
+    if _is_per_call(name):
+        n += " (per call)"
     return n
 
 
@@ -196,7 +219,7 @@ _HEADERS = [
     "Operations per Second (op/sec)",
     "Time per Op",
     "Memory Usage (Peak MB)",
-    "Instructions (G)",
+    "Instructions",
 ]
 
 
@@ -218,22 +241,26 @@ def _build_rows(benchmarks, success_rates):
         name = b["name"]
         metrics = b["metrics"]
         scale = _extract_scale(name)
+        per_call = _is_per_call(name)
         display = _display_name(name)
         wall_ms = _get_wall_ms(metrics)
         mem_mb = _get_memory_mb(metrics)
-        instr_g = _get_instructions_g(metrics)
+        instr_g = _get_instructions_str(metrics)
 
-        wall_str = f"{int(wall_ms):,}" if wall_ms is not None else "-"
-        scale_str = f"{scale:,}" if scale is not None else "-"
         mem_str = str(mem_mb) if mem_mb is not None else "-"
         instr_str = instr_g if instr_g is not None else "-"
 
-        if wall_ms and scale:
-            ops_str = f"~{int(scale / (wall_ms / 1000)):,}"
+        if per_call:
+            # wall_ms is already the per-iteration (per-call) latency reported by the framework
+            scale_str = "per call"
+            wall_str = f"{wall_ms:.3f}" if wall_ms is not None else "-"
+            ops_str = f"~{int(1000 / wall_ms):,}" if wall_ms else "-"
+            time_per_op_str = _format_time_per_op(wall_ms, 1)
         else:
-            ops_str = "-"
-
-        time_per_op_str = _format_time_per_op(wall_ms, scale)
+            scale_str = f"{scale:,}" if scale is not None else "-"
+            wall_str = f"{int(wall_ms):,}" if wall_ms is not None else "-"
+            ops_str = f"~{int(scale / (wall_ms / 1000)):,}" if (wall_ms and scale) else "-"
+            time_per_op_str = _format_time_per_op(wall_ms, scale)
 
         sr = "100%"
         for finder_cls, rate in success_rates.items():

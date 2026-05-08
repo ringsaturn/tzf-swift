@@ -10,13 +10,28 @@ import tzf
   import LatLongToTimezone
 #endif
 
+// Shared state initialized once per benchmark via configuration setup/teardown hooks.
+// Initialization cost is excluded from all measurements; benchmarks run sequentially.
+nonisolated(unsafe) private var _defaultFinderState: (cities: Cities, finder: DefaultFinder)? = nil
+nonisolated(unsafe) private var _preindexFinderState: (cities: Cities, finder: PreindexFinder)? = nil
+nonisolated(unsafe) private var _finderState: (cities: Cities, finder: Finder)? = nil
+nonisolated(unsafe) private var _latLongState: Cities? = nil
+nonisolated(unsafe) private var _stzlSimpleState: (cities: Cities, db: SwiftTimeZoneLookup)? = nil
+nonisolated(unsafe) private var _stzlLookupState: (cities: Cities, db: SwiftTimeZoneLookup)? = nil
+
 let benchmarks: @Sendable () -> Void = {
+
+  // ── Throughput benchmarks (large inner loop, measures aggregate ops/sec) ──────
+
   Benchmark(
     "TZF.DefaultFinder.getTimezone.random.1_million",
-    configuration: .init(metrics: BenchmarkMetric.all)
+    configuration: .init(
+      metrics: BenchmarkMetric.all,
+      setup: { _defaultFinderState = (cities: try Cities(), finder: try DefaultFinder()) },
+      teardown: { _defaultFinderState = nil }
+    )
   ) { benchmark in
-    let cities = try Cities()
-    let finder = try DefaultFinder()
+    let (cities, finder) = _defaultFinderState!
     for _ in benchmark.scaledIterations {
       for _ in 0..<1_000_000 {
         let randomCity = cities.getRandomCity()!
@@ -29,48 +44,40 @@ let benchmarks: @Sendable () -> Void = {
 
   Benchmark(
     "TZF.PreindexFinder.getTimezone.random.1_million",
-    configuration: .init(metrics: BenchmarkMetric.all)
+    configuration: .init(
+      metrics: BenchmarkMetric.all,
+      setup: { _preindexFinderState = (cities: try Cities(), finder: try PreindexFinder()) },
+      teardown: { _preindexFinderState = nil }
+    )
   ) { benchmark in
-    let cities = try Cities()
-    let finder = try PreindexFinder()
+    let (cities, finder) = _preindexFinderState!
     var successCount = 0
     var errorCount = 0
-
     for _ in benchmark.scaledIterations {
       for _ in 0..<1_000_000 {
         let randomCity = cities.getRandomCity()!
         let lng = Double(randomCity.lng) ?? 0.0
         let lat = Double(randomCity.lat) ?? 0.0
-
         do {
-          // Try to get timezone but catch any errors
           _ = try finder.getTimezone(lng: lng, lat: lat)
           successCount += 1
-        } catch TZFError.invalidCoordinates {
-          // Skip invalid coordinates
-          errorCount += 1
-          continue
-        } catch TZFError.noTimezoneFound {
-          // Skip when no timezone is found
-          errorCount += 1
-          continue
         } catch {
-          // Skip any other errors
           errorCount += 1
-          continue
         }
       }
     }
-
-    // Optional: Print statistics at the end
     print("PreindexFinder benchmark stats - Success: \(successCount), Errors: \(errorCount)")
   }
 
   Benchmark(
-    "TZF.Finder.getTimezone.random.1_million", configuration: .init(metrics: BenchmarkMetric.all)
+    "TZF.Finder.getTimezone.random.1_million",
+    configuration: .init(
+      metrics: BenchmarkMetric.all,
+      setup: { _finderState = (cities: try Cities(), finder: try Finder()) },
+      teardown: { _finderState = nil }
+    )
   ) { benchmark in
-    let cities = try Cities()
-    let finder = try Finder()
+    let (cities, finder) = _finderState!
     var successCount = 0
     var errorCount = 0
     for _ in benchmark.scaledIterations {
@@ -92,9 +99,13 @@ let benchmarks: @Sendable () -> Void = {
 #if canImport(CoreLocation)
   Benchmark(
     "OtherPackageToCompare.LatLongToTimezone.latLngToTimezoneString.random.100_thousand",
-    configuration: .init(metrics: BenchmarkMetric.all)
+    configuration: .init(
+      metrics: BenchmarkMetric.all,
+      setup: { _latLongState = try Cities() },
+      teardown: { _latLongState = nil }
+    )
   ) { benchmark in
-    let cities = try Cities()
+    let cities = _latLongState!
     for _ in benchmark.scaledIterations {
       for _ in 0..<100_000 {
         let randomCity = cities.getRandomCity()!
@@ -109,33 +120,146 @@ let benchmarks: @Sendable () -> Void = {
 
   Benchmark(
     "OtherPackageToCompare.SwiftTimeZoneLookup.simple.random.10_thousand",
-    configuration: .init(metrics: BenchmarkMetric.all)
+    configuration: .init(
+      metrics: BenchmarkMetric.all,
+      setup: { _stzlSimpleState = (cities: try Cities(), db: try SwiftTimeZoneLookup()) },
+      teardown: { _stzlSimpleState = nil }
+    )
   ) { benchmark in
-    let cities = try Cities()
-    let database = try SwiftTimeZoneLookup()
+    let (cities, db) = _stzlSimpleState!
     for _ in benchmark.scaledIterations {
-      for _ in 0..<10000 {
+      for _ in 0..<10_000 {
         let randomCity = cities.getRandomCity()!
         let lng = Float(randomCity.lng) ?? 0.0
         let lat = Float(randomCity.lat) ?? 0.0
-        _ = database.simple(latitude: lat, longitude: lng)
+        _ = db.simple(latitude: lat, longitude: lng)
       }
     }
   }
 
   Benchmark(
     "OtherPackageToCompare.SwiftTimeZoneLookup.lookup.random.10_thousand",
-    configuration: .init(metrics: BenchmarkMetric.all)
+    configuration: .init(
+      metrics: BenchmarkMetric.all,
+      setup: { _stzlLookupState = (cities: try Cities(), db: try SwiftTimeZoneLookup()) },
+      teardown: { _stzlLookupState = nil }
+    )
   ) { benchmark in
-    let cities = try Cities()
-    let database = try SwiftTimeZoneLookup()
+    let (cities, db) = _stzlLookupState!
     for _ in benchmark.scaledIterations {
-      for _ in 0..<10000 {
+      for _ in 0..<10_000 {
         let randomCity = cities.getRandomCity()!
         let lng = Float(randomCity.lng) ?? 0.0
         let lat = Float(randomCity.lat) ?? 0.0
-        _ = database.lookup(latitude: lat, longitude: lng)
+        _ = db.lookup(latitude: lat, longitude: lng)
       }
+    }
+  }
+
+  // ── Per-call benchmarks (single op per iteration, measures single-call latency) ─
+
+  Benchmark(
+    "TZF.DefaultFinder.getTimezone.per_call",
+    configuration: .init(
+      metrics: BenchmarkMetric.all,
+      setup: { _defaultFinderState = (cities: try Cities(), finder: try DefaultFinder()) },
+      teardown: { _defaultFinderState = nil }
+    )
+  ) { benchmark in
+    let (cities, finder) = _defaultFinderState!
+    for _ in benchmark.scaledIterations {
+      let randomCity = cities.getRandomCity()!
+      let lng = Double(randomCity.lng) ?? 0.0
+      let lat = Double(randomCity.lat) ?? 0.0
+      _ = try finder.getTimezone(lng: lng, lat: lat)
+    }
+  }
+
+  Benchmark(
+    "TZF.PreindexFinder.getTimezone.per_call",
+    configuration: .init(
+      metrics: BenchmarkMetric.all,
+      setup: { _preindexFinderState = (cities: try Cities(), finder: try PreindexFinder()) },
+      teardown: { _preindexFinderState = nil }
+    )
+  ) { benchmark in
+    let (cities, finder) = _preindexFinderState!
+    for _ in benchmark.scaledIterations {
+      let randomCity = cities.getRandomCity()!
+      let lng = Double(randomCity.lng) ?? 0.0
+      let lat = Double(randomCity.lat) ?? 0.0
+      _ = try? finder.getTimezone(lng: lng, lat: lat)
+    }
+  }
+
+  Benchmark(
+    "TZF.Finder.getTimezone.per_call",
+    configuration: .init(
+      metrics: BenchmarkMetric.all,
+      setup: { _finderState = (cities: try Cities(), finder: try Finder()) },
+      teardown: { _finderState = nil }
+    )
+  ) { benchmark in
+    let (cities, finder) = _finderState!
+    for _ in benchmark.scaledIterations {
+      let randomCity = cities.getRandomCity()!
+      let lng = Double(randomCity.lng) ?? 0.0
+      let lat = Double(randomCity.lat) ?? 0.0
+      _ = try? finder.getTimezone(lng: lng, lat: lat)
+    }
+  }
+
+#if canImport(CoreLocation)
+  Benchmark(
+    "OtherPackageToCompare.LatLongToTimezone.latLngToTimezoneString.per_call",
+    configuration: .init(
+      metrics: BenchmarkMetric.all,
+      setup: { _latLongState = try Cities() },
+      teardown: { _latLongState = nil }
+    )
+  ) { benchmark in
+    let cities = _latLongState!
+    for _ in benchmark.scaledIterations {
+      let randomCity = cities.getRandomCity()!
+      let lng = CLLocationDegrees(randomCity.lng) ?? 0.0
+      let lat = CLLocationDegrees(randomCity.lat) ?? 0.0
+      let coord = CLLocationCoordinate2D(latitude: lat, longitude: lng)
+      _ = TimezoneMapper.latLngToTimezoneString(coord)
+    }
+  }
+#endif
+
+  Benchmark(
+    "OtherPackageToCompare.SwiftTimeZoneLookup.simple.per_call",
+    configuration: .init(
+      metrics: BenchmarkMetric.all,
+      setup: { _stzlSimpleState = (cities: try Cities(), db: try SwiftTimeZoneLookup()) },
+      teardown: { _stzlSimpleState = nil }
+    )
+  ) { benchmark in
+    let (cities, db) = _stzlSimpleState!
+    for _ in benchmark.scaledIterations {
+      let randomCity = cities.getRandomCity()!
+      let lng = Float(randomCity.lng) ?? 0.0
+      let lat = Float(randomCity.lat) ?? 0.0
+      _ = db.simple(latitude: lat, longitude: lng)
+    }
+  }
+
+  Benchmark(
+    "OtherPackageToCompare.SwiftTimeZoneLookup.lookup.per_call",
+    configuration: .init(
+      metrics: BenchmarkMetric.all,
+      setup: { _stzlLookupState = (cities: try Cities(), db: try SwiftTimeZoneLookup()) },
+      teardown: { _stzlLookupState = nil }
+    )
+  ) { benchmark in
+    let (cities, db) = _stzlLookupState!
+    for _ in benchmark.scaledIterations {
+      let randomCity = cities.getRandomCity()!
+      let lng = Float(randomCity.lng) ?? 0.0
+      let lat = Float(randomCity.lat) ?? 0.0
+      _ = db.lookup(latitude: lat, longitude: lng)
     }
   }
 }
