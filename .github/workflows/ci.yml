@@ -34,7 +34,7 @@ jobs:
       - uses: SwiftyLab/setup-swift@latest
         with:
           swift-version: ${{ matrix.swift }}
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
       - name: Build
         run: make build
       - name: Run tests
