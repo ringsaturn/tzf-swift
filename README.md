@@ -8,7 +8,10 @@
 
 > [!NOTE]
 >
-> This package use a simplified polygon data and not so accurate around borders.
+> This package ships simplified polygon data, so it is not entirely accurate
+> around the border, but the error is small and bounded: every simplified
+> boundary stays within ~111 m of the full-precision border. See
+> [Accuracy](#accuracy) for measured numbers.
 
 ## Usage
 
@@ -55,6 +58,40 @@ Asia/Macau features: 1
 {"type":"FeatureCollection","features":[{"geometry":{"type":"MultiPolygon","coor...
 ```
 <!-- demo-output:end -->
+
+## Accuracy
+
+tzf-swift bundles the topology-simplified dataset from [tzf-dist]:
+`combined-with-oceans.topology.compress.topo.bin` (used by `Finder` and
+`DefaultFinder`) and `combined-with-oceans.topology.preindex.bin` (used by
+`PreindexFinder` and as `DefaultFinder`'s fast path). There is no
+full-precision variant in the Swift package.
+
+The Douglas-Peucker simplification uses an epsilon of 0.001 degrees, which caps
+boundary displacement at roughly 111 m by construction. Measured against the
+full-precision 2026c dataset with tzf's `internal/cmd/borderchange` (spherical
+model, certified via Lipschitz interval subdivision):
+
+| Metric                                            |                        Result |
+| ------------------------------------------------- | ----------------------------: |
+| Certified maximum boundary displacement           |    111.2 m (+1.0 m tolerance) |
+| Boundary length displaced more than 100 m         |                         0.41% |
+| Boundary length displaced more than 500 m         |                            0% |
+| Total mis-assigned area                           | 16,828 km² (~0.003% of Earth) |
+| Mis-assigned area within 100 m of the true border |                         92.8% |
+
+In other words, only queries that land within ~111 m of a timezone border can
+ever differ from the full-precision result, and most of that band is far
+narrower. If your use case is sensitive inside that band, use the
+full-precision finder in [`ringsaturn/tzf`][tzf] (Go) or
+[`ringsaturn/tzf-rs`][tzf-rs] (Rust).
+
+More details: [BORDER_CHANGE.md][border_change] in `ringsaturn/tzf`.
+
+[tzf-dist]: https://github.com/ringsaturn/tzf-dist
+[tzf]: https://github.com/ringsaturn/tzf
+[tzf-rs]: https://github.com/ringsaturn/tzf-rs
+[border_change]: https://github.com/ringsaturn/tzf/blob/main/BORDER_CHANGE.md
 
 ## Performance
 
