@@ -10,8 +10,9 @@ import tzf
   import LatLongToTimezone
 #endif
 
-// Shared state initialized once per benchmark via configuration setup/teardown hooks.
-// Initialization cost is excluded from all measurements; benchmarks run sequentially.
+// Shared state initialized once per benchmark via BenchmarkConfiguration setup/teardown.
+// Initialization cost (Cities, finders, databases) is excluded from all measurements.
+// Benchmarks run sequentially so these globals have no concurrent-access risk.
 nonisolated(unsafe) private var _defaultFinderState: (cities: Cities, finder: DefaultFinder)? = nil
 nonisolated(unsafe) private var _preindexFinderState: (cities: Cities, finder: PreindexFinder)? = nil
 nonisolated(unsafe) private var _finderState: (cities: Cities, finder: Finder)? = nil
@@ -21,7 +22,7 @@ nonisolated(unsafe) private var _stzlLookupState: (cities: Cities, db: SwiftTime
 
 let benchmarks: @Sendable () -> Void = {
 
-  // ── Throughput benchmarks (large inner loop, measures aggregate ops/sec) ──────
+  // ── Throughput benchmarks (large inner loop) ──────────────────────────────────
 
   Benchmark(
     "TZF.DefaultFinder.getTimezone.random.1_million",
@@ -156,7 +157,10 @@ let benchmarks: @Sendable () -> Void = {
     }
   }
 
-  // ── Per-call benchmarks (single op per iteration, measures single-call latency) ─
+  // ── Per-call benchmarks ───────────────────────────────────────────────────────
+  // Same setup/teardown pattern; scalingFactor defaults to .one so each sample
+  // measures exactly one query. The framework collects up to 10,000 samples;
+  // p50 directly reflects single-call latency.
 
   Benchmark(
     "TZF.DefaultFinder.getTimezone.per_call",
