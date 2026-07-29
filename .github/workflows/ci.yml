@@ -17,13 +17,13 @@ jobs:
     strategy:
       matrix:
         include:
-          - os: macos-latest
+          - os: macos-15
             swift: "6.0"
             run-benchmarks: false
           - os: ubuntu-latest
             swift: "6.0"
             run-benchmarks: false
-          - os: macos-latest
+          - os: macos-15
             swift: "6.1"
             run-benchmarks: true
           - os: ubuntu-latest
