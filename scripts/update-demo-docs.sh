@@ -29,7 +29,7 @@ render_demo_output() {
   swift run --scratch-path "$scratch_path" demo 2>&1 \
     | awk 'BEGIN { capture = 0 } /^Beijing timezone:/ { capture = 1 } capture { print }' \
     | awk '
-      /^\{"type":"FeatureCollection"/ {
+      /^\{"(features|type)":/ {
         print substr($0, 1, 80) "..."
         next
       }

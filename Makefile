@@ -1,4 +1,4 @@
-.PHONY: build test bench bench-table fmt pb sync docs docs-subpath run-demo demo-output update-demo-docs clean
+.PHONY: build test bench bench-table fmt sync docs docs-subpath run-demo demo-output update-demo-docs clean
 
 SWIFT_SCRATCH_PATH ?= $(HOME)/Library/Caches/tzf-swift/swiftpm
 BENCHMARKS_SCRATCH_PATH ?= $(HOME)/Library/Caches/tzf-swift/benchmarks-swiftpm
@@ -28,13 +28,9 @@ bench-table: benchmark_baseline.txt
 fmt:
 	swift format --in-place --recursive Sources Tests Examples Benchmarks
 
-pb:
-	buf generate
-
 sync:
 	git submodule update
-	cp tzf-dist/combined-with-oceans.topology.compress.topo.bin Sources/Resources/combined-with-oceans.topology.compress.topo.bin
-	cp tzf-dist/combined-with-oceans.topology.preindex.bin Sources/Resources/combined-with-oceans.topology.preindex.bin
+	cp tzf-dist/lite.tzb Sources/Resources/lite.tzb
 
 DOCS_DIR ?= docs
 DOCS_TARGET ?= tzf

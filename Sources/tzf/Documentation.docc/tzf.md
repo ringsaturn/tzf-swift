@@ -3,18 +3,44 @@
 A fast timezone lookup library for Swift.
 
 A Swift package for timezone lookup by geographic coordinates (longitude/latitude).
-This package uses a simplified polygon data structure for timezone boundaries.
+Since v2 the package is protobuf-free: the data source is the TZF embedded
+binary format (`.tzb`) shipped by [tzf-dist](https://github.com/ringsaturn/tzf-dist),
+and the package bundles the lite (topology-simplified) dataset.
 
 Important Notes:
 
-- The timezone boundary data has been simplified to reduce complexity
-- Accuracy may be reduced around timezone borders
+- The timezone boundary data has been simplified to reduce size; every
+  simplified boundary stays within ~111 m of the full-precision border.
+- A point exactly on a shared border belongs to every touching timezone;
+  ``F/getTimezones(lng:lat:)`` returns them sorted lexicographically.
 
-The package offers three finder implementations:
+The package offers two finder implementations, both conforming to ``F``:
 
-- `PreindexFinder`: Uses pre-indexed map tiles for fast lookups
-- `Finder`: Uses polygon-based lookups with simplified boundary data
-- `DefaultFinder`: Combines both approaches for optimal results
+- ``DefaultFinder``: Recommended. Expands the `.tzb` geometry into polygons
+  at load; ``F/getTimezone(lng:lat:)`` answers from the FUZZY preindex tiles
+  with exact point-in-polygon fallback.
+- ``EmbeddedFinder``: Low-memory. Queries the `.tzb` bytes in place (~4 MB
+  total); identical results, microsecond queries on boundary cases.
+
+Both accept caller-owned `.tzb` bytes (for example tzf-dist's full-precision
+`full.tzb`) through `init(tzb:)`.
+
+## Topics
+
+### Finders
+
+- ``F``
+- ``DefaultFinder``
+- ``EmbeddedFinder``
+- ``TZFDist``
+- ``TZFError``
+
+### GeoJSON
+
+- ``GeoJSONFeatureCollection``
+- ``GeoJSONFeature``
+- ``GeoJSONGeometry``
+- ``GeoJSONProperties``
 
 ---
 

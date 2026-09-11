@@ -1,5 +1,5 @@
 version: 1
 builder:
   configs:
-    - documentation_targets: ["tzf", "gen", "geometry"]
+    - documentation_targets: ["tzf", "geometry"]
       scheme: tzf-Package

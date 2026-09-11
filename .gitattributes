@@ -1,1 +1,3 @@
 *.bin binary
+*.tzb binary
+*.tzm binary

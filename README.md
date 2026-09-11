@@ -44,6 +44,10 @@ if let macauGeoJSON = finder.getTimezoneGeoJSON(timezoneName: "Asia/Macau") {
   print("Asia/Macau features:", macauGeoJSON.features.count)
   print(try macauGeoJSON.toJSONString(pretty: false))
 }
+
+// Low-memory alternative: query the .tzb bytes in place.
+let embedded = try EmbeddedFinder()
+print("Embedded finder:", try embedded.getTimezone(lng: 139.6917, lat: 35.6895))
 ```
 <!-- demo-main:end -->
 
@@ -53,19 +57,62 @@ Output:
 ```txt
 Beijing timezone: Asia/Shanghai
 Multiple possible timezones: ["Asia/Shanghai", "Asia/Urumqi"]
-Data version: 2026a/2026a
+Data version: 2026c
 Asia/Macau features: 1
-{"type":"FeatureCollection","features":[{"geometry":{"type":"MultiPolygon","coor...
+{"features":[{"geometry":{"coordinates":[[[[113.54701,22.13804],[113.54703,22.13...
+Embedded finder: Asia/Tokyo
 ```
 <!-- demo-output:end -->
 
+## Finders
+
+Since v2 the package is protobuf-free: the data source is the TZF embedded
+binary format (`.tzb`) shipped by [tzf-dist], and two finder types consume it.
+Both conform to the `F` protocol and return identical results over the same
+file.
+
+| Finder           | Mechanism                                                                | Load   | Resident memory | `getTimezone` | `getTimezones` |
+| ---------------- | ------------------------------------------------------------------------ | -----: | --------------: | ------------: | -------------: |
+| `DefaultFinder`  | expands `lite.tzb` into int32 polygons at load; FUZZY preindex fast path | ~16 ms |          ~48 MB |       ~205 ns |        ~455 ns |
+| `EmbeddedFinder` | queries the `lite.tzb` bytes in place, no geometry expansion             |  ~2 ms |          ~10 MB |       ~570 ns |        ~2.5 µs |
+
+Query latencies are per-call means over the world-cities dataset in sequential
+order (Apple M3 Max, `2026c`); see [Performance](#performance) for the
+benchmark-harness numbers.
+
+- `getTimezone` is fuzzy-first: a preindex tile resolves most queries with no
+  point-in-polygon work.
+- `getTimezones` runs the polygon scan in every finder and is the call to use
+  when a point can belong to more than one timezone. Results are sorted
+  lexicographically, and a point exactly on a shared border belongs to every
+  touching timezone.
+- Both finders accept caller-owned bytes through `init(tzb:)`, so tzf-dist's
+  full-precision `full.tzb` (~14 MB, not bundled) can be loaded the same way:
+
+```swift
+let full = try DefaultFinder(tzb: try Data(contentsOf: URL(fileURLWithPath: "full.tzb")))
+```
+
+`.tzm` memory images are Go-only and are rejected with
+`TZFError.unsupportedProfile`.
+
+### Migrating from v1
+
+| v1                                    | v2                                                                  |
+| ------------------------------------- | ------------------------------------------------------------------- |
+| `DefaultFinder()`                     | unchanged; now backed by `lite.tzb`                                  |
+| `Finder()`                            | `DefaultFinder()` (polygon-exact queries via `getTimezones`)         |
+| `PreindexFinder()`                    | removed; the preindex is the fast path inside every finder           |
+| `FinderError.noTimezoneFound`         | `TZFError.noTimezoneFound`                                          |
+| `dataVersion()` → `"2026a/2026a"`     | one dataset version, e.g. `"2026c"`                                 |
+| `getTimezones` order                  | now sorted lexicographically                                        |
+| preindex tile GeoJSON on `PreindexFinder` | `toPreindexGeoJSON()` / `getTimezonePreindexGeoJSON(timezoneName:)` on every finder |
+
 ## Accuracy
 
-tzf-swift bundles the topology-simplified dataset from [tzf-dist]:
-`combined-with-oceans.topology.compress.topo.bin` (used by `Finder` and
-`DefaultFinder`) and `combined-with-oceans.topology.preindex.bin` (used by
-`PreindexFinder` and as `DefaultFinder`'s fast path). There is no
-full-precision variant in the Swift package.
+tzf-swift bundles the topology-simplified dataset from [tzf-dist]
+(`lite.tzb`). There is no full-precision variant in the Swift package, but
+`full.tzb` from a tzf-dist release loads through `init(tzb:)` (see above).
 
 The Douglas-Peucker simplification uses an epsilon of 0.001 degrees, which caps
 boundary displacement at roughly 111 m by construction. Measured against the
@@ -82,9 +129,8 @@ model, certified via Lipschitz interval subdivision):
 
 In other words, only queries that land within ~111 m of a timezone border can
 ever differ from the full-precision result, and most of that band is far
-narrower. If your use case is sensitive inside that band, use the
-full-precision finder in [`ringsaturn/tzf`][tzf] (Go) or
-[`ringsaturn/tzf-rs`][tzf-rs] (Rust).
+narrower. If your use case is sensitive inside that band, load `full.tzb`, or
+use [`ringsaturn/tzf`][tzf] (Go) or [`ringsaturn/tzf-rs`][tzf-rs] (Rust).
 
 More details: [BORDER_CHANGE.md][border_change] in `ringsaturn/tzf`.
 
@@ -98,18 +144,22 @@ More details: [BORDER_CHANGE.md][border_change] in `ringsaturn/tzf`.
 Just like tzf packages in Go/Rust/Python, the Swift version is also fast, and
 designed for server-side high-performance use cases.
 
-Hardware: MacBook Pro with Apple M3 Max.
+Hardware: MacBook Pro with Apple M3 Max. The throughput rows include the
+harness's own per-iteration cost (a random city draw plus string-to-double
+parsing, ~160 ns); `(init)` rows build one finder from the bundled `lite.tzb`.
 
 Benchmark Summary:
 
 | Implementation                          | Test Scale | Execution Time (ms) | Success Rate | Operations per Second (op/sec) | Time per Op | Memory Usage (Peak MB) | Instructions |
 | --------------------------------------- | ---------- | ------------------- | ------------ | ------------------------------ | ----------- | ---------------------- | ------------ |
-| `TZF.DefaultFinder`                     | 1,000,000  | 435                 | 100%         | ~2,298,850                     | 435 ns      | 285                    | ~3.9 G       |
-| `TZF.PreindexFinder`                    | 1,000,000  | 322                 | ~85%         | ~3,105,590                     | 322 ns      | 179                    | ~3.4 G       |
-| `TZF.Finder`                            | 1,000,000  | 665                 | 100%         | ~1,503,759                     | 665 ns      | 268                    | ~5.7 G       |
-| `LatLongToTimezone`                     | 100,000    | 17                  | 100%         | ~5,882,352                     | 170 ns      | 167                    | ~0.2 G       |
-| `SwiftTimeZoneLookup.simple`            | 10,000     | 2,932               | 100%         | ~3,410                         | 293.2 μs    | 171                    | 37 G         |
-| `SwiftTimeZoneLookup.lookup`            | 10,000     | 2,975               | 100%         | ~3,361                         | 297.5 μs    | 170                    | 37 G         |
+| `TZF.DefaultFinder`                     | 1,000,000  | 543                 | 100%         | ~1,841,620                     | 543 ns      | 203                    | ~3.9 G       |
+| `TZF.DefaultFinder.getTimezones`        | 1,000,000  | 1,320               | 100%         | ~757,575                       | 1.3 μs      | 203                    | 12 G         |
+| `TZF.EmbeddedFinder`                    | 1,000,000  | 1,186               | 100%         | ~843,170                       | 1.2 μs      | 169                    | 12 G         |
+| `TZF.DefaultFinder (init)`              | per load   | 16.000              | 100%         | ~62                            | 16.0 ms     | 77                     | ~0.4 G       |
+| `TZF.EmbeddedFinder (init)`             | per load   | 2.085               | 100%         | ~479                           | 2.1 ms      | 24                     | ~0.0 G       |
+| `LatLongToTimezone`                     | 100,000    | 20                  | 100%         | ~5,000,000                     | 200 ns      | 168                    | ~0.2 G       |
+| `SwiftTimeZoneLookup.simple`            | 10,000     | 3,047               | 100%         | ~3,281                         | 304.7 μs    | 172                    | 37 G         |
+| `SwiftTimeZoneLookup.lookup`            | 10,000     | 3,026               | 100%         | ~3,304                         | 302.6 μs    | 172                    | 37 G         |
 
 Full benchmark results can be viewed in [benchmark_baseline.txt](./benchmark_baseline.txt).
 

@@ -1,665 +1,584 @@
+import Dispatch
 import Foundation
-import SwiftProtobuf
 import geometry
-
-public typealias GeoJSONPolygonCoordinates = [[[Double]]]
-public typealias GeoJSONMultiPolygonCoordinates = [GeoJSONPolygonCoordinates]
-
-/// GeoJSON geometry for timezone boundaries.
-public struct GeoJSONGeometry: Codable {
-  public let type: String
-  public let coordinates: GeoJSONMultiPolygonCoordinates
-
-  public init(type: String, coordinates: GeoJSONMultiPolygonCoordinates) {
-    self.type = type
-    self.coordinates = coordinates
-  }
-}
-
-/// GeoJSON properties that carry timezone name.
-public struct GeoJSONProperties: Codable {
-  public let tzid: String
-
-  public init(tzid: String) {
-    self.tzid = tzid
-  }
-}
-
-/// GeoJSON feature for one timezone.
-public struct GeoJSONFeature: Codable {
-  public let type: String
-  public let properties: GeoJSONProperties
-  public let geometry: GeoJSONGeometry
-
-  public init(type: String, properties: GeoJSONProperties, geometry: GeoJSONGeometry) {
-    self.type = type
-    self.properties = properties
-    self.geometry = geometry
-  }
-}
-
-/// GeoJSON feature collection for timezone boundaries.
-public struct GeoJSONFeatureCollection: Codable {
-  public let type: String
-  public let features: [GeoJSONFeature]
-
-  public init(type: String, features: [GeoJSONFeature]) {
-    self.type = type
-    self.features = features
-  }
-
-  public func toJSONString(pretty: Bool = false) throws -> String {
-    let encoder = JSONEncoder()
-    if pretty {
-      encoder.outputFormatting = [.prettyPrinted]
-    }
-    let data = try encoder.encode(self)
-    guard let output = String(data: data, encoding: .utf8) else {
-      throw TZFError.dataError
-    }
-    return output
-  }
-}
-
-/// A protocol defining the interface for timezone finders.
-/// All timezone finder implementations must conform to this protocol.
-public protocol F {
-  /// Returns the version of the timezone data being used.
-  ///
-  /// - Returns: A string representing the data version.
-  func dataVersion() -> String
-
-  /// Returns the timezone for a given geographic coordinate.
-  ///
-  /// - Parameters:
-  ///   - lng: The longitude coordinate in decimal degrees (-180 to 180)
-  ///   - lat: The latitude coordinate in decimal degrees (-90 to 90)
-  /// - Returns: The IANA timezone identifier as a string
-  /// - Throws: An error if no timezone is found or if coordinates are invalid
-  func getTimezone(lng: Double, lat: Double) throws -> String
-
-  /// Returns all possible timezones for a given geographic coordinate.
-  /// This is useful for locations near timezone boundaries where multiple
-  /// timezones might be applicable.
-  ///
-  /// - Parameters:
-  ///   - lng: The longitude coordinate in decimal degrees (-180 to 180)
-  ///   - lat: The latitude coordinate in decimal degrees (-90 to 90)
-  /// - Returns: An array of IANA timezone identifiers
-  /// - Throws: An error if no timezone is found or if coordinates are invalid
-  func getTimezones(lng: Double, lat: Double) throws -> [String]
-
-  /// Convert all timezone boundaries to GeoJSON FeatureCollection.
-  func toGeoJSON() -> GeoJSONFeatureCollection
-
-  /// Convert one timezone boundary set to GeoJSON FeatureCollection.
-  ///
-  /// - Parameter timezoneName: IANA timezone name, for example "Asia/Tokyo"
-  /// - Returns: GeoJSON collection if found, otherwise nil.
-  func getTimezoneGeoJSON(timezoneName: String) -> GeoJSONFeatureCollection?
-}
-
-// MARK: - Polyline decode
-
-/// Decodes a Google Maps Encoded Polyline byte sequence into geometry Points.
-/// The encoding stores [lng, lat] pairs as delta-encoded zigzag integers with scale 1e5.
-private func decodePolylineBytes(_ data: Data) -> [Point] {
-  var results: [Point] = []
-  let bytes = [UInt8](data)
-  var i = 0
-
-  func decodeSignedInt() -> Int? {
-    var u: UInt = 0
-    var shift: UInt = 0
-    while i < bytes.count {
-      let b = bytes[i]
-      i += 1
-      if b >= 95 {
-        // continuation chunk (bits 5..9 of current group)
-        u += UInt(b - 95) << shift
-        shift += 5
-      } else if b >= 63 {
-        // terminal chunk
-        u += UInt(b - 63) << shift
-        // zigzag decode: even -> positive, odd -> negative
-        if u & 1 == 0 {
-          return Int(bitPattern: u >> 1)
-        } else {
-          return ~Int(bitPattern: u >> 1)
-        }
-      } else {
-        return nil
-      }
-    }
-    return nil
-  }
-
-  var prevLng: Int = 0
-  var prevLat: Int = 0
-
-  while i < bytes.count {
-    guard let dLng = decodeSignedInt(), let dLat = decodeSignedInt() else { break }
-    prevLng += dLng
-    prevLat += dLat
-    results.append(Point(x: Double(prevLng) / 1e5, y: Double(prevLat) / 1e5))
-  }
-
-  return results
-}
-
-// MARK: - Compressed ring expansion
-
-/// Expands a sequence of CompressedRingSegments into a flat Point array by resolving
-/// edge_forward / edge_reversed references against the pre-decoded shared edge table.
-private func expandCompressedRing(
-  _ segs: [Tzf_V1_CompressedRingSegment], edges: [[Point]]
-) -> [Point] {
-  var pts: [Point] = []
-  for seg in segs {
-    switch seg.content {
-    case .inline(let inline):
-      pts.append(contentsOf: decodePolylineBytes(inline.points))
-    case .edgeForward(let idx):
-      let edge = edges[Int(idx)]
-      pts.append(contentsOf: edge)
-    case .edgeReversed(let idx):
-      let edge = edges[Int(idx)]
-      pts.append(contentsOf: edge.reversed())
-    case nil:
-      break
-    }
-  }
-  return pts
-}
-
-// MARK: - PreindexFinder
-
-/// A high-performance timezone finder that uses pre-indexed map tiles for lookups.
-///
-/// PreindexFinder uses a tile-based approach (similar to web map tiles) to quickly
-/// determine which timezone(s) a given coordinate belongs to. The data is pre-processed
-/// and stored in a binary format for efficient lookup.
-///
-/// The finder iterates through zoom levels from `aggZoom` to `idxZoom`:
-/// - Starting from the lowest zoom level (`aggZoom`), it checks if the coordinate falls within a tile
-/// - If no timezone is found, it progressively increases the zoom level up to `idxZoom`
-/// - Higher zoom levels provide more precise boundaries but require more tiles to be checked
-/// - The process stops as soon as a timezone is found at any zoom level
-///
-/// This approach balances accuracy and performance by:
-/// 1. Using coarser tiles first for quick matches
-/// 2. Only moving to more detailed tiles when necessary
-/// 3. Caching tile data for faster repeated lookups
-public class PreindexFinder: F {
-  private let preindexData: Tzf_V1_PreindexTimezones
-  private let idxZoom: Int32
-  private let aggZoom: Int32
-  // One dictionary instead of two: halves hash lookups per zoom level.
-  // Value ≥ 0 → single timezone index into tzNames.
-  // Value < 0 → -(spanIdx+1), spanIdx indexes multiSpans for (start,count) into multiStore.
-  private let tileData: [Int64: Int32]
-  private let multiSpans: [(start: Int32, count: Int32)]
-  private let tzNames: [String]
-  private let multiStore: [Int32]
-
-  public init() throws {
-    let bundle = Bundle.module
-
-    guard
-      let preindexURL = bundle.url(
-        forResource: "combined-with-oceans.topology.preindex", withExtension: "bin")
-    else {
-      throw TZFError.dataError
-    }
-
-    let preindexDataBytes = try Data(contentsOf: preindexURL)
-    preindexData = try Tzf_V1_PreindexTimezones(serializedBytes: preindexDataBytes)
-    idxZoom = preindexData.idxZoom
-    aggZoom = preindexData.aggZoom
-
-    // Build name index.
-    var nameIndex = [String: Int32]()
-    var namesArr = [String]()
-    for key in preindexData.keys {
-      if nameIndex[key.name] == nil {
-        nameIndex[key.name] = Int32(namesArr.count)
-        namesArr.append(key.name)
-      }
-    }
-
-    // Group name indices by tile key, then sort alphabetically within each tile.
-    // Key encoding: zoom(4bit) | x(13bit) | y(13bit) packed into Int64.
-    var rawCache = [Int64: [Int32]]()
-    for key in preindexData.keys {
-      let tileKey = Int64(key.z) << 26 | Int64(key.x) << 13 | Int64(key.y)
-      rawCache[tileKey, default: []].append(nameIndex[key.name]!)
-    }
-    for k in rawCache.keys { rawCache[k]?.sort { namesArr[Int($0)] < namesArr[Int($1)] } }
-
-    // Build single combined dictionary: one lookup per zoom level instead of two.
-    // Single-tz tiles: value = nameIdx (≥ 0).
-    // Multi-tz tiles:  value = -(spanIdx+1) (< 0); spanIdx indexes multiSpansArr.
-    var data = [Int64: Int32]()
-    var spansArr = [(start: Int32, count: Int32)]()
-    var store = [Int32]()
-    data.reserveCapacity(rawCache.count)
-    for (tileKey, idxs) in rawCache {
-      if idxs.count == 1 {
-        data[tileKey] = idxs[0]
-      } else {
-        let spanIdx = Int32(spansArr.count)
-        spansArr.append((start: Int32(store.count), count: Int32(idxs.count)))
-        store.append(contentsOf: idxs)
-        data[tileKey] = -(spanIdx + 1)
-      }
-    }
-
-    tileData = data
-    multiSpans = spansArr
-    tzNames = namesArr
-    multiStore = store
-  }
-
-  public func dataVersion() -> String {
-    return preindexData.version
-  }
-
-  private func lngLatToTile(lng: Double, lat: Double, zoom: Int32) -> (x: Int32, y: Int32) {
-    let n = pow(2.0, Double(zoom))
-    var x = Int32((lng + 180.0) / 360.0 * n)
-    let latRad = lat * .pi / 180.0
-    var y = Int32((1.0 - asinh(tan(latRad)) / .pi) / 2.0 * n)
-
-    // Handle edge cases
-    x = max(0, min(x, Int32(n) - 1))
-    y = max(0, min(y, Int32(n) - 1))
-
-    return (x, y)
-  }
-
-  @inline(__always)
-  private func tileKey(zoom: Int32, highX: Int32, highY: Int32) -> Int64 {
-    let shift = idxZoom - zoom
-    return Int64(zoom) << 26 | Int64(highX >> shift) << 13 | Int64(highY >> shift)
-  }
-
-  @inline(__always)
-  private func firstName(for val: Int32) -> String {
-    if val >= 0 { return tzNames[Int(val)] }
-    let span = multiSpans[Int(-(val + 1))]
-    return tzNames[Int(multiStore[Int(span.start)])]
-  }
-
-  // Non-throwing fast path used by DefaultFinder — mirrors Go's FuzzyFinder.GetTimezoneName.
-  // One dict lookup per zoom level (vs two previously); returns nil on miss.
-  @inline(__always)
-  func fuzzyGetTimezone(lng: Double, lat: Double) -> String? {
-    let (highX, highY) = lngLatToTile(lng: lng, lat: lat, zoom: idxZoom)
-    for zoom in aggZoom...idxZoom {
-      if let val = tileData[tileKey(zoom: zoom, highX: highX, highY: highY)] {
-        return firstName(for: val)
-      }
-    }
-    return nil
-  }
-
-  public func getTimezone(lng: Double, lat: Double) throws -> String {
-    guard (-180.0...180.0).contains(lng) && (-90.0...90.0).contains(lat) else {
-      throw TZFError.invalidCoordinates
-    }
-    let (highX, highY) = lngLatToTile(lng: lng, lat: lat, zoom: idxZoom)
-    for zoom in aggZoom...idxZoom {
-      if let val = tileData[tileKey(zoom: zoom, highX: highX, highY: highY)] {
-        return firstName(for: val)
-      }
-    }
-    throw TZFError.noTimezoneFound
-  }
-
-  public func getTimezones(lng: Double, lat: Double) throws -> [String] {
-    guard (-180.0...180.0).contains(lng) && (-90.0...90.0).contains(lat) else {
-      throw TZFError.invalidCoordinates
-    }
-    let (highX, highY) = lngLatToTile(lng: lng, lat: lat, zoom: idxZoom)
-    for zoom in aggZoom...idxZoom {
-      guard let val = tileData[tileKey(zoom: zoom, highX: highX, highY: highY)] else { continue }
-      if val >= 0 { return [tzNames[Int(val)]] }
-      let span = multiSpans[Int(-(val + 1))]
-      return (span.start..<(span.start + span.count)).map { tzNames[Int(multiStore[Int($0)])] }
-    }
-    throw TZFError.noTimezoneFound
-  }
-
-  private func tileToPolygon(x: Int32, y: Int32, z: Int32) -> [[Double]] {
-    let n = pow(2.0, Double(z))
-
-    let lngMin = Double(x) / n * 360.0 - 180.0
-    let latMinRad = atan(sinh((1.0 - Double(y + 1) / n * 2.0) * .pi))
-    let latMin = latMinRad * 180.0 / .pi
-
-    let lngMax = Double(x + 1) / n * 360.0 - 180.0
-    let latMaxRad = atan(sinh((1.0 - Double(y) / n * 2.0) * .pi))
-    let latMax = latMaxRad * 180.0 / .pi
-
-    return [
-      [lngMin, latMin],
-      [lngMax, latMin],
-      [lngMax, latMax],
-      [lngMin, latMax],
-      [lngMin, latMin],
-    ]
-  }
-
-  /// Convert all preindex tiles to GeoJSON FeatureCollection.
-  public func toGeoJSON() -> GeoJSONFeatureCollection {
-    var grouped: [String: GeoJSONMultiPolygonCoordinates] = [:]
-
-    for key in preindexData.keys {
-      let tileRing = tileToPolygon(x: key.x, y: key.y, z: key.z)
-      grouped[key.name, default: []].append([tileRing])
-    }
-
-    let features = grouped.keys.sorted().map { timezoneName in
-      GeoJSONFeature(
-        type: "Feature",
-        properties: GeoJSONProperties(tzid: timezoneName),
-        geometry: GeoJSONGeometry(
-          type: "MultiPolygon",
-          coordinates: grouped[timezoneName] ?? []
-        )
-      )
-    }
-
-    return GeoJSONFeatureCollection(type: "FeatureCollection", features: features)
-  }
-
-  /// Convert one timezone's preindex tiles to GeoJSON FeatureCollection.
-  ///
-  /// - Parameter timezoneName: IANA timezone name, for example "Asia/Tokyo"
-  /// - Returns: GeoJSON collection if found, otherwise nil.
-  public func getTimezoneGeoJSON(timezoneName: String) -> GeoJSONFeatureCollection? {
-    var coordinates: GeoJSONMultiPolygonCoordinates = []
-
-    for key in preindexData.keys where key.name == timezoneName {
-      let tileRing = tileToPolygon(x: key.x, y: key.y, z: key.z)
-      coordinates.append([tileRing])
-    }
-
-    if coordinates.isEmpty {
-      return nil
-    }
-
-    let feature = GeoJSONFeature(
-      type: "Feature",
-      properties: GeoJSONProperties(tzid: timezoneName),
-      geometry: GeoJSONGeometry(type: "MultiPolygon", coordinates: coordinates)
-    )
-
-    return GeoJSONFeatureCollection(type: "FeatureCollection", features: [feature])
-  }
-}
 
 // MARK: - Errors
 
-/// Represents possible errors that can occur during timezone lookup operations.
-public enum TZFError: Error {
-  /// Indicates that the provided coordinates are outside the valid range
-  /// (longitude: -180 to 180, latitude: -90 to 90)
+/// Errors raised by the timezone finders.
+public enum TZFError: Error, Equatable, Sendable, CustomStringConvertible {
+  /// The provided coordinates are non-finite or outside the valid range
+  /// (longitude: -180 to 180, latitude: -90 to 90).
   case invalidCoordinates
 
-  /// Indicates that no timezone was found for the given coordinates
+  /// No timezone was found for the given coordinates.
   case noTimezoneFound
 
-  /// Indicates an error occurred while loading or processing the timezone data
+  /// The bundled timezone data could not be located or read.
   case dataError
-}
 
-/// Represents errors specific to the Finder implementation.
-public enum FinderError: Error {
-  case noTimezoneFound
-}
+  /// The `.tzb` bytes violate the format's structural rules.
+  case malformed(String)
 
-// MARK: - Finder
+  /// The bytes are a memory-image (`.tzm`, M profile) file, which tzf-swift
+  /// does not consume: it exists for the Go runtime's zero-copy ring
+  /// aliasing. Use the `.tzb` file.
+  case unsupportedProfile
 
-/// A timezone finder that performs point-in-polygon tests against topology-compressed
-/// timezone boundary data (CompressedTopoTimezones format).
-///
-/// Finder decodes the shared-edge topology and polyline-compressed coordinates from
-/// `combined-with-oceans.topology.compress.topo.bin`, then builds Polygon objects for
-/// efficient containment testing.
-///
-/// Features:
-/// - Shared-edge deduplication (boundaries stored once, referenced by ID)
-/// - Polyline coordinate compression (delta + zigzag encoding, scale 1e5)
-/// - Polygon boundary support with hole (enclave) handling
-/// - Bounding-box pre-filter for fast rejection
-/// - Optional 1°×1° grid index for O(1) candidate reduction (embedded in data file)
-public class Finder: F {
-  private struct ProcessedTimezone {
-    let name: String
-    let polygons: [Polygon]
-    let unionRect: Rect
+  /// The file carries no FUZZY (preindex) section.
+  case noFuzzySection
+
+  /// A timezone index is out of range.
+  case indexOutOfRange
+
+  public var description: String {
+    switch self {
+    case .invalidCoordinates: return "tzf: invalid coordinates"
+    case .noTimezoneFound: return "tzf: no timezone found"
+    case .dataError: return "tzf: bundled data unavailable"
+    case .malformed(let what): return "tzf: malformed .tzb file: \(what)"
+    case .unsupportedProfile: return "tzf: memory-image (.tzm) files are not supported; use .tzb"
+    case .noFuzzySection: return "tzf: file has no FUZZY section"
+    case .indexOutOfRange: return "tzf: timezone index out of range"
+    }
   }
-  private let processedTimezones: [ProcessedTimezone]
-  private let version: String
-  // Flat grid storage: no per-cell heap allocation, no ARC on lookup.
-  // gridIndex maps packed(floor(lng), floor(lat)) → (start, count) into candidateStore.
-  // Key: low 16 bits = Int16(floor(lng)), high 16 bits = Int16(floor(lat)).
-  // nil when the data file has no embedded GridIndex (falls back to linear scan).
-  private struct GridSpan { let start: Int32; let count: Int32 }
-  private let gridIndex: [Int32: GridSpan]?
-  private let candidateStore: [Int32]
+}
 
-  public init() throws {
-    let bundle = Bundle.module
+// MARK: - Bundled data
 
-    guard
-      let url = bundle.url(
-        forResource: "combined-with-oceans.topology.compress.topo", withExtension: "bin")
-    else {
+/// Access to the `.tzb` artifact bundled with the package.
+public enum TZFDist {
+  /// The bundled tzf-dist `lite.tzb` bytes: the topology-simplified dataset
+  /// with its FUZZY preindex, ~4 MB.
+  public static func loadLiteTZB() throws -> Data {
+    guard let url = Bundle.module.url(forResource: "lite", withExtension: "tzb") else {
       throw TZFError.dataError
     }
-
-    let rawData = try Data(contentsOf: url)
-    let topoData = try Tzf_V1_CompressedTopoTimezones(serializedBytes: rawData)
-    self.version = topoData.version
-
-    // Decode shared edges once, indexed by edge ID.
-    var edges = [[Point]](repeating: [], count: topoData.sharedEdges.count)
-    for edge in topoData.sharedEdges {
-      edges[Int(edge.id)] = decodePolylineBytes(edge.points)
-    }
-
-    // Build processed timezones with pre-decoded polygons.
-    var processed: [ProcessedTimezone] = []
-    for tz in topoData.timezones {
-      var polygons: [Polygon] = []
-      for poly in tz.polygons {
-        let exterior = expandCompressedRing(poly.exterior, edges: edges)
-        let holes = poly.holes.map { expandCompressedRing($0.exterior, edges: edges) }
-        guard !exterior.isEmpty else { continue }
-        polygons.append(Polygon.new(exterior: exterior, holes: holes))
-      }
-      guard !polygons.isEmpty else { continue }
-      var minX = polygons[0].rect.min.x, minY = polygons[0].rect.min.y
-      var maxX = polygons[0].rect.max.x, maxY = polygons[0].rect.max.y
-      for p in polygons.dropFirst() {
-        minX = min(minX, p.rect.min.x); minY = min(minY, p.rect.min.y)
-        maxX = max(maxX, p.rect.max.x); maxY = max(maxY, p.rect.max.y)
-      }
-      let unionRect = Rect(min: Point(x: minX, y: minY), max: Point(x: maxX, y: maxY))
-      processed.append(ProcessedTimezone(name: tz.name, polygons: polygons, unionRect: unionRect))
-    }
-    self.processedTimezones = processed
-
-    // Decode the embedded GridIndex into flat storage for O(1) cell lookup with no ARC.
-    // candidateStore is one contiguous [Int32]; gridIndex maps packed keys to (start,count)
-    // spans — GridSpan is a struct, so dict lookups incur no retain/release.
-    if topoData.hasGridIndex {
-      var store = [Int32]()
-      var indexMap = [Int32: GridSpan]()
-      indexMap.reserveCapacity(topoData.gridIndex.cells.count)
-      for cell in topoData.gridIndex.cells {
-        let key = Int32(Int16(cell.lng)) | (Int32(Int16(cell.lat)) << 16)
-        let start = Int32(store.count)
-        for idx in cell.tzIndices { store.append(Int32(idx)) }
-        indexMap[key] = GridSpan(start: start, count: Int32(cell.tzIndices.count))
-      }
-      self.gridIndex = indexMap
-      self.candidateStore = store
-    } else {
-      self.gridIndex = nil
-      self.candidateStore = []
-    }
+    return try Data(contentsOf: url)
   }
+}
 
-  private func toFeature(name: String, polygons: [Polygon]) -> GeoJSONFeature {
-    let coordinates = polygons.map { polygon -> GeoJSONPolygonCoordinates in
-      var rings: GeoJSONPolygonCoordinates = []
-      rings.append(polygon.exterior.map { [$0.x, $0.y] })
-      for hole in polygon.holes {
-        rings.append(hole.map { [$0.x, $0.y] })
-      }
-      return rings
-    }
-    return GeoJSONFeature(
-      type: "Feature",
-      properties: GeoJSONProperties(tzid: name),
-      geometry: GeoJSONGeometry(type: "MultiPolygon", coordinates: coordinates)
-    )
-  }
+// MARK: - F
 
-  /// Convert all timezone polygons to GeoJSON FeatureCollection.
-  public func toGeoJSON() -> GeoJSONFeatureCollection {
-    let features = processedTimezones.map { toFeature(name: $0.name, polygons: $0.polygons) }
-    return GeoJSONFeatureCollection(type: "FeatureCollection", features: features)
-  }
+/// The interface every timezone finder implements.
+public protocol F: Sendable {
+  /// Returns the dataset release the finder was built from (e.g. `2026c`).
+  func dataVersion() -> String
 
-  /// Convert one timezone polygon set to GeoJSON FeatureCollection.
+  /// Returns the timezone for a geographic coordinate.
+  ///
+  /// - Parameters:
+  ///   - lng: The longitude in decimal degrees (-180 to 180)
+  ///   - lat: The latitude in decimal degrees (-90 to 90)
+  /// - Returns: The IANA timezone identifier
+  /// - Throws: `TZFError.invalidCoordinates` for non-finite or out-of-range
+  ///   input; `TZFError.noTimezoneFound` when no timezone covers the point.
+  func getTimezone(lng: Double, lat: Double) throws -> String
+
+  /// Returns all timezones covering a geographic coordinate, sorted
+  /// lexicographically. A point exactly on a shared border belongs to every
+  /// touching timezone. Always polygon-exact.
+  ///
+  /// - Throws: `TZFError.invalidCoordinates` for non-finite or out-of-range
+  ///   input; `TZFError.noTimezoneFound` when no timezone covers the point.
+  func getTimezones(lng: Double, lat: Double) throws -> [String]
+
+  /// Returns all timezone names in the dataset, in dataset order.
+  func timezoneNames() -> [String]
+
+  /// Converts all timezone boundaries to a GeoJSON FeatureCollection.
+  func toGeoJSON() -> GeoJSONFeatureCollection
+
+  /// Converts one timezone's boundaries to a GeoJSON FeatureCollection.
   ///
   /// - Parameter timezoneName: IANA timezone name, for example "Asia/Tokyo"
-  /// - Returns: One-feature GeoJSON collection when found, nil when missing.
-  public func getTimezoneGeoJSON(timezoneName: String) -> GeoJSONFeatureCollection? {
-    guard let tz = processedTimezones.first(where: { $0.name == timezoneName }) else {
+  /// - Returns: The collection if found, otherwise nil.
+  func getTimezoneGeoJSON(timezoneName: String) -> GeoJSONFeatureCollection?
+
+  /// Converts the whole FUZZY preindex to a GeoJSON FeatureCollection: one
+  /// Feature per timezone that owns at least one tile, in dataset order; a
+  /// boundary tile appears in every timezone it names. Returns nil when the
+  /// file carries no FUZZY section.
+  func toPreindexGeoJSON() -> GeoJSONFeatureCollection?
+
+  /// Converts one timezone's FUZZY preindex tiles to a GeoJSON
+  /// FeatureCollection: one Feature whose MultiPolygon holds each tile's
+  /// bounding rectangle — the area where `getTimezone` answers from the
+  /// preindex fast path instead of exact point-in-polygon. Tiles are ordered
+  /// coarsest zoom first.
+  ///
+  /// Returns nil when the file carries no FUZZY section, the dataset does not
+  /// contain the name, or no preindex tile names it.
+  func getTimezonePreindexGeoJSON(timezoneName: String) -> GeoJSONFeatureCollection?
+}
+
+// MARK: - Materialized polygon finder
+
+/// One timezone's polygons.
+struct Item: Sendable {
+  let name: String
+  let polys: [I32Polygon]
+
+  /// Timezone polygons tile the globe, so a query that lands exactly on a
+  /// shared border must belong to both neighbours rather than to neither.
+  @inline(__always)
+  func contains(_ sp: Point) -> Bool {
+    for poly in polys where poly.containsScaledPoint(sp, allowOnEdge: true) {
+      return true
+    }
+    return false
+  }
+}
+
+/// The dense 1°×1° GRID candidate index, copied out of the file so queries
+/// probe a flat array instead of a hash map.
+struct DenseGrid: Sendable {
+  let lngMin: Int
+  let latMin: Int
+  let lngCells: Int
+  let latCells: Int
+  let words: [UInt32]
+  let cands: [UInt16]
+
+  init?(reader: TZBReader) {
+    guard let (g, words, cands) = reader.gridArrays() else { return nil }
+    lngMin = Int(g.lngMin)
+    latMin = Int(g.latMin)
+    lngCells = Int(g.lngCells)
+    latCells = Int(g.latCells)
+    self.words = words
+    self.cands = cands
+  }
+
+  /// The candidate range for an in-domain (lng, lat): count 0 means no
+  /// candidate covers the point. Offsets were bounds-checked at open.
+  @inline(__always)
+  func cellRange(lng: Double, lat: Double) -> (off: Int, count: Int) {
+    let cx = Int(lng.rounded(.down)) - lngMin
+    let cy = Int(lat.rounded(.down)) - latMin
+    if cx < 0 || cy < 0 || cx >= lngCells || cy >= latCells {
+      return (0, 0)
+    }
+    let word = words[cy * lngCells + cx]
+    return (Int(word & 0x0fff_ffff), Int(word >> 28))
+  }
+
+  @inline(__always)
+  func candidate(_ off: Int) -> Int {
+    Int(cands[off])
+  }
+}
+
+/// The materialized point-in-polygon finder behind `DefaultFinder`.
+final class PolyFinder: Sendable {
+  let items: [Item]
+  let grid: DenseGrid?
+  let version: String
+
+  init(items: [Item], grid: DenseGrid?, version: String) {
+    self.items = items
+    self.grid = grid
+    self.version = version
+  }
+
+  /// The first containing item index in source order, for an in-domain
+  /// point.
+  @inline(__always)
+  func lookup(lng: Double, lat: Double) -> Int? {
+    let sp = Point(x: lng * i32Scale, y: lat * i32Scale)
+    if let grid = grid {
+      let (off, count) = grid.cellRange(lng: lng, lat: lat)
+      if count == 0 {
+        return nil
+      }
+      // Single-candidate short-circuit: skip PIP when there is only one
+      // candidate and we are away from the antimeridian / pole edges.
+      if count == 1 && lng > -179.0 && lng < 179.0 && lat > -89.0 && lat < 89.0 {
+        return grid.candidate(off)
+      }
+      for i in 0..<count {
+        let idx = grid.candidate(off + i)
+        if items[idx].contains(sp) {
+          return idx
+        }
+      }
       return nil
     }
-    let feature = toFeature(name: tz.name, polygons: tz.polygons)
-    return GeoJSONFeatureCollection(type: "FeatureCollection", features: [feature])
+    for (idx, item) in items.enumerated() where item.contains(sp) {
+      return idx
+    }
+    return nil
   }
 
-  public func dataVersion() -> String {
-    return version
+  /// All matching item indices for an in-domain point, sorted by name.
+  func lookupAll(lng: Double, lat: Double) -> [Int] {
+    let sp = Point(x: lng * i32Scale, y: lat * i32Scale)
+    var res = [Int]()
+    if let grid = grid {
+      let (off, count) = grid.cellRange(lng: lng, lat: lat)
+      for i in 0..<count {
+        let idx = grid.candidate(off + i)
+        if items[idx].contains(sp) {
+          res.append(idx)
+        }
+      }
+    } else {
+      for (idx, item) in items.enumerated() where item.contains(sp) {
+        res.append(idx)
+      }
+    }
+    res.sort { items[$0].name < items[$1].name }
+    return res
+  }
+}
+
+/// Builds the finder items. Assembly cost is dominated by the per-ring
+/// YStripes build and every timezone is independent, so the work fans out
+/// across the CPUs.
+func assembleItems(names: [String], polygons: [[ExpandedPolygon]]) -> [Item] {
+  let n = names.count
+  var slots = [Item?](repeating: nil, count: n)
+  slots.withUnsafeMutableBufferPointer { out in
+    // Each iteration writes exactly one distinct slot; there is no shared
+    // mutable state beyond the disjoint writes.
+    nonisolated(unsafe) let dst = out
+    DispatchQueue.concurrentPerform(iterations: n) { i in
+      dst[i] = Item(
+        name: names[i],
+        polys: polygons[i].map { I32Polygon(exterior: $0.exterior, holes: $0.holes) })
+    }
+  }
+  return slots.map { $0! }
+}
+
+// MARK: - FUZZY fast path
+
+/// The preindex tile fast path rebuilt out of a file's FUZZY section. A
+/// query it cannot answer falls through to the polygon finder.
+final class FuzzyIndex: Sendable {
+  let idxZoom: UInt8
+  let aggZoom: UInt8
+  /// Value ≥ 0 → single timezone index. Value < 0 → `-(spanIdx + 1)`, where
+  /// `spanIdx` indexes `multiSpans` for a `(start, count)` into `multiStore`.
+  let tiles: [UInt64: Int32]
+  let multiSpans: [(start: Int32, count: Int32)]
+  let multiStore: [UInt16]
+  /// Every tile key in ascending order (coarsest zoom first, since the zoom
+  /// lives in the key's high bits); the deterministic order for exports.
+  let sortedKeys: [UInt64]
+
+  /// Rebuilds the preindex map from a file's FUZZY section: one pass over the
+  /// sorted tile keys. `nil` when the file carries no FUZZY section.
+  init?(reader: TZBReader) throws {
+    guard let (idxZoom, aggZoom) = reader.fuzzyZooms else { return nil }
+    let entries = try reader.fuzzyEntries()
+    var tiles = [UInt64: Int32]()
+    tiles.reserveCapacity(entries.count)
+    var spans = [(start: Int32, count: Int32)]()
+    var store = [UInt16]()
+    var keys = [UInt64]()
+    keys.reserveCapacity(entries.count)
+    for (key, indices) in entries {
+      keys.append(key)
+      if indices.count == 1 {
+        tiles[key] = Int32(indices[0])
+      } else {
+        let spanIdx = Int32(spans.count)
+        spans.append((start: Int32(store.count), count: Int32(indices.count)))
+        store.append(contentsOf: indices)
+        tiles[key] = -(spanIdx + 1)
+      }
+    }
+    self.idxZoom = idxZoom
+    self.aggZoom = aggZoom
+    self.tiles = tiles
+    self.multiSpans = spans
+    self.multiStore = store
+    self.sortedKeys = keys
   }
 
-  public func getTimezone(lng: Double, lat: Double) throws -> String {
-    let point = Point(x: lng, y: lat)
-    if let index = gridIndex {
-      let key = Int32(Int16(floor(lng))) | (Int32(Int16(floor(lat))) << 16)
-      if let span = index[key] {
-        // Single-candidate shortcut: grid guarantees exactly one timezone for this cell.
-        if span.count == 1 {
-          return processedTimezones[Int(candidateStore[Int(span.start)])].name
-        }
-        for i in span.start..<(span.start + span.count) {
-          let tz = processedTimezones[Int(candidateStore[Int(i)])]
-          guard tz.unionRect.containsPoint(point) else { continue }
-          for polygon in tz.polygons {
-            if polygon.containsPoint(point) { return tz.name }
-          }
-        }
-        // PIP found no match among candidates — fall through to full scan.
-      }
-      // Cell absent or PIP miss: full linear scan as fallback (matches Go/Rust behaviour).
-    }
-    for tz in processedTimezones {
-      guard tz.unionRect.containsPoint(point) else { continue }
-      for polygon in tz.polygons {
-        if polygon.containsPoint(point) { return tz.name }
-      }
-    }
-    throw FinderError.noTimezoneFound
+  @inline(__always)
+  private func first(_ value: Int32) -> Int {
+    if value >= 0 { return Int(value) }
+    let span = multiSpans[Int(-(value + 1))]
+    return Int(multiStore[Int(span.start)])
   }
 
-  public func getTimezones(lng: Double, lat: Double) throws -> [String] {
-    let point = Point(x: lng, y: lat)
-    var results: [String] = []
+  @inline(__always)
+  private func indices(_ value: Int32) -> ArraySlice<UInt16> {
+    if value >= 0 { return [UInt16(value)][...] }
+    let span = multiSpans[Int(-(value + 1))]
+    return multiStore[Int(span.start)..<Int(span.start + span.count)]
+  }
 
-    if let index = gridIndex {
-      let key = Int32(Int16(floor(lng))) | (Int32(Int16(floor(lat))) << 16)
-      if let span = index[key], span.count > 0 {
-        for i in span.start..<(span.start + span.count) {
-          let tz = processedTimezones[Int(candidateStore[Int(i)])]
-          guard tz.unionRect.containsPoint(point) else { continue }
-          for polygon in tz.polygons {
-            if polygon.containsPoint(point) { results.append(tz.name); break }
-          }
-        }
-        if !results.isEmpty {
-          results.sort()
-          return results
-        }
-        // Cell present but PIP found nothing — fall through to full scan.
-      }
-      // Cell absent or PIP miss: full linear scan as fallback.
-    }
-    for tz in processedTimezones {
-      guard tz.unionRect.containsPoint(point) else { continue }
-      for polygon in tz.polygons {
-        if polygon.containsPoint(point) { results.append(tz.name); break }
+  /// The tile answer for an in-domain (lng, lat), coarsest zoom first;
+  /// multi-name tiles resolve to the group's first entry (first-listed
+  /// wins). `nil` means no tile covers the point.
+  @inline(__always)
+  func get(lng: Double, lat: Double) -> Int? {
+    let tile = TileID(lng: lng, lat: lat, zoom: UInt32(idxZoom))
+    for z in aggZoom...idxZoom {
+      if let value = tiles[tile.shift(idxZoom - z).raw] {
+        return first(value)
       }
     }
-    if results.isEmpty { throw FinderError.noTimezoneFound }
-    results.sort()
-    return results
+    return nil
+  }
+
+  /// All tile keys carrying any of the given timezone indices, ascending.
+  func tileKeys(for wanted: Set<UInt16>) -> [UInt64] {
+    sortedKeys.filter { key in
+      indices(tiles[key]!).contains { wanted.contains($0) }
+    }
+  }
+
+  /// Keys grouped by the timezone index they carry (a boundary tile lands in
+  /// every group it names); each group ascending.
+  func tileKeysGrouped() -> [UInt16: [UInt64]] {
+    var grouped = [UInt16: [UInt64]]()
+    for key in sortedKeys {
+      for idx in indices(tiles[key]!) {
+        grouped[idx, default: []].append(key)
+      }
+    }
+    return grouped
+  }
+}
+
+// MARK: - Shared GeoJSON helpers
+
+/// Preindex export shared by both finders: `entries` are the FUZZY tiles in
+/// ascending key order.
+enum PreindexExport {
+  static func timezone(
+    name: String, names: [String], keysFor: (Set<UInt16>) -> [UInt64]
+  ) -> GeoJSONFeatureCollection? {
+    // The same name may map to more than one directory item; a preindex
+    // tile may name any of them.
+    var wanted = Set<UInt16>()
+    for (i, n) in names.enumerated() where n == name {
+      if let idx = UInt16(exactly: i) { wanted.insert(idx) }
+    }
+    if wanted.isEmpty {
+      return nil
+    }
+    let keys = keysFor(wanted)
+    if keys.isEmpty {
+      return nil
+    }
+    return GeoJSON.collection([GeoJSON.feature(name: name, tileKeys: keys)])
+  }
+
+  static func all(names: [String], grouped: [UInt16: [UInt64]]) -> GeoJSONFeatureCollection {
+    var features = [GeoJSONFeature]()
+    for (i, name) in names.enumerated() {
+      guard let idx = UInt16(exactly: i), let keys = grouped[idx] else { continue }
+      features.append(GeoJSON.feature(name: name, tileKeys: keys))
+    }
+    return GeoJSON.collection(features)
   }
 }
 
 // MARK: - DefaultFinder
 
-/// The default finder implementation that combines both PreindexFinder and Finder
-/// for optimal performance and accuracy.
+/// The recommended finder: FUZZY preindex fast path over materialized
+/// polygon geometry, loaded from a `.tzb` file.
 ///
-/// This finder first attempts to use the PreindexFinder for fast lookups using
-/// pre-indexed tiles. If that fails, it falls back to the more accurate but slower
-/// Finder implementation that uses polygon data.
-public class DefaultFinder: F {
-  private let preindexFinder: PreindexFinder
-  private let topoFinder: Finder
+/// `getTimezone` answers from the preindex tile when one covers the point
+/// (the vast majority of queries) and falls back to exact point-in-polygon
+/// otherwise; `getTimezones` always uses the polygon scan, as the
+/// polygon-exact escape hatch. Files without a FUZZY section get the plain
+/// polygon finder.
+///
+/// Creating a finder is expensive — build one and share it.
+public final class DefaultFinder: F {
+  private let fuzzy: FuzzyIndex?
+  private let finder: PolyFinder
 
-  public init() throws {
-    self.preindexFinder = try PreindexFinder()
-    self.topoFinder = try Finder()
+  /// Creates the finder from the bundled tzf-dist `lite.tzb` data.
+  public convenience init() throws {
+    try self.init(tzb: try TZFDist.loadLiteTZB())
+  }
+
+  /// Builds a finder from TZF embedded binary (`.tzb`) bytes by expanding
+  /// the geometry into the materialized polygon engine at load time. `data`
+  /// is only read during loading. When the file carries a FUZZY section it
+  /// becomes the `getTimezone` fast path.
+  ///
+  /// - Throws: `TZFError` when the bytes are not a structurally valid
+  ///   E-profile (`.tzb`) file.
+  public init(tzb data: Data) throws {
+    let reader = try TZBReader(data: data)
+    let fuzzy = try FuzzyIndex(reader: reader)
+    let grid = DenseGrid(reader: reader)
+    let expanded = try reader.expand()
+    self.fuzzy = fuzzy
+    self.finder = PolyFinder(
+      items: assembleItems(names: expanded.names, polygons: expanded.polygons),
+      grid: grid,
+      version: expanded.version)
   }
 
   public func dataVersion() -> String {
-    return "\(preindexFinder.dataVersion())/\(topoFinder.dataVersion())"
+    finder.version
   }
 
   public func getTimezone(lng: Double, lat: Double) throws -> String {
-    if let result = preindexFinder.fuzzyGetTimezone(lng: lng, lat: lat) {
-      return result
+    guard TZB.coordinateInDomain(lng: lng, lat: lat) else {
+      throw TZFError.invalidCoordinates
     }
-    return try topoFinder.getTimezone(lng: lng, lat: lat)
+    if let fuzzy = fuzzy, let idx = fuzzy.get(lng: lng, lat: lat) {
+      return finder.items[idx].name
+    }
+    guard let idx = finder.lookup(lng: lng, lat: lat) else {
+      throw TZFError.noTimezoneFound
+    }
+    return finder.items[idx].name
   }
 
   public func getTimezones(lng: Double, lat: Double) throws -> [String] {
-    do {
-      return try preindexFinder.getTimezones(lng: lng, lat: lat)
-    } catch {
-      return try topoFinder.getTimezones(lng: lng, lat: lat)
+    guard TZB.coordinateInDomain(lng: lng, lat: lat) else {
+      throw TZFError.invalidCoordinates
+    }
+    let idxs = finder.lookupAll(lng: lng, lat: lat)
+    if idxs.isEmpty {
+      throw TZFError.noTimezoneFound
+    }
+    return idxs.map { finder.items[$0].name }
+  }
+
+  public func timezoneNames() -> [String] {
+    finder.items.map(\.name)
+  }
+
+  public func toGeoJSON() -> GeoJSONFeatureCollection {
+    GeoJSON.collection(finder.items.map { GeoJSON.feature(name: $0.name, polygons: $0.polys) })
+  }
+
+  public func getTimezoneGeoJSON(timezoneName: String) -> GeoJSONFeatureCollection? {
+    let features = finder.items.filter { $0.name == timezoneName }
+      .map { GeoJSON.feature(name: $0.name, polygons: $0.polys) }
+    return features.isEmpty ? nil : GeoJSON.collection(features)
+  }
+
+  public func toPreindexGeoJSON() -> GeoJSONFeatureCollection? {
+    guard let fuzzy = fuzzy else { return nil }
+    return PreindexExport.all(names: timezoneNames(), grouped: fuzzy.tileKeysGrouped())
+  }
+
+  public func getTimezonePreindexGeoJSON(timezoneName: String) -> GeoJSONFeatureCollection? {
+    guard let fuzzy = fuzzy else { return nil }
+    return PreindexExport.timezone(name: timezoneName, names: timezoneNames()) {
+      fuzzy.tileKeys(for: $0)
     }
   }
+}
 
-  /// Convert all timezone polygons to GeoJSON FeatureCollection.
-  public func toGeoJSON() -> GeoJSONFeatureCollection {
-    return topoFinder.toGeoJSON()
+// MARK: - EmbeddedFinder
+
+/// The low-memory finder: queries TZF embedded binary (`.tzb`) bytes in
+/// place, without expanding the geometry. Total footprint is roughly the
+/// file itself (the bundled lite data is ~4 MB) plus the name table.
+///
+/// `getTimezone` consults the file's FUZZY preindex first and falls back to
+/// the compressed-geometry scan; results match `DefaultFinder` over the same
+/// file, only slower on boundary queries (microseconds instead of hundreds
+/// of nanoseconds).
+public final class EmbeddedFinder: F {
+  private let reader: TZBReader
+  private let names: [String]
+
+  /// Creates the finder over the bundled tzf-dist `lite.tzb` data.
+  public convenience init() throws {
+    try self.init(tzb: try TZFDist.loadLiteTZB())
   }
 
-  /// Convert one timezone polygon set to GeoJSON FeatureCollection.
+  /// Builds a finder that queries a private copy of `data` in place.
   ///
-  /// - Parameter timezoneName: IANA timezone name, for example "Asia/Tokyo"
-  /// - Returns: One-feature GeoJSON collection when found, nil when missing.
+  /// - Throws: `TZFError` when the bytes are not a structurally valid
+  ///   E-profile (`.tzb`) file. Memory images (`.tzm`) are rejected with
+  ///   `TZFError.unsupportedProfile`.
+  public init(tzb data: Data) throws {
+    let reader = try TZBReader(data: data)
+    self.reader = reader
+    self.names = try reader.names()
+  }
+
+  public func dataVersion() -> String {
+    reader.dataVersion
+  }
+
+  public func getTimezone(lng: Double, lat: Double) throws -> String {
+    guard TZB.coordinateInDomain(lng: lng, lat: lat) else {
+      throw TZFError.invalidCoordinates
+    }
+    if reader.hasFuzzy, let idx = try reader.fuzzyLookup(lng: lng, lat: lat) {
+      return names[Int(idx)]
+    }
+    guard let idx = try reader.lookup(lng: lng, lat: lat) else {
+      throw TZFError.noTimezoneFound
+    }
+    return names[Int(idx)]
+  }
+
+  public func getTimezones(lng: Double, lat: Double) throws -> [String] {
+    guard TZB.coordinateInDomain(lng: lng, lat: lat) else {
+      throw TZFError.invalidCoordinates
+    }
+    let idxs = try reader.lookupAll(lng: lng, lat: lat)
+    if idxs.isEmpty {
+      throw TZFError.noTimezoneFound
+    }
+    return idxs.map { names[Int($0)] }
+  }
+
+  public func timezoneNames() -> [String] {
+    names
+  }
+
+  /// Converts all timezone boundaries to a GeoJSON FeatureCollection.
+  ///
+  /// Unlike `DefaultFinder`, which exports polygons it already holds, this
+  /// decodes the whole file's geometry on demand — roughly the cost of
+  /// loading an expanded finder. A timezone that fails to decode is omitted.
+  public func toGeoJSON() -> GeoJSONFeatureCollection {
+    var features = [GeoJSONFeature]()
+    features.reserveCapacity(names.count)
+    for (i, name) in names.enumerated() {
+      guard let polys = try? reader.expandTimezone(UInt32(i)) else { continue }
+      features.append(GeoJSON.feature(name: name, polygons: polys))
+    }
+    return GeoJSON.collection(features)
+  }
+
+  /// Converts one timezone's boundaries to a GeoJSON FeatureCollection,
+  /// decoding only that timezone's rings. Returns nil when the dataset does
+  /// not contain the name or its geometry fails to decode.
   public func getTimezoneGeoJSON(timezoneName: String) -> GeoJSONFeatureCollection? {
-    return topoFinder.getTimezoneGeoJSON(timezoneName: timezoneName)
+    var features = [GeoJSONFeature]()
+    for (i, name) in names.enumerated() where name == timezoneName {
+      guard let polys = try? reader.expandTimezone(UInt32(i)) else { return nil }
+      features.append(GeoJSON.feature(name: name, polygons: polys))
+    }
+    return features.isEmpty ? nil : GeoJSON.collection(features)
+  }
+
+  public func toPreindexGeoJSON() -> GeoJSONFeatureCollection? {
+    guard reader.hasFuzzy, let entries = try? reader.fuzzyEntries() else { return nil }
+    var grouped = [UInt16: [UInt64]]()
+    for (key, idxs) in entries {
+      for idx in idxs {
+        grouped[idx, default: []].append(key)
+      }
+    }
+    return PreindexExport.all(names: names, grouped: grouped)
+  }
+
+  public func getTimezonePreindexGeoJSON(timezoneName: String) -> GeoJSONFeatureCollection? {
+    guard reader.hasFuzzy, let entries = try? reader.fuzzyEntries() else { return nil }
+    return PreindexExport.timezone(name: timezoneName, names: names) { wanted in
+      // The FUZZY key array is stored sorted, so the filtered keys keep the
+      // coarsest-zoom-first order DefaultFinder produces.
+      entries.filter { $0.indices.contains { wanted.contains($0) } }.map(\.key)
+    }
   }
 }

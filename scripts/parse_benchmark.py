@@ -146,10 +146,11 @@ def _get_instructions_str(metrics):
 _BENCHMARK_ORDER = [
     "TZF.DefaultFinder",
     "TZF.DefaultFinder (per call)",
-    "TZF.PreindexFinder",
-    "TZF.PreindexFinder (per call)",
-    "TZF.Finder",
-    "TZF.Finder (per call)",
+    "TZF.DefaultFinder.getTimezones",
+    "TZF.EmbeddedFinder",
+    "TZF.EmbeddedFinder (per call)",
+    "TZF.DefaultFinder (init)",
+    "TZF.EmbeddedFinder (init)",
     "LatLongToTimezone",
     "LatLongToTimezone (per call)",
     "SwiftTimeZoneLookup.simple",
@@ -162,7 +163,7 @@ _BENCHMARK_ORDER = [
 def _sort_key(benchmark):
     display = _display_name(benchmark["name"])
     for i, prefix in enumerate(_BENCHMARK_ORDER):
-        if display.startswith(prefix):
+        if display == prefix:
             return i
     return len(_BENCHMARK_ORDER)
 
@@ -175,10 +176,11 @@ _SCALE_PATTERNS = [
     (r"\.(\d+)_hundred\b", 100),
 ]
 
-_PER_CALL_PATTERN = re.compile(r"\.per_call$")
+_PER_CALL_PATTERN = re.compile(r"\.(per_call|init)$")
 
 # Method names that are implementation details, not part of the display name.
-_METHOD_SUFFIXES = ["getTimezone", "getTimezones", "latLngToTimezoneString"]
+# `getTimezones` is kept: it is a different (polygon-exact) code path.
+_METHOD_SUFFIXES = ["getTimezone", "latLngToTimezoneString"]
 
 
 def _extract_scale(name):
@@ -194,6 +196,8 @@ def _is_per_call(name):
 
 
 def _display_name(name):
+    if name.endswith(".init"):
+        return name[: -len(".init")] + " (init)"
     # Strip the .random.N_scale suffix or .per_call suffix
     n = re.sub(r"(\.random\.\d+_\w+|\.per_call)$", "", name)
     # Strip known method suffixes
@@ -252,7 +256,7 @@ def _build_rows(benchmarks, success_rates):
 
         if per_call:
             # wall_ms is already the per-iteration (per-call) latency reported by the framework
-            scale_str = "per call"
+            scale_str = "per load" if name.endswith(".init") else "per call"
             wall_str = f"{wall_ms:.3f}" if wall_ms is not None else "-"
             ops_str = f"~{int(1000 / wall_ms):,}" if wall_ms else "-"
             time_per_op_str = _format_time_per_op(wall_ms, 1)

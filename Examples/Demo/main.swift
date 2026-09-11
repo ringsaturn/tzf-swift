@@ -15,3 +15,7 @@ if let macauGeoJSON = finder.getTimezoneGeoJSON(timezoneName: "Asia/Macau") {
   print("Asia/Macau features:", macauGeoJSON.features.count)
   print(try macauGeoJSON.toJSONString(pretty: false))
 }
+
+// Low-memory alternative: query the .tzb bytes in place.
+let embedded = try EmbeddedFinder()
+print("Embedded finder:", try embedded.getTimezone(lng: 139.6917, lat: 35.6895))

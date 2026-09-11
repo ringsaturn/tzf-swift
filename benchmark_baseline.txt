@@ -10,62 +10,60 @@ Running Benchmarks
 
 [1A[K  0% [                                                            ] ETA: 00:00:00 | TimezoneFinderBenchmarks:OtherPackageToCompare.LatLongToTimezone.latLngToTimezoneString.per_call
 [1A[K  1% [                                                            ] ETA: 00:00:01 | TimezoneFinderBenchmarks:OtherPackageToCompare.LatLongToTimezone.latLngToTimezoneString.per_call
-[1A[K  8% [----                                                        ] ETA: 00:00:01 | TimezoneFinderBenchmarks:OtherPackageToCompare.LatLongToTimezone.latLngToTimezoneString.per_call
-[1A[K 15% [---------                                                   ] ETA: 00:00:01 | TimezoneFinderBenchmarks:OtherPackageToCompare.LatLongToTimezone.latLngToTimezoneString.per_call
+[1A[K 10% [------                                                      ] ETA: 00:00:01 | TimezoneFinderBenchmarks:OtherPackageToCompare.LatLongToTimezone.latLngToTimezoneString.per_call
+[1A[K 20% [------------                                                ] ETA: 00:00:01 | TimezoneFinderBenchmarks:OtherPackageToCompare.LatLongToTimezone.latLngToTimezoneString.per_call
 [1A[K 25% [---------------                                             ] ETA: 00:00:01 | TimezoneFinderBenchmarks:OtherPackageToCompare.LatLongToTimezone.latLngToTimezoneString.per_call
-[1A[K 35% [---------------------                                       ] ETA: 00:00:01 | TimezoneFinderBenchmarks:OtherPackageToCompare.LatLongToTimezone.latLngToTimezoneString.per_call
+[1A[K 30% [------------------                                          ] ETA: 00:00:01 | TimezoneFinderBenchmarks:OtherPackageToCompare.LatLongToTimezone.latLngToTimezoneString.per_call
+[1A[K 40% [------------------------                                    ] ETA: 00:00:01 | TimezoneFinderBenchmarks:OtherPackageToCompare.LatLongToTimezone.latLngToTimezoneString.per_call
 [1A[K 45% [---------------------------                                 ] ETA: 00:00:01 | TimezoneFinderBenchmarks:OtherPackageToCompare.LatLongToTimezone.latLngToTimezoneString.per_call
-[1A[K 50% [------------------------------                              ] ETA: 00:00:01 | TimezoneFinderBenchmarks:OtherPackageToCompare.LatLongToTimezone.latLngToTimezoneString.per_call
-[1A[K 60% [------------------------------------                        ] ETA: 00:00:01 | TimezoneFinderBenchmarks:OtherPackageToCompare.LatLongToTimezone.latLngToTimezoneString.per_call
-[1A[K 70% [------------------------------------------                  ] ETA: 00:00:01 | TimezoneFinderBenchmarks:OtherPackageToCompare.LatLongToTimezone.latLngToTimezoneString.per_call
+[1A[K 55% [---------------------------------                           ] ETA: 00:00:01 | TimezoneFinderBenchmarks:OtherPackageToCompare.LatLongToTimezone.latLngToTimezoneString.per_call
+[1A[K 65% [---------------------------------------                     ] ETA: 00:00:01 | TimezoneFinderBenchmarks:OtherPackageToCompare.LatLongToTimezone.latLngToTimezoneString.per_call
 [1A[K 75% [---------------------------------------------               ] ETA: 00:00:01 | TimezoneFinderBenchmarks:OtherPackageToCompare.LatLongToTimezone.latLngToTimezoneString.per_call
 [1A[K 85% [---------------------------------------------------         ] ETA: 00:00:01 | TimezoneFinderBenchmarks:OtherPackageToCompare.LatLongToTimezone.latLngToTimezoneString.per_call
-[1A[K 90% [------------------------------------------------------      ] ETA: 00:00:01 | TimezoneFinderBenchmarks:OtherPackageToCompare.LatLongToTimezone.latLngToTimezoneString.per_call
 [1A[K 95% [---------------------------------------------------------   ] ETA: 00:00:01 | TimezoneFinderBenchmarks:OtherPackageToCompare.LatLongToTimezone.latLngToTimezoneString.per_call
-[1A[K100% [------------------------------------------------------------] ETA: 00:00:00 | TimezoneFinderBenchmarks:OtherPackageToCompare.LatLongToTimezone.latLngToTimezoneString.per_call
 [1A[K100% [------------------------------------------------------------] ETA: 00:00:00 | TimezoneFinderBenchmarks:OtherPackageToCompare.LatLongToTimezone.latLngToTimezoneString.per_call
 
 [1A[K  0% [                                                            ] ETA: 00:00:00 | TimezoneFinderBenchmarks:OtherPackageToCompare.LatLongToTimezone.latLngToTimezoneString.random.100_thousand
-[1A[K  1% [                                                            ] ETA: 00:00:02 | TimezoneFinderBenchmarks:OtherPackageToCompare.LatLongToTimezone.latLngToTimezoneString.random.100_thousand
-[1A[K  9% [-----                                                       ] ETA: 00:00:02 | TimezoneFinderBenchmarks:OtherPackageToCompare.LatLongToTimezone.latLngToTimezoneString.random.100_thousand
-[1A[K 16% [---------                                                   ] ETA: 00:00:01 | TimezoneFinderBenchmarks:OtherPackageToCompare.LatLongToTimezone.latLngToTimezoneString.random.100_thousand
-[1A[K 22% [-------------                                               ] ETA: 00:00:01 | TimezoneFinderBenchmarks:OtherPackageToCompare.LatLongToTimezone.latLngToTimezoneString.random.100_thousand
-[1A[K 27% [----------------                                            ] ETA: 00:00:01 | TimezoneFinderBenchmarks:OtherPackageToCompare.LatLongToTimezone.latLngToTimezoneString.random.100_thousand
+[1A[K  2% [-                                                           ] ETA: 00:00:02 | TimezoneFinderBenchmarks:OtherPackageToCompare.LatLongToTimezone.latLngToTimezoneString.random.100_thousand
+[1A[K 10% [------                                                      ] ETA: 00:00:01 | TimezoneFinderBenchmarks:OtherPackageToCompare.LatLongToTimezone.latLngToTimezoneString.random.100_thousand
+[1A[K 18% [----------                                                  ] ETA: 00:00:01 | TimezoneFinderBenchmarks:OtherPackageToCompare.LatLongToTimezone.latLngToTimezoneString.random.100_thousand
+[1A[K 23% [-------------                                               ] ETA: 00:00:01 | TimezoneFinderBenchmarks:OtherPackageToCompare.LatLongToTimezone.latLngToTimezoneString.random.100_thousand
 [1A[K 33% [-------------------                                         ] ETA: 00:00:01 | TimezoneFinderBenchmarks:OtherPackageToCompare.LatLongToTimezone.latLngToTimezoneString.random.100_thousand
-[1A[K 37% [----------------------                                      ] ETA: 00:00:01 | TimezoneFinderBenchmarks:OtherPackageToCompare.LatLongToTimezone.latLngToTimezoneString.random.100_thousand
-[1A[K 46% [---------------------------                                 ] ETA: 00:00:01 | TimezoneFinderBenchmarks:OtherPackageToCompare.LatLongToTimezone.latLngToTimezoneString.random.100_thousand
-[1A[K 54% [--------------------------------                            ] ETA: 00:00:01 | TimezoneFinderBenchmarks:OtherPackageToCompare.LatLongToTimezone.latLngToTimezoneString.random.100_thousand
-[1A[K 62% [-------------------------------------                       ] ETA: 00:00:01 | TimezoneFinderBenchmarks:OtherPackageToCompare.LatLongToTimezone.latLngToTimezoneString.random.100_thousand
-[1A[K 68% [----------------------------------------                    ] ETA: 00:00:01 | TimezoneFinderBenchmarks:OtherPackageToCompare.LatLongToTimezone.latLngToTimezoneString.random.100_thousand
-[1A[K 78% [----------------------------------------------              ] ETA: 00:00:01 | TimezoneFinderBenchmarks:OtherPackageToCompare.LatLongToTimezone.latLngToTimezoneString.random.100_thousand
-[1A[K 84% [--------------------------------------------------          ] ETA: 00:00:01 | TimezoneFinderBenchmarks:OtherPackageToCompare.LatLongToTimezone.latLngToTimezoneString.random.100_thousand
-[1A[K 95% [---------------------------------------------------------   ] ETA: 00:00:01 | TimezoneFinderBenchmarks:OtherPackageToCompare.LatLongToTimezone.latLngToTimezoneString.random.100_thousand
+[1A[K 39% [-----------------------                                     ] ETA: 00:00:01 | TimezoneFinderBenchmarks:OtherPackageToCompare.LatLongToTimezone.latLngToTimezoneString.random.100_thousand
+[1A[K 45% [---------------------------                                 ] ETA: 00:00:01 | TimezoneFinderBenchmarks:OtherPackageToCompare.LatLongToTimezone.latLngToTimezoneString.random.100_thousand
+[1A[K 56% [----------------------------------                          ] ETA: 00:00:01 | TimezoneFinderBenchmarks:OtherPackageToCompare.LatLongToTimezone.latLngToTimezoneString.random.100_thousand
+[1A[K 63% [-------------------------------------                       ] ETA: 00:00:01 | TimezoneFinderBenchmarks:OtherPackageToCompare.LatLongToTimezone.latLngToTimezoneString.random.100_thousand
+[1A[K 71% [------------------------------------------                  ] ETA: 00:00:01 | TimezoneFinderBenchmarks:OtherPackageToCompare.LatLongToTimezone.latLngToTimezoneString.random.100_thousand
+[1A[K 75% [---------------------------------------------               ] ETA: 00:00:01 | TimezoneFinderBenchmarks:OtherPackageToCompare.LatLongToTimezone.latLngToTimezoneString.random.100_thousand
+[1A[K 85% [---------------------------------------------------         ] ETA: 00:00:01 | TimezoneFinderBenchmarks:OtherPackageToCompare.LatLongToTimezone.latLngToTimezoneString.random.100_thousand
+[1A[K 93% [-------------------------------------------------------     ] ETA: 00:00:01 | TimezoneFinderBenchmarks:OtherPackageToCompare.LatLongToTimezone.latLngToTimezoneString.random.100_thousand
 [1A[K100% [------------------------------------------------------------] ETA: 00:00:00 | TimezoneFinderBenchmarks:OtherPackageToCompare.LatLongToTimezone.latLngToTimezoneString.random.100_thousand
 
 [1A[K  0% [                                                            ] ETA: 00:00:00 | TimezoneFinderBenchmarks:OtherPackageToCompare.SwiftTimeZoneLookup.lookup.per_call
 [1A[K  1% [                                                            ] ETA: 00:00:01 | TimezoneFinderBenchmarks:OtherPackageToCompare.SwiftTimeZoneLookup.lookup.per_call
-[1A[K  6% [---                                                         ] ETA: 00:00:01 | TimezoneFinderBenchmarks:OtherPackageToCompare.SwiftTimeZoneLookup.lookup.per_call
+[1A[K  7% [----                                                        ] ETA: 00:00:01 | TimezoneFinderBenchmarks:OtherPackageToCompare.SwiftTimeZoneLookup.lookup.per_call
 [1A[K 16% [---------                                                   ] ETA: 00:00:01 | TimezoneFinderBenchmarks:OtherPackageToCompare.SwiftTimeZoneLookup.lookup.per_call
 [1A[K 20% [------------                                                ] ETA: 00:00:01 | TimezoneFinderBenchmarks:OtherPackageToCompare.SwiftTimeZoneLookup.lookup.per_call
-[1A[K 25% [---------------                                             ] ETA: 00:00:01 | TimezoneFinderBenchmarks:OtherPackageToCompare.SwiftTimeZoneLookup.lookup.per_call
-[1A[K 45% [---------------------------                                 ] ETA: 00:00:01 | TimezoneFinderBenchmarks:OtherPackageToCompare.SwiftTimeZoneLookup.lookup.per_call
-[1A[K 59% [-----------------------------------                         ] ETA: 00:00:01 | TimezoneFinderBenchmarks:OtherPackageToCompare.SwiftTimeZoneLookup.lookup.per_call
-[1A[K 74% [--------------------------------------------                ] ETA: 00:00:01 | TimezoneFinderBenchmarks:OtherPackageToCompare.SwiftTimeZoneLookup.lookup.per_call
-[1A[K 88% [----------------------------------------------------        ] ETA: 00:00:01 | TimezoneFinderBenchmarks:OtherPackageToCompare.SwiftTimeZoneLookup.lookup.per_call
+[1A[K 28% [-----------------                                           ] ETA: 00:00:01 | TimezoneFinderBenchmarks:OtherPackageToCompare.SwiftTimeZoneLookup.lookup.per_call
+[1A[K 48% [----------------------------                                ] ETA: 00:00:01 | TimezoneFinderBenchmarks:OtherPackageToCompare.SwiftTimeZoneLookup.lookup.per_call
+[1A[K 63% [-------------------------------------                       ] ETA: 00:00:01 | TimezoneFinderBenchmarks:OtherPackageToCompare.SwiftTimeZoneLookup.lookup.per_call
+[1A[K 78% [----------------------------------------------              ] ETA: 00:00:01 | TimezoneFinderBenchmarks:OtherPackageToCompare.SwiftTimeZoneLookup.lookup.per_call
+[1A[K 92% [-------------------------------------------------------     ] ETA: 00:00:01 | TimezoneFinderBenchmarks:OtherPackageToCompare.SwiftTimeZoneLookup.lookup.per_call
 [1A[K100% [------------------------------------------------------------] ETA: 00:00:00 | TimezoneFinderBenchmarks:OtherPackageToCompare.SwiftTimeZoneLookup.lookup.per_call
 
 [1A[K  0% [                                                            ] ETA: 00:00:00 | TimezoneFinderBenchmarks:OtherPackageToCompare.SwiftTimeZoneLookup.lookup.random.10_thousand
 [1A[K100% [------------------------------------------------------------] ETA: 00:00:00 | TimezoneFinderBenchmarks:OtherPackageToCompare.SwiftTimeZoneLookup.lookup.random.10_thousand
 
 [1A[K  0% [                                                            ] ETA: 00:00:00 | TimezoneFinderBenchmarks:OtherPackageToCompare.SwiftTimeZoneLookup.simple.per_call
-[1A[K  1% [                                                            ] ETA: 00:00:02 | TimezoneFinderBenchmarks:OtherPackageToCompare.SwiftTimeZoneLookup.simple.per_call
-[1A[K  5% [---                                                         ] ETA: 00:00:01 | TimezoneFinderBenchmarks:OtherPackageToCompare.SwiftTimeZoneLookup.simple.per_call
-[1A[K 11% [------                                                      ] ETA: 00:00:01 | TimezoneFinderBenchmarks:OtherPackageToCompare.SwiftTimeZoneLookup.simple.per_call
-[1A[K 20% [------------                                                ] ETA: 00:00:01 | TimezoneFinderBenchmarks:OtherPackageToCompare.SwiftTimeZoneLookup.simple.per_call
+[1A[K  1% [                                                            ] ETA: 00:00:01 | TimezoneFinderBenchmarks:OtherPackageToCompare.SwiftTimeZoneLookup.simple.per_call
+[1A[K  8% [----                                                        ] ETA: 00:00:01 | TimezoneFinderBenchmarks:OtherPackageToCompare.SwiftTimeZoneLookup.simple.per_call
+[1A[K 16% [---------                                                   ] ETA: 00:00:01 | TimezoneFinderBenchmarks:OtherPackageToCompare.SwiftTimeZoneLookup.simple.per_call
+[1A[K 21% [------------                                                ] ETA: 00:00:01 | TimezoneFinderBenchmarks:OtherPackageToCompare.SwiftTimeZoneLookup.simple.per_call
+[1A[K 28% [----------------                                            ] ETA: 00:00:01 | TimezoneFinderBenchmarks:OtherPackageToCompare.SwiftTimeZoneLookup.simple.per_call
 [1A[K 45% [---------------------------                                 ] ETA: 00:00:01 | TimezoneFinderBenchmarks:OtherPackageToCompare.SwiftTimeZoneLookup.simple.per_call
-[1A[K 59% [-----------------------------------                         ] ETA: 00:00:01 | TimezoneFinderBenchmarks:OtherPackageToCompare.SwiftTimeZoneLookup.simple.per_call
-[1A[K 75% [---------------------------------------------               ] ETA: 00:00:01 | TimezoneFinderBenchmarks:OtherPackageToCompare.SwiftTimeZoneLookup.simple.per_call
-[1A[K 90% [------------------------------------------------------      ] ETA: 00:00:01 | TimezoneFinderBenchmarks:OtherPackageToCompare.SwiftTimeZoneLookup.simple.per_call
+[1A[K 62% [-------------------------------------                       ] ETA: 00:00:01 | TimezoneFinderBenchmarks:OtherPackageToCompare.SwiftTimeZoneLookup.simple.per_call
+[1A[K 78% [----------------------------------------------              ] ETA: 00:00:01 | TimezoneFinderBenchmarks:OtherPackageToCompare.SwiftTimeZoneLookup.simple.per_call
+[1A[K 93% [-------------------------------------------------------     ] ETA: 00:00:01 | TimezoneFinderBenchmarks:OtherPackageToCompare.SwiftTimeZoneLookup.simple.per_call
 [1A[K100% [------------------------------------------------------------] ETA: 00:00:00 | TimezoneFinderBenchmarks:OtherPackageToCompare.SwiftTimeZoneLookup.simple.per_call
 
 [1A[K  0% [                                                            ] ETA: 00:00:00 | TimezoneFinderBenchmarks:OtherPackageToCompare.SwiftTimeZoneLookup.simple.random.10_thousand
@@ -73,80 +71,83 @@ Running Benchmarks
 
 [1A[K  0% [                                                            ] ETA: 00:00:00 | TimezoneFinderBenchmarks:TZF.DefaultFinder.getTimezone.per_call
 [1A[K  1% [                                                            ] ETA: 00:00:01 | TimezoneFinderBenchmarks:TZF.DefaultFinder.getTimezone.per_call
-[1A[K  8% [----                                                        ] ETA: 00:00:01 | TimezoneFinderBenchmarks:TZF.DefaultFinder.getTimezone.per_call
-[1A[K 15% [---------                                                   ] ETA: 00:00:01 | TimezoneFinderBenchmarks:TZF.DefaultFinder.getTimezone.per_call
-[1A[K 25% [---------------                                             ] ETA: 00:00:01 | TimezoneFinderBenchmarks:TZF.DefaultFinder.getTimezone.per_call
-[1A[K 35% [---------------------                                       ] ETA: 00:00:01 | TimezoneFinderBenchmarks:TZF.DefaultFinder.getTimezone.per_call
-[1A[K 45% [---------------------------                                 ] ETA: 00:00:01 | TimezoneFinderBenchmarks:TZF.DefaultFinder.getTimezone.per_call
-[1A[K 55% [---------------------------------                           ] ETA: 00:00:01 | TimezoneFinderBenchmarks:TZF.DefaultFinder.getTimezone.per_call
+[1A[K  6% [---                                                         ] ETA: 00:00:01 | TimezoneFinderBenchmarks:TZF.DefaultFinder.getTimezone.per_call
+[1A[K 20% [------------                                                ] ETA: 00:00:01 | TimezoneFinderBenchmarks:TZF.DefaultFinder.getTimezone.per_call
+[1A[K 30% [------------------                                          ] ETA: 00:00:01 | TimezoneFinderBenchmarks:TZF.DefaultFinder.getTimezone.per_call
+[1A[K 40% [------------------------                                    ] ETA: 00:00:01 | TimezoneFinderBenchmarks:TZF.DefaultFinder.getTimezone.per_call
+[1A[K 50% [------------------------------                              ] ETA: 00:00:01 | TimezoneFinderBenchmarks:TZF.DefaultFinder.getTimezone.per_call
 [1A[K 60% [------------------------------------                        ] ETA: 00:00:01 | TimezoneFinderBenchmarks:TZF.DefaultFinder.getTimezone.per_call
 [1A[K 70% [------------------------------------------                  ] ETA: 00:00:01 | TimezoneFinderBenchmarks:TZF.DefaultFinder.getTimezone.per_call
-[1A[K 75% [---------------------------------------------               ] ETA: 00:00:01 | TimezoneFinderBenchmarks:TZF.DefaultFinder.getTimezone.per_call
+[1A[K 80% [------------------------------------------------            ] ETA: 00:00:01 | TimezoneFinderBenchmarks:TZF.DefaultFinder.getTimezone.per_call
 [1A[K 85% [---------------------------------------------------         ] ETA: 00:00:01 | TimezoneFinderBenchmarks:TZF.DefaultFinder.getTimezone.per_call
 [1A[K 95% [---------------------------------------------------------   ] ETA: 00:00:01 | TimezoneFinderBenchmarks:TZF.DefaultFinder.getTimezone.per_call
 [1A[K100% [------------------------------------------------------------] ETA: 00:00:00 | TimezoneFinderBenchmarks:TZF.DefaultFinder.getTimezone.per_call
 [1A[K100% [------------------------------------------------------------] ETA: 00:00:00 | TimezoneFinderBenchmarks:TZF.DefaultFinder.getTimezone.per_call
 
 [1A[K  0% [                                                            ] ETA: 00:00:00 | TimezoneFinderBenchmarks:TZF.DefaultFinder.getTimezone.random.1_million
-[1A[K 47% [----------------------------                                ] ETA: 00:00:01 | TimezoneFinderBenchmarks:TZF.DefaultFinder.getTimezone.random.1_million
-[1A[K 95% [---------------------------------------------------------   ] ETA: 00:00:01 | TimezoneFinderBenchmarks:TZF.DefaultFinder.getTimezone.random.1_million
+[1A[K 55% [---------------------------------                           ] ETA: 00:00:01 | TimezoneFinderBenchmarks:TZF.DefaultFinder.getTimezone.random.1_million
 [1A[K100% [------------------------------------------------------------] ETA: 00:00:00 | TimezoneFinderBenchmarks:TZF.DefaultFinder.getTimezone.random.1_million
 
-[1A[K  0% [                                                            ] ETA: 00:00:00 | TimezoneFinderBenchmarks:TZF.Finder.getTimezone.per_call
-[1A[K  1% [                                                            ] ETA: 00:00:01 | TimezoneFinderBenchmarks:TZF.Finder.getTimezone.per_call
-[1A[K 15% [---------                                                   ] ETA: 00:00:01 | TimezoneFinderBenchmarks:TZF.Finder.getTimezone.per_call
-[1A[K 20% [------------                                                ] ETA: 00:00:01 | TimezoneFinderBenchmarks:TZF.Finder.getTimezone.per_call
-[1A[K 30% [------------------                                          ] ETA: 00:00:01 | TimezoneFinderBenchmarks:TZF.Finder.getTimezone.per_call
-[1A[K 40% [------------------------                                    ] ETA: 00:00:01 | TimezoneFinderBenchmarks:TZF.Finder.getTimezone.per_call
-[1A[K 45% [---------------------------                                 ] ETA: 00:00:01 | TimezoneFinderBenchmarks:TZF.Finder.getTimezone.per_call
-[1A[K 55% [---------------------------------                           ] ETA: 00:00:01 | TimezoneFinderBenchmarks:TZF.Finder.getTimezone.per_call
-[1A[K 65% [---------------------------------------                     ] ETA: 00:00:01 | TimezoneFinderBenchmarks:TZF.Finder.getTimezone.per_call
-[1A[K 70% [------------------------------------------                  ] ETA: 00:00:01 | TimezoneFinderBenchmarks:TZF.Finder.getTimezone.per_call
-[1A[K 80% [------------------------------------------------            ] ETA: 00:00:01 | TimezoneFinderBenchmarks:TZF.Finder.getTimezone.per_call
-[1A[K 85% [---------------------------------------------------         ] ETA: 00:00:01 | TimezoneFinderBenchmarks:TZF.Finder.getTimezone.per_call
-[1A[K 95% [---------------------------------------------------------   ] ETA: 00:00:01 | TimezoneFinderBenchmarks:TZF.Finder.getTimezone.per_call
-[1A[K100% [------------------------------------------------------------] ETA: 00:00:00 | TimezoneFinderBenchmarks:TZF.Finder.getTimezone.per_call
-Finder benchmark stats - Success: 999973, Errors: 27
+[1A[K  0% [                                                            ] ETA: 00:00:00 | TimezoneFinderBenchmarks:TZF.DefaultFinder.getTimezones.random.1_million
+[1A[K100% [------------------------------------------------------------] ETA: 00:00:00 | TimezoneFinderBenchmarks:TZF.DefaultFinder.getTimezones.random.1_million
 
-[1A[K  0% [                                                            ] ETA: 00:00:00 | TimezoneFinderBenchmarks:TZF.Finder.getTimezone.random.1_million
-Finder benchmark stats - Success: 999990, Errors: 10
-[1A[K 57% [----------------------------------                          ] ETA: 00:00:01 | TimezoneFinderBenchmarks:TZF.Finder.getTimezone.random.1_million
-Finder benchmark stats - Success: 999982, Errors: 18
-[1A[K100% [------------------------------------------------------------] ETA: 00:00:00 | TimezoneFinderBenchmarks:TZF.Finder.getTimezone.random.1_million
+[1A[K  0% [                                                            ] ETA: 00:00:00 | TimezoneFinderBenchmarks:TZF.DefaultFinder.init
+[1A[K  2% [-                                                           ] ETA: 00:00:01 | TimezoneFinderBenchmarks:TZF.DefaultFinder.init
+[1A[K 10% [------                                                      ] ETA: 00:00:01 | TimezoneFinderBenchmarks:TZF.DefaultFinder.init
+[1A[K 20% [------------                                                ] ETA: 00:00:01 | TimezoneFinderBenchmarks:TZF.DefaultFinder.init
+[1A[K 28% [----------------                                            ] ETA: 00:00:01 | TimezoneFinderBenchmarks:TZF.DefaultFinder.init
+[1A[K 36% [---------------------                                       ] ETA: 00:00:01 | TimezoneFinderBenchmarks:TZF.DefaultFinder.init
+[1A[K 40% [------------------------                                    ] ETA: 00:00:01 | TimezoneFinderBenchmarks:TZF.DefaultFinder.init
+[1A[K 44% [--------------------------                                  ] ETA: 00:00:01 | TimezoneFinderBenchmarks:TZF.DefaultFinder.init
+[1A[K 52% [-------------------------------                             ] ETA: 00:00:01 | TimezoneFinderBenchmarks:TZF.DefaultFinder.init
+[1A[K 57% [----------------------------------                          ] ETA: 00:00:01 | TimezoneFinderBenchmarks:TZF.DefaultFinder.init
+[1A[K 68% [----------------------------------------                    ] ETA: 00:00:01 | TimezoneFinderBenchmarks:TZF.DefaultFinder.init
+[1A[K 78% [----------------------------------------------              ] ETA: 00:00:01 | TimezoneFinderBenchmarks:TZF.DefaultFinder.init
+[1A[K 88% [----------------------------------------------------        ] ETA: 00:00:01 | TimezoneFinderBenchmarks:TZF.DefaultFinder.init
+[1A[K 98% [----------------------------------------------------------  ] ETA: 00:00:01 | TimezoneFinderBenchmarks:TZF.DefaultFinder.init
+[1A[K100% [------------------------------------------------------------] ETA: 00:00:00 | TimezoneFinderBenchmarks:TZF.DefaultFinder.init
 
-[1A[K  0% [                                                            ] ETA: 00:00:00 | TimezoneFinderBenchmarks:TZF.PreindexFinder.getTimezone.per_call
-[1A[K  1% [                                                            ] ETA: 00:00:01 | TimezoneFinderBenchmarks:TZF.PreindexFinder.getTimezone.per_call
-[1A[K 15% [---------                                                   ] ETA: 00:00:01 | TimezoneFinderBenchmarks:TZF.PreindexFinder.getTimezone.per_call
-[1A[K 25% [---------------                                             ] ETA: 00:00:01 | TimezoneFinderBenchmarks:TZF.PreindexFinder.getTimezone.per_call
-[1A[K 30% [------------------                                          ] ETA: 00:00:01 | TimezoneFinderBenchmarks:TZF.PreindexFinder.getTimezone.per_call
-[1A[K 35% [---------------------                                       ] ETA: 00:00:01 | TimezoneFinderBenchmarks:TZF.PreindexFinder.getTimezone.per_call
-[1A[K 45% [---------------------------                                 ] ETA: 00:00:01 | TimezoneFinderBenchmarks:TZF.PreindexFinder.getTimezone.per_call
-[1A[K 55% [---------------------------------                           ] ETA: 00:00:01 | TimezoneFinderBenchmarks:TZF.PreindexFinder.getTimezone.per_call
-[1A[K 65% [---------------------------------------                     ] ETA: 00:00:01 | TimezoneFinderBenchmarks:TZF.PreindexFinder.getTimezone.per_call
-[1A[K 70% [------------------------------------------                  ] ETA: 00:00:01 | TimezoneFinderBenchmarks:TZF.PreindexFinder.getTimezone.per_call
-[1A[K 75% [---------------------------------------------               ] ETA: 00:00:01 | TimezoneFinderBenchmarks:TZF.PreindexFinder.getTimezone.per_call
-[1A[K 85% [---------------------------------------------------         ] ETA: 00:00:01 | TimezoneFinderBenchmarks:TZF.PreindexFinder.getTimezone.per_call
-[1A[K 95% [---------------------------------------------------------   ] ETA: 00:00:01 | TimezoneFinderBenchmarks:TZF.PreindexFinder.getTimezone.per_call
-[1A[K100% [------------------------------------------------------------] ETA: 00:00:00 | TimezoneFinderBenchmarks:TZF.PreindexFinder.getTimezone.per_call
-[1A[K100% [------------------------------------------------------------] ETA: 00:00:00 | TimezoneFinderBenchmarks:TZF.PreindexFinder.getTimezone.per_call
-PreindexFinder benchmark stats - Success: 808357, Errors: 191643
+[1A[K  0% [                                                            ] ETA: 00:00:00 | TimezoneFinderBenchmarks:TZF.EmbeddedFinder.getTimezone.per_call
+[1A[K  1% [                                                            ] ETA: 00:00:01 | TimezoneFinderBenchmarks:TZF.EmbeddedFinder.getTimezone.per_call
+[1A[K 10% [------                                                      ] ETA: 00:00:01 | TimezoneFinderBenchmarks:TZF.EmbeddedFinder.getTimezone.per_call
+[1A[K 20% [------------                                                ] ETA: 00:00:01 | TimezoneFinderBenchmarks:TZF.EmbeddedFinder.getTimezone.per_call
+[1A[K 30% [------------------                                          ] ETA: 00:00:01 | TimezoneFinderBenchmarks:TZF.EmbeddedFinder.getTimezone.per_call
+[1A[K 40% [------------------------                                    ] ETA: 00:00:01 | TimezoneFinderBenchmarks:TZF.EmbeddedFinder.getTimezone.per_call
+[1A[K 50% [------------------------------                              ] ETA: 00:00:01 | TimezoneFinderBenchmarks:TZF.EmbeddedFinder.getTimezone.per_call
+[1A[K 55% [---------------------------------                           ] ETA: 00:00:01 | TimezoneFinderBenchmarks:TZF.EmbeddedFinder.getTimezone.per_call
+[1A[K 65% [---------------------------------------                     ] ETA: 00:00:01 | TimezoneFinderBenchmarks:TZF.EmbeddedFinder.getTimezone.per_call
+[1A[K 75% [---------------------------------------------               ] ETA: 00:00:01 | TimezoneFinderBenchmarks:TZF.EmbeddedFinder.getTimezone.per_call
+[1A[K 85% [---------------------------------------------------         ] ETA: 00:00:01 | TimezoneFinderBenchmarks:TZF.EmbeddedFinder.getTimezone.per_call
+[1A[K 95% [---------------------------------------------------------   ] ETA: 00:00:01 | TimezoneFinderBenchmarks:TZF.EmbeddedFinder.getTimezone.per_call
+[1A[K100% [------------------------------------------------------------] ETA: 00:00:00 | TimezoneFinderBenchmarks:TZF.EmbeddedFinder.getTimezone.per_call
+[1A[K100% [------------------------------------------------------------] ETA: 00:00:00 | TimezoneFinderBenchmarks:TZF.EmbeddedFinder.getTimezone.per_call
 
-[1A[K  0% [                                                            ] ETA: 00:00:00 | TimezoneFinderBenchmarks:TZF.PreindexFinder.getTimezone.random.1_million
-PreindexFinder benchmark stats - Success: 808735, Errors: 191265
-[1A[K 31% [------------------                                          ] ETA: 00:00:01 | TimezoneFinderBenchmarks:TZF.PreindexFinder.getTimezone.random.1_million
-PreindexFinder benchmark stats - Success: 808938, Errors: 191062
-[1A[K 61% [------------------------------------                        ] ETA: 00:00:01 | TimezoneFinderBenchmarks:TZF.PreindexFinder.getTimezone.random.1_million
-PreindexFinder benchmark stats - Success: 808459, Errors: 191541
-[1A[K 97% [----------------------------------------------------------  ] ETA: 00:00:01 | TimezoneFinderBenchmarks:TZF.PreindexFinder.getTimezone.random.1_million
-PreindexFinder benchmark stats - Success: 808484, Errors: 191516
-[1A[K100% [------------------------------------------------------------] ETA: 00:00:00 | TimezoneFinderBenchmarks:TZF.PreindexFinder.getTimezone.random.1_million
+[1A[K  0% [                                                            ] ETA: 00:00:00 | TimezoneFinderBenchmarks:TZF.EmbeddedFinder.getTimezone.random.1_million
+[1A[K100% [------------------------------------------------------------] ETA: 00:00:00 | TimezoneFinderBenchmarks:TZF.EmbeddedFinder.getTimezone.random.1_million
+
+[1A[K  0% [                                                            ] ETA: 00:00:00 | TimezoneFinderBenchmarks:TZF.EmbeddedFinder.init
+[1A[K  2% [-                                                           ] ETA: 00:00:01 | TimezoneFinderBenchmarks:TZF.EmbeddedFinder.init
+[1A[K  8% [----                                                        ] ETA: 00:00:01 | TimezoneFinderBenchmarks:TZF.EmbeddedFinder.init
+[1A[K 18% [----------                                                  ] ETA: 00:00:01 | TimezoneFinderBenchmarks:TZF.EmbeddedFinder.init
+[1A[K 22% [-------------                                               ] ETA: 00:00:01 | TimezoneFinderBenchmarks:TZF.EmbeddedFinder.init
+[1A[K 28% [----------------                                            ] ETA: 00:00:01 | TimezoneFinderBenchmarks:TZF.EmbeddedFinder.init
+[1A[K 38% [----------------------                                      ] ETA: 00:00:01 | TimezoneFinderBenchmarks:TZF.EmbeddedFinder.init
+[1A[K 44% [--------------------------                                  ] ETA: 00:00:01 | TimezoneFinderBenchmarks:TZF.EmbeddedFinder.init
+[1A[K 50% [------------------------------                              ] ETA: 00:00:01 | TimezoneFinderBenchmarks:TZF.EmbeddedFinder.init
+[1A[K 57% [----------------------------------                          ] ETA: 00:00:01 | TimezoneFinderBenchmarks:TZF.EmbeddedFinder.init
+[1A[K 68% [----------------------------------------                    ] ETA: 00:00:01 | TimezoneFinderBenchmarks:TZF.EmbeddedFinder.init
+[1A[K 74% [--------------------------------------------                ] ETA: 00:00:01 | TimezoneFinderBenchmarks:TZF.EmbeddedFinder.init
+[1A[K 84% [--------------------------------------------------          ] ETA: 00:00:01 | TimezoneFinderBenchmarks:TZF.EmbeddedFinder.init
+[1A[K 92% [-------------------------------------------------------     ] ETA: 00:00:01 | TimezoneFinderBenchmarks:TZF.EmbeddedFinder.init
+[1A[K100% [------------------------------------------------------------] ETA: 00:00:00 | TimezoneFinderBenchmarks:TZF.EmbeddedFinder.init
+[1A[K100% [------------------------------------------------------------] ETA: 00:00:00 | TimezoneFinderBenchmarks:TZF.EmbeddedFinder.init
 
 =======================================================================================================
 Baseline 'Current_run'
 =======================================================================================================
 
 Host 'Han-XiaodeMacBook-Pro.local' with 16 'arm64' processors with 128 GB memory, running:
-Darwin Kernel Version 25.5.0: Tue Jun  9 22:26:15 PDT 2026; root:xnu-12377.121.10~1/RELEASE_ARM64_T6031
+Darwin Kernel Version 25.6.0: Fri Jul 31 19:18:53 PDT 2026; root:xnu-12377.161.14~5/RELEASE_ARM64_T6031
 
 ========================
 TimezoneFinderBenchmarks
@@ -162,9 +163,9 @@ OtherPackageToCompare.LatLongToTimezone.latLngToTimezoneString.per_call
 ├─────────────────────────────────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┤
 │ Bytes (write physical) *            │         0 │         0 │         0 │         0 │         0 │         0 │         0 │     10000 │
 ├─────────────────────────────────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┤
-│ Context switches                    │         0 │         0 │         0 │         0 │         0 │         0 │         1 │     10000 │
+│ Context switches                    │         0 │         0 │         0 │         0 │         0 │         0 │         5 │     10000 │
 ├─────────────────────────────────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┤
-│ Instructions *                      │      2584 │      2917 │      3219 │      3775 │      4575 │      7363 │    177367 │     10000 │
+│ Instructions *                      │      2575 │      2895 │      3149 │      3689 │      4203 │      6219 │    173386 │     10000 │
 ├─────────────────────────────────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┤
 │ Malloc (large) *                    │         0 │         0 │         0 │         0 │         0 │         0 │         0 │     10000 │
 ├─────────────────────────────────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┤
@@ -176,17 +177,17 @@ OtherPackageToCompare.LatLongToTimezone.latLngToTimezoneString.per_call
 ├─────────────────────────────────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┤
 │ Memory (allocated resident)         │         0 │         0 │         0 │         0 │         0 │         0 │         0 │     10000 │
 ├─────────────────────────────────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┤
-│ Memory (resident peak) (M)          │       167 │       167 │       167 │       167 │       167 │       167 │       167 │     10000 │
+│ Memory (resident peak) (M)          │       166 │       166 │       167 │       167 │       167 │       167 │       167 │     10000 │
 ├─────────────────────────────────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┤
 │ Memory (virtual peak) (G)           │       446 │       446 │       446 │       446 │       446 │       446 │       446 │     10000 │
 ├─────────────────────────────────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┤
-│ Memory Δ (resident peak) (K)        │         0 │         0 │       705 │       721 │       770 │       770 │       770 │     10000 │
+│ Memory Δ (resident peak) (K)        │         0 │         0 │       705 │       721 │       737 │       737 │       737 │     10000 │
 ├─────────────────────────────────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┤
 │ Object allocs *                     │         0 │         0 │         0 │         0 │         0 │         0 │         0 │     10000 │
 ├─────────────────────────────────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┤
-│ Releases *                          │         4 │         4 │         5 │         5 │         6 │         8 │        12 │     10000 │
+│ Releases *                          │         4 │         4 │         5 │         5 │         6 │         8 │        11 │     10000 │
 ├─────────────────────────────────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┤
-│ Retains *                           │         4 │         4 │         5 │         5 │         6 │         8 │        12 │     10000 │
+│ Retains *                           │         4 │         4 │         5 │         5 │         6 │         8 │        11 │     10000 │
 ├─────────────────────────────────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┤
 │ Syscalls (total) *                  │         2 │         2 │         2 │         2 │         2 │         2 │         4 │     10000 │
 ├─────────────────────────────────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┤
@@ -196,125 +197,125 @@ OtherPackageToCompare.LatLongToTimezone.latLngToTimezoneString.per_call
 ├─────────────────────────────────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┤
 │ Threads (running)                   │         1 │         1 │         2 │         2 │         2 │         2 │         2 │     10000 │
 ├─────────────────────────────────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┤
-│ Throughput (# / s) (K)              │      1600 │      1264 │      1144 │      1044 │       889 │       511 │        29 │     10000 │
+│ Throughput (# / s) (K)              │      1845 │      1264 │      1093 │       924 │       774 │       212 │         8 │     10000 │
 ├─────────────────────────────────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┤
-│ Time (system CPU) (ns) *            │      1250 │      1458 │      1500 │      1584 │      1834 │      2459 │     34625 │     10000 │
+│ Time (system CPU) (ns) *            │      1208 │      1417 │      1542 │      1791 │      2042 │      3001 │     35458 │     10000 │
 ├─────────────────────────────────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┤
-│ Time (total CPU) (ns) *             │      1832 │      2167 │      2251 │      2417 │      2709 │      3583 │     36375 │     10000 │
+│ Time (total CPU) (ns) *             │      1749 │      2127 │      2333 │      2667 │      3125 │      6503 │     42208 │     10000 │
 ├─────────────────────────────────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┤
-│ Time (user CPU) (ns) *              │       458 │       667 │       709 │       833 │       917 │      1250 │     11875 │     10000 │
+│ Time (user CPU) (ns) *              │       458 │       667 │       750 │       875 │      1083 │      4211 │     18000 │     10000 │
 ├─────────────────────────────────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┤
-│ Time (wall clock) (ns) *            │       625 │       792 │       875 │       958 │      1125 │      1917 │     35083 │     10000 │
+│ Time (wall clock) (ns) *            │       542 │       792 │       916 │      1083 │      1292 │      4667 │    131292 │     10000 │
 ╘═════════════════════════════════════╧═══════════╧═══════════╧═══════════╧═══════════╧═══════════╧═══════════╧═══════════╧═══════════╛
 
 OtherPackageToCompare.LatLongToTimezone.latLngToTimezoneString.random.100_thousand
 ╒═════════════════════════════════════╤═══════════╤═══════════╤═══════════╤═══════════╤═══════════╤═══════════╤═══════════╤═══════════╕
 │ Metric                              │        p0 │       p25 │       p50 │       p75 │       p90 │       p99 │      p100 │   Samples │
 ╞═════════════════════════════════════╪═══════════╪═══════════╪═══════════╪═══════════╪═══════════╪═══════════╪═══════════╪═══════════╡
-│ (Alloc + Retain) - Release Δ *      │         0 │         0 │         0 │         0 │         0 │         0 │         0 │        62 │
+│ (Alloc + Retain) - Release Δ *      │         0 │         0 │         0 │         0 │         0 │         0 │         0 │        47 │
 ├─────────────────────────────────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┤
-│ Bytes (read physical) *             │         0 │         0 │         0 │         0 │         0 │         0 │         0 │        62 │
+│ Bytes (read physical) *             │         0 │         0 │         0 │         0 │         0 │         0 │         0 │        47 │
 ├─────────────────────────────────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┤
-│ Bytes (write physical) *            │         0 │         0 │         0 │         0 │         0 │         0 │         0 │        62 │
+│ Bytes (write physical) *            │         0 │         0 │         0 │         0 │         0 │         0 │         0 │        47 │
 ├─────────────────────────────────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┤
-│ Context switches                    │         1 │         1 │         1 │         2 │         2 │         3 │         3 │        62 │
+│ Context switches                    │         1 │         3 │         5 │         7 │        10 │        65 │        65 │        47 │
 ├─────────────────────────────────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┤
-│ Instructions (M) *                  │       223 │       223 │       223 │       224 │       224 │       240 │       240 │        62 │
+│ Instructions (M) *                  │       223 │       223 │       224 │       224 │       224 │       238 │       238 │        47 │
 ├─────────────────────────────────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┤
-│ Malloc (large) *                    │         0 │         0 │         0 │         0 │         0 │         0 │         0 │        62 │
+│ Malloc (large) *                    │         0 │         0 │         0 │         0 │         0 │         0 │         0 │        47 │
 ├─────────────────────────────────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┤
-│ Malloc (small) *                    │         0 │         0 │         0 │         0 │         0 │         0 │         0 │        62 │
+│ Malloc (small) *                    │         0 │         0 │         0 │         0 │         0 │         0 │         0 │        47 │
 ├─────────────────────────────────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┤
-│ Malloc (total) *                    │         0 │         0 │         0 │         0 │         0 │         0 │         0 │        62 │
+│ Malloc (total) *                    │         0 │         0 │         0 │         0 │         0 │         0 │         0 │        47 │
 ├─────────────────────────────────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┤
-│ Malloc / free Δ *                   │         0 │         0 │         0 │         0 │         0 │         0 │         0 │        62 │
+│ Malloc / free Δ *                   │         0 │         0 │         0 │         0 │         0 │         0 │         0 │        47 │
 ├─────────────────────────────────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┤
-│ Memory (allocated resident)         │         0 │         0 │         0 │         0 │         0 │         0 │         0 │        62 │
+│ Memory (allocated resident)         │         0 │         0 │         0 │         0 │         0 │         0 │         0 │        47 │
 ├─────────────────────────────────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┤
-│ Memory (resident peak) (M)          │       167 │       167 │       167 │       167 │       167 │       167 │       167 │        62 │
+│ Memory (resident peak) (M)          │       167 │       168 │       168 │       168 │       168 │       168 │       168 │        47 │
 ├─────────────────────────────────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┤
-│ Memory (virtual peak) (G)           │       446 │       446 │       446 │       446 │       446 │       446 │       446 │        62 │
+│ Memory (virtual peak) (G)           │       446 │       446 │       446 │       446 │       446 │       446 │       446 │        47 │
 ├─────────────────────────────────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┤
-│ Memory Δ (resident peak) (K)        │         0 │       328 │       360 │       360 │       360 │       360 │       360 │        62 │
+│ Memory Δ (resident peak) (K)        │        16 │       377 │       393 │       410 │       426 │       426 │       426 │        47 │
 ├─────────────────────────────────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┤
-│ Object allocs *                     │         0 │         0 │         0 │         0 │         0 │         0 │         0 │        62 │
+│ Object allocs *                     │         0 │         0 │         0 │         0 │         0 │         0 │         0 │        47 │
 ├─────────────────────────────────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┤
-│ Releases (K) *                      │       183 │       184 │       184 │       184 │       185 │       185 │       185 │        62 │
+│ Releases (K) *                      │       184 │       184 │       184 │       185 │       185 │       185 │       185 │        47 │
 ├─────────────────────────────────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┤
-│ Retains (K) *                       │       183 │       184 │       184 │       184 │       185 │       185 │       185 │        62 │
+│ Retains (K) *                       │       184 │       184 │       184 │       185 │       185 │       185 │       185 │        47 │
 ├─────────────────────────────────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┤
-│ Syscalls (total) *                  │         4 │         6 │         7 │        10 │        12 │        18 │        18 │        62 │
+│ Syscalls (total) *                  │         6 │         7 │        10 │        12 │        12 │        19 │        19 │        47 │
 ├─────────────────────────────────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┤
-│ Syscalls (write) *                  │         0 │         0 │         0 │         0 │         0 │         0 │         0 │        62 │
+│ Syscalls (write) *                  │         0 │         0 │         0 │         0 │         0 │         0 │         0 │        47 │
 ├─────────────────────────────────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┤
-│ Threads (peak)                      │         4 │         4 │         4 │         4 │         4 │         4 │         4 │        62 │
+│ Threads (peak)                      │         4 │         4 │         4 │         4 │         4 │         4 │         4 │        47 │
 ├─────────────────────────────────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┤
-│ Threads (running)                   │         2 │         2 │         2 │         2 │         2 │         2 │         2 │        62 │
+│ Threads (running)                   │         2 │         2 │         2 │         2 │         2 │         2 │         2 │        47 │
 ├─────────────────────────────────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┤
-│ Throughput (# / s) (#)              │        66 │        65 │        64 │        63 │        56 │        40 │        40 │        62 │
+│ Throughput (# / s) (#)              │        56 │        53 │        50 │        42 │        37 │        32 │        32 │        47 │
 ├─────────────────────────────────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┤
-│ Time (system CPU) (μs) *            │        11 │        15 │        24 │        42 │        68 │       101 │       101 │        62 │
+│ Time (system CPU) (μs) *            │        44 │        77 │        98 │       128 │       160 │       606 │       606 │        47 │
 ├─────────────────────────────────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┤
-│ Time (total CPU) (ms) *             │        15 │        15 │        16 │        16 │        18 │        25 │        25 │        62 │
+│ Time (total CPU) (ms) *             │        18 │        19 │        20 │        24 │        27 │        29 │        29 │        47 │
 ├─────────────────────────────────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┤
-│ Time (user CPU) (ms) *              │        15 │        15 │        16 │        16 │        18 │        25 │        25 │        62 │
+│ Time (user CPU) (ms) *              │        18 │        19 │        20 │        23 │        27 │        29 │        29 │        47 │
 ├─────────────────────────────────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┤
-│ Time (wall clock) (ms) *            │        15 │        15 │        16 │        16 │        18 │        25 │        25 │        62 │
+│ Time (wall clock) (ms) *            │        18 │        19 │        20 │        24 │        27 │        31 │        31 │        47 │
 ╘═════════════════════════════════════╧═══════════╧═══════════╧═══════════╧═══════════╧═══════════╧═══════════╧═══════════╧═══════════╛
 
 OtherPackageToCompare.SwiftTimeZoneLookup.lookup.per_call
 ╒═════════════════════════════════════╤═══════════╤═══════════╤═══════════╤═══════════╤═══════════╤═══════════╤═══════════╤═══════════╕
 │ Metric                              │        p0 │       p25 │       p50 │       p75 │       p90 │       p99 │      p100 │   Samples │
 ╞═════════════════════════════════════╪═══════════╪═══════════╪═══════════╪═══════════╪═══════════╪═══════════╪═══════════╪═══════════╡
-│ (Alloc + Retain) - Release Δ *      │         2 │         2 │         2 │         2 │         2 │         2 │         2 │      3413 │
+│ (Alloc + Retain) - Release Δ *      │         2 │         2 │         2 │         2 │         2 │         2 │         2 │      3216 │
 ├─────────────────────────────────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┤
-│ Bytes (read physical) *             │         0 │         0 │         0 │         0 │         0 │         0 │    802816 │      3413 │
+│ Bytes (read physical) *             │         0 │         0 │         0 │         0 │         0 │         0 │    753664 │      3216 │
 ├─────────────────────────────────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┤
-│ Bytes (write physical) *            │         0 │         0 │         0 │         0 │         0 │         0 │         0 │      3413 │
+│ Bytes (write physical) *            │         0 │         0 │         0 │         0 │         0 │         0 │         0 │      3216 │
 ├─────────────────────────────────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┤
-│ Context switches                    │         0 │         0 │         0 │         0 │         0 │         1 │        21 │      3413 │
+│ Context switches                    │         0 │         0 │         0 │         0 │         0 │         2 │        19 │      3216 │
 ├─────────────────────────────────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┤
-│ Instructions (K) *                  │       242 │      1877 │      2560 │      3949 │      7672 │     14287 │     41418 │      3413 │
+│ Instructions (K) *                  │       241 │      1962 │      2574 │      3942 │      7754 │     18809 │     65947 │      3216 │
 ├─────────────────────────────────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┤
-│ Malloc (large) *                    │         0 │         0 │         0 │         0 │         0 │         0 │         0 │      3413 │
+│ Malloc (large) *                    │         0 │         0 │         0 │         0 │         0 │         0 │         0 │      3216 │
 ├─────────────────────────────────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┤
-│ Malloc (small) *                    │         0 │         0 │         0 │         0 │         0 │         0 │         0 │      3413 │
+│ Malloc (small) *                    │         0 │         0 │         0 │         0 │         0 │         0 │         0 │      3216 │
 ├─────────────────────────────────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┤
-│ Malloc (total) *                    │         0 │         0 │         0 │         0 │         0 │         0 │         0 │      3413 │
+│ Malloc (total) *                    │         0 │         0 │         0 │         0 │         0 │         0 │         0 │      3216 │
 ├─────────────────────────────────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┤
-│ Malloc / free Δ *                   │         0 │         0 │         0 │         0 │         0 │         0 │         0 │      3413 │
+│ Malloc / free Δ *                   │         0 │         0 │         0 │         0 │         0 │         0 │         0 │      3216 │
 ├─────────────────────────────────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┤
-│ Memory (allocated resident)         │         0 │         0 │         0 │         0 │         0 │         0 │         0 │      3413 │
+│ Memory (allocated resident)         │         0 │         0 │         0 │         0 │         0 │         0 │         0 │      3216 │
 ├─────────────────────────────────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┤
-│ Memory (resident peak) (M)          │       165 │       168 │       169 │       169 │       169 │       169 │       169 │      3413 │
+│ Memory (resident peak) (M)          │       165 │       169 │       169 │       169 │       169 │       170 │       170 │      3216 │
 ├─────────────────────────────────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┤
-│ Memory (virtual peak) (G)           │       446 │       446 │       446 │       446 │       446 │       446 │       446 │      3413 │
+│ Memory (virtual peak) (G)           │       446 │       446 │       446 │       446 │       446 │       446 │       446 │      3216 │
 ├─────────────────────────────────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┤
-│ Memory Δ (resident peak) (K)        │         0 │      2738 │      3410 │      3836 │      3836 │      3949 │      3949 │      3413 │
+│ Memory Δ (resident peak) (K)        │         0 │      3410 │      3852 │      4164 │      4231 │      4391 │      4391 │      3216 │
 ├─────────────────────────────────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┤
-│ Object allocs *                     │         0 │         0 │         0 │         1 │         1 │         2 │         2 │      3413 │
+│ Object allocs *                     │         0 │         0 │         0 │         1 │         1 │         2 │         2 │      3216 │
 ├─────────────────────────────────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┤
-│ Releases *                          │         7 │         7 │         7 │         8 │         8 │         9 │        10 │      3413 │
+│ Releases *                          │         7 │         7 │         7 │         8 │         8 │         9 │        10 │      3216 │
 ├─────────────────────────────────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┤
-│ Retains *                           │         5 │         5 │         5 │         5 │         6 │         6 │         6 │      3413 │
+│ Retains *                           │         5 │         5 │         5 │         5 │         6 │         6 │         6 │      3216 │
 ├─────────────────────────────────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┤
-│ Syscalls (total) *                  │         2 │         2 │         2 │         2 │         2 │         4 │         4 │      3413 │
+│ Syscalls (total) *                  │         2 │         2 │         2 │         2 │         2 │         4 │         4 │      3216 │
 ├─────────────────────────────────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┤
-│ Syscalls (write) *                  │         0 │         0 │         0 │         0 │         0 │         0 │         0 │      3413 │
+│ Syscalls (write) *                  │         0 │         0 │         0 │         0 │         0 │         0 │         0 │      3216 │
 ├─────────────────────────────────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┤
-│ Threads (peak)                      │         4 │         4 │         4 │         4 │         4 │         4 │         4 │      3413 │
+│ Threads (peak)                      │         4 │         4 │         4 │         4 │         4 │         4 │         4 │      3216 │
 ├─────────────────────────────────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┤
-│ Threads (running)                   │         1 │         2 │         2 │         2 │         2 │         2 │         2 │      3413 │
+│ Threads (running)                   │         1 │         2 │         2 │         2 │         2 │         2 │         2 │      3216 │
 ├─────────────────────────────────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┤
-│ Throughput (# / s) (#)              │     71429 │      6855 │      5139 │      3339 │      1541 │       792 │       218 │      3413 │
+│ Throughput (# / s) (#)              │     69969 │      6703 │      4859 │      3315 │      1474 │       594 │       192 │      3216 │
 ├─────────────────────────────────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┤
-│ Time (system CPU) (ns) *            │      1333 │      1542 │      1750 │      2042 │      2959 │     13127 │    261667 │      3413 │
+│ Time (system CPU) (ns) *            │      1291 │      1500 │      1667 │      2000 │      7419 │     33151 │    337917 │      3216 │
 ├─────────────────────────────────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┤
-│ Time (total CPU) (μs) *             │        15 │       147 │       196 │       301 │       648 │      1230 │      3600 │      3413 │
+│ Time (total CPU) (μs) *             │        16 │       151 │       206 │       303 │       679 │      1654 │      4907 │      3216 │
 ├─────────────────────────────────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┤
-│ Time (user CPU) (μs) *              │        14 │       146 │       194 │       299 │       646 │      1224 │      3456 │      3413 │
+│ Time (user CPU) (μs) *              │        14 │       148 │       203 │       301 │       676 │      1621 │      4796 │      3216 │
 ├─────────────────────────────────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┤
-│ Time (wall clock) (μs) *            │        14 │       146 │       195 │       300 │       649 │      1263 │      4591 │      3413 │
+│ Time (wall clock) (μs) *            │        14 │       149 │       206 │       302 │       679 │      1686 │      5200 │      3216 │
 ╘═════════════════════════════════════╧═══════════╧═══════════╧═══════════╧═══════════╧═══════════╧═══════════╧═══════════╧═══════════╛
 
 OtherPackageToCompare.SwiftTimeZoneLookup.lookup.random.10_thousand
@@ -323,11 +324,11 @@ OtherPackageToCompare.SwiftTimeZoneLookup.lookup.random.10_thousand
 ╞═════════════════════════════════════╪═══════════╪═══════════╪═══════════╪═══════════╪═══════════╪═══════════╪═══════════╪═══════════╡
 │ (Alloc + Retain) - Release Δ (K) *  │        20 │        20 │        20 │        20 │        20 │        20 │        20 │         1 │
 ├─────────────────────────────────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┤
-│ Bytes (read physical) (K) *         │        66 │        66 │        66 │        66 │        66 │        66 │        66 │         1 │
+│ Bytes (read physical) (K) *         │        82 │        82 │        82 │        82 │        82 │        82 │        82 │         1 │
 ├─────────────────────────────────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┤
 │ Bytes (write physical) *            │         0 │         0 │         0 │         0 │         0 │         0 │         0 │         1 │
 ├─────────────────────────────────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┤
-│ Context switches                    │       250 │       250 │       250 │       250 │       250 │       250 │       250 │         1 │
+│ Context switches                    │      1029 │      1029 │      1029 │      1029 │      1029 │      1029 │      1029 │         1 │
 ├─────────────────────────────────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┤
 │ Instructions (G) *                  │        37 │        37 │        37 │        37 │        37 │        37 │        37 │         1 │
 ├─────────────────────────────────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┤
@@ -341,19 +342,19 @@ OtherPackageToCompare.SwiftTimeZoneLookup.lookup.random.10_thousand
 ├─────────────────────────────────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┤
 │ Memory (allocated resident)         │         0 │         0 │         0 │         0 │         0 │         0 │         0 │         1 │
 ├─────────────────────────────────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┤
-│ Memory (resident peak) (M)          │       170 │       170 │       170 │       170 │       170 │       170 │       170 │         1 │
+│ Memory (resident peak) (M)          │       172 │       172 │       172 │       172 │       172 │       172 │       172 │         1 │
 ├─────────────────────────────────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┤
 │ Memory (virtual peak) (G)           │       446 │       446 │       446 │       446 │       446 │       446 │       446 │         1 │
 ├─────────────────────────────────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┤
-│ Memory Δ (resident peak) (K)        │       213 │       213 │       213 │       213 │       213 │       213 │       213 │         1 │
+│ Memory Δ (resident peak) (K)        │       246 │       246 │       246 │       246 │       246 │       246 │       246 │         1 │
 ├─────────────────────────────────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┤
-│ Object allocs *                     │      3210 │      3210 │      3210 │      3210 │      3210 │      3210 │      3210 │         1 │
+│ Object allocs *                     │      3197 │      3197 │      3197 │      3197 │      3197 │      3197 │      3197 │         1 │
 ├─────────────────────────────────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┤
 │ Releases (K) *                      │        34 │        34 │        34 │        34 │        34 │        34 │        34 │         1 │
 ├─────────────────────────────────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┤
 │ Retains (K) *                       │        11 │        11 │        11 │        11 │        11 │        11 │        11 │         1 │
 ├─────────────────────────────────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┤
-│ Syscalls (total) *                  │       477 │       477 │       477 │       477 │       477 │       477 │       477 │         1 │
+│ Syscalls (total) *                  │       497 │       497 │       497 │       497 │       497 │       497 │       497 │         1 │
 ├─────────────────────────────────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┤
 │ Syscalls (write) *                  │         0 │         0 │         0 │         0 │         0 │         0 │         0 │         1 │
 ├─────────────────────────────────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┤
@@ -361,68 +362,68 @@ OtherPackageToCompare.SwiftTimeZoneLookup.lookup.random.10_thousand
 ├─────────────────────────────────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┤
 │ Threads (running)                   │         2 │         2 │         2 │         2 │         2 │         2 │         2 │         1 │
 ├─────────────────────────────────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┤
-│ Time (system CPU) (μs) *            │      4655 │      4655 │      4655 │      4655 │      4655 │      4655 │      4655 │         1 │
+│ Time (system CPU) (ms) *            │        17 │        17 │        17 │        17 │        17 │        17 │        17 │         1 │
 ├─────────────────────────────────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┤
-│ Time (total CPU) (ms) *             │      2936 │      2936 │      2936 │      2936 │      2936 │      2936 │      2936 │         1 │
+│ Time (total CPU) (ms) *             │      3022 │      3022 │      3022 │      3022 │      3022 │      3022 │      3022 │         1 │
 ├─────────────────────────────────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┤
-│ Time (user CPU) (ms) *              │      2932 │      2932 │      2932 │      2932 │      2932 │      2932 │      2932 │         1 │
+│ Time (user CPU) (ms) *              │      3005 │      3005 │      3005 │      3005 │      3005 │      3005 │      3005 │         1 │
 ├─────────────────────────────────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┤
-│ Time (wall clock) (ms) *            │      2936 │      2936 │      2936 │      2936 │      2936 │      2936 │      2936 │         1 │
+│ Time (wall clock) (ms) *            │      3026 │      3026 │      3026 │      3026 │      3026 │      3026 │      3026 │         1 │
 ╘═════════════════════════════════════╧═══════════╧═══════════╧═══════════╧═══════════╧═══════════╧═══════════╧═══════════╧═══════════╛
 
 OtherPackageToCompare.SwiftTimeZoneLookup.simple.per_call
 ╒═════════════════════════════════════╤═══════════╤═══════════╤═══════════╤═══════════╤═══════════╤═══════════╤═══════════╤═══════════╕
 │ Metric                              │        p0 │       p25 │       p50 │       p75 │       p90 │       p99 │      p100 │   Samples │
 ╞═════════════════════════════════════╪═══════════╪═══════════╪═══════════╪═══════════╪═══════════╪═══════════╪═══════════╪═══════════╡
-│ (Alloc + Retain) - Release Δ *      │         0 │         0 │         0 │         0 │         0 │         0 │         0 │      3324 │
+│ (Alloc + Retain) - Release Δ *      │         0 │         0 │         0 │         0 │         0 │         0 │         0 │      3211 │
 ├─────────────────────────────────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┤
-│ Bytes (read physical) *             │         0 │         0 │         0 │         0 │         0 │         0 │     16384 │      3324 │
+│ Bytes (read physical) *             │         0 │         0 │         0 │         0 │         0 │         0 │         0 │      3211 │
 ├─────────────────────────────────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┤
-│ Bytes (write physical) *            │         0 │         0 │         0 │         0 │         0 │         0 │         0 │      3324 │
+│ Bytes (write physical) *            │         0 │         0 │         0 │         0 │         0 │         0 │         0 │      3211 │
 ├─────────────────────────────────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┤
-│ Context switches                    │         0 │         0 │         0 │         0 │         0 │         1 │         2 │      3324 │
+│ Context switches                    │         0 │         0 │         0 │         0 │         0 │         2 │         5 │      3211 │
 ├─────────────────────────────────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┤
-│ Instructions (K) *                  │       241 │      1960 │      2630 │      4084 │      7782 │     16540 │     65644 │      3324 │
+│ Instructions (K) *                  │       240 │      1872 │      2578 │      3967 │      7766 │     17138 │     60528 │      3211 │
 ├─────────────────────────────────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┤
-│ Malloc (large) *                    │         0 │         0 │         0 │         0 │         0 │         0 │         0 │      3324 │
+│ Malloc (large) *                    │         0 │         0 │         0 │         0 │         0 │         0 │         0 │      3211 │
 ├─────────────────────────────────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┤
-│ Malloc (small) *                    │         0 │         0 │         0 │         0 │         0 │         0 │         0 │      3324 │
+│ Malloc (small) *                    │         0 │         0 │         0 │         0 │         0 │         0 │         0 │      3211 │
 ├─────────────────────────────────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┤
-│ Malloc (total) *                    │         0 │         0 │         0 │         0 │         0 │         0 │         0 │      3324 │
+│ Malloc (total) *                    │         0 │         0 │         0 │         0 │         0 │         0 │         0 │      3211 │
 ├─────────────────────────────────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┤
-│ Malloc / free Δ *                   │         0 │         0 │         0 │         0 │         0 │         0 │         0 │      3324 │
+│ Malloc / free Δ *                   │         0 │         0 │         0 │         0 │         0 │         0 │         0 │      3211 │
 ├─────────────────────────────────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┤
-│ Memory (allocated resident)         │         0 │         0 │         0 │         0 │         0 │         0 │         0 │      3324 │
+│ Memory (allocated resident)         │         0 │         0 │         0 │         0 │         0 │         0 │         0 │      3211 │
 ├─────────────────────────────────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┤
-│ Memory (resident peak) (M)          │       165 │       168 │       169 │       169 │       169 │       170 │       170 │      3324 │
+│ Memory (resident peak) (M)          │       169 │       172 │       172 │       173 │       173 │       173 │       173 │      3211 │
 ├─────────────────────────────────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┤
-│ Memory (virtual peak) (G)           │       446 │       446 │       446 │       446 │       446 │       446 │       446 │      3324 │
+│ Memory (virtual peak) (G)           │       446 │       446 │       446 │       446 │       446 │       446 │       446 │      3211 │
 ├─────────────────────────────────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┤
-│ Memory Δ (resident peak) (K)        │         0 │      2722 │      3312 │      3918 │      4065 │      4194 │      4194 │      3324 │
+│ Memory Δ (resident peak) (K)        │         0 │      2771 │      2886 │      3983 │      4082 │      4129 │      4129 │      3211 │
 ├─────────────────────────────────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┤
-│ Object allocs *                     │         0 │         0 │         0 │         1 │         1 │         1 │         2 │      3324 │
+│ Object allocs *                     │         0 │         0 │         0 │         1 │         1 │         1 │         2 │      3211 │
 ├─────────────────────────────────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┤
-│ Releases *                          │         5 │         5 │         5 │         6 │         6 │         7 │         8 │      3324 │
+│ Releases *                          │         5 │         5 │         5 │         6 │         6 │         7 │         8 │      3211 │
 ├─────────────────────────────────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┤
-│ Retains *                           │         5 │         5 │         5 │         5 │         6 │         6 │         7 │      3324 │
+│ Retains *                           │         5 │         5 │         5 │         5 │         6 │         6 │         6 │      3211 │
 ├─────────────────────────────────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┤
-│ Syscalls (total) *                  │         2 │         2 │         2 │         2 │         2 │         4 │         4 │      3324 │
+│ Syscalls (total) *                  │         2 │         2 │         2 │         2 │         2 │         4 │         4 │      3211 │
 ├─────────────────────────────────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┤
-│ Syscalls (write) *                  │         0 │         0 │         0 │         0 │         0 │         0 │         0 │      3324 │
+│ Syscalls (write) *                  │         0 │         0 │         0 │         0 │         0 │         0 │         0 │      3211 │
 ├─────────────────────────────────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┤
-│ Threads (peak)                      │         4 │         4 │         4 │         4 │         4 │         4 │         4 │      3324 │
+│ Threads (peak)                      │         4 │         4 │         4 │         4 │         4 │         4 │         4 │      3211 │
 ├─────────────────────────────────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┤
-│ Threads (running)                   │         1 │         2 │         2 │         2 │         2 │         2 │         2 │      3324 │
+│ Threads (running)                   │         1 │         2 │         2 │         2 │         2 │         2 │         2 │      3211 │
 ├─────────────────────────────────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┤
-│ Throughput (# / s) (#)              │     72506 │      6827 │      4919 │      3329 │      1490 │       715 │       209 │      3324 │
+│ Throughput (# / s) (#)              │     74074 │      6811 │      4859 │      3263 │      1469 │       676 │       216 │      3211 │
 ├─────────────────────────────────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┤
-│ Time (system CPU) (ns) *            │      1334 │      1583 │      1833 │      2417 │      4167 │     12503 │    113250 │      3324 │
+│ Time (system CPU) (ns) *            │      1208 │      1500 │      1667 │      2041 │      8959 │     26335 │     82083 │      3211 │
 ├─────────────────────────────────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┤
-│ Time (total CPU) (μs) *             │        15 │       148 │       205 │       302 │       673 │      1401 │      4795 │      3324 │
+│ Time (total CPU) (μs) *             │        15 │       148 │       208 │       308 │       682 │      1481 │      4643 │      3211 │
 ├─────────────────────────────────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┤
-│ Time (user CPU) (μs) *              │        14 │       145 │       202 │       300 │       670 │      1398 │      4786 │      3324 │
+│ Time (user CPU) (μs) *              │        13 │       146 │       205 │       304 │       674 │      1479 │      4600 │      3211 │
 ├─────────────────────────────────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┤
-│ Time (wall clock) (μs) *            │        14 │       147 │       203 │       301 │       671 │      1400 │      4793 │      3324 │
+│ Time (wall clock) (μs) *            │        14 │       147 │       206 │       307 │       681 │      1479 │      4633 │      3211 │
 ╘═════════════════════════════════════╧═══════════╧═══════════╧═══════════╧═══════════╧═══════════╧═══════════╧═══════════╧═══════════╛
 
 OtherPackageToCompare.SwiftTimeZoneLookup.simple.random.10_thousand
@@ -431,11 +432,11 @@ OtherPackageToCompare.SwiftTimeZoneLookup.simple.random.10_thousand
 ╞═════════════════════════════════════╪═══════════╪═══════════╪═══════════╪═══════════╪═══════════╪═══════════╪═══════════╪═══════════╡
 │ (Alloc + Retain) - Release Δ *      │         0 │         0 │         0 │         0 │         0 │         0 │         0 │         1 │
 ├─────────────────────────────────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┤
-│ Bytes (read physical) *             │         0 │         0 │         0 │         0 │         0 │         0 │         0 │         1 │
+│ Bytes (read physical) (K) *         │        33 │        33 │        33 │        33 │        33 │        33 │        33 │         1 │
 ├─────────────────────────────────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┤
 │ Bytes (write physical) *            │         0 │         0 │         0 │         0 │         0 │         0 │         0 │         1 │
 ├─────────────────────────────────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┤
-│ Context switches                    │       242 │       242 │       242 │       242 │       242 │       242 │       242 │         1 │
+│ Context switches                    │      1001 │      1001 │      1001 │      1001 │      1001 │      1001 │      1001 │         1 │
 ├─────────────────────────────────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┤
 │ Instructions (G) *                  │        37 │        37 │        37 │        37 │        37 │        37 │        37 │         1 │
 ├─────────────────────────────────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┤
@@ -449,19 +450,19 @@ OtherPackageToCompare.SwiftTimeZoneLookup.simple.random.10_thousand
 ├─────────────────────────────────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┤
 │ Memory (allocated resident)         │         0 │         0 │         0 │         0 │         0 │         0 │         0 │         1 │
 ├─────────────────────────────────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┤
-│ Memory (resident peak) (M)          │       170 │       170 │       170 │       170 │       170 │       170 │       170 │         1 │
+│ Memory (resident peak) (M)          │       172 │       172 │       172 │       172 │       172 │       172 │       172 │         1 │
 ├─────────────────────────────────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┤
 │ Memory (virtual peak) (G)           │       446 │       446 │       446 │       446 │       446 │       446 │       446 │         1 │
 ├─────────────────────────────────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┤
-│ Memory Δ (resident peak) (K)        │       213 │       213 │       213 │       213 │       213 │       213 │       213 │         1 │
+│ Memory Δ (resident peak) (K)        │       279 │       279 │       279 │       279 │       279 │       279 │       279 │         1 │
 ├─────────────────────────────────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┤
-│ Object allocs *                     │      2758 │      2758 │      2758 │      2758 │      2758 │      2758 │      2758 │         1 │
+│ Object allocs *                     │      2797 │      2797 │      2797 │      2797 │      2797 │      2797 │      2797 │         1 │
 ├─────────────────────────────────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┤
 │ Releases (K) *                      │        14 │        14 │        14 │        14 │        14 │        14 │        14 │         1 │
 ├─────────────────────────────────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┤
 │ Retains (K) *                       │        11 │        11 │        11 │        11 │        11 │        11 │        11 │         1 │
 ├─────────────────────────────────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┤
-│ Syscalls (total) *                  │       477 │       477 │       477 │       477 │       477 │       477 │       477 │         1 │
+│ Syscalls (total) *                  │       507 │       507 │       507 │       507 │       507 │       507 │       507 │         1 │
 ├─────────────────────────────────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┤
 │ Syscalls (write) *                  │         0 │         0 │         0 │         0 │         0 │         0 │         0 │         1 │
 ├─────────────────────────────────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┤
@@ -469,13 +470,13 @@ OtherPackageToCompare.SwiftTimeZoneLookup.simple.random.10_thousand
 ├─────────────────────────────────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┤
 │ Threads (running)                   │         2 │         2 │         2 │         2 │         2 │         2 │         2 │         1 │
 ├─────────────────────────────────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┤
-│ Time (system CPU) (μs) *            │      4067 │      4067 │      4067 │      4067 │      4067 │      4067 │      4067 │         1 │
+│ Time (system CPU) (ms) *            │        16 │        16 │        16 │        16 │        16 │        16 │        16 │         1 │
 ├─────────────────────────────────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┤
-│ Time (total CPU) (ms) *             │      2960 │      2960 │      2960 │      2960 │      2960 │      2960 │      2960 │         1 │
+│ Time (total CPU) (ms) *             │      3044 │      3044 │      3044 │      3044 │      3044 │      3044 │      3044 │         1 │
 ├─────────────────────────────────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┤
-│ Time (user CPU) (ms) *              │      2955 │      2955 │      2955 │      2955 │      2955 │      2955 │      2955 │         1 │
+│ Time (user CPU) (ms) *              │      3028 │      3028 │      3028 │      3028 │      3028 │      3028 │      3028 │         1 │
 ├─────────────────────────────────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┤
-│ Time (wall clock) (ms) *            │      2958 │      2958 │      2958 │      2958 │      2958 │      2958 │      2958 │         1 │
+│ Time (wall clock) (ms) *            │      3047 │      3047 │      3047 │      3047 │      3047 │      3047 │      3047 │         1 │
 ╘═════════════════════════════════════╧═══════════╧═══════════╧═══════════╧═══════════╧═══════════╧═══════════╧═══════════╧═══════════╛
 
 TZF.DefaultFinder.getTimezone.per_call
@@ -488,9 +489,9 @@ TZF.DefaultFinder.getTimezone.per_call
 ├─────────────────────────────────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┤
 │ Bytes (write physical) *            │         0 │         0 │         0 │         0 │         0 │         0 │         0 │     10000 │
 ├─────────────────────────────────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┤
-│ Context switches                    │         0 │         0 │         0 │         0 │         0 │         0 │         1 │     10000 │
+│ Context switches                    │         0 │         0 │         0 │         0 │         0 │         0 │         2 │     10000 │
 ├─────────────────────────────────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┤
-│ Instructions *                      │      3421 │      4231 │      4535 │      6443 │     10335 │     19071 │     60158 │     10000 │
+│ Instructions *                      │      3330 │      4057 │      4327 │      4763 │      8295 │     12863 │     28853 │     10000 │
 ├─────────────────────────────────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┤
 │ Malloc (large) *                    │         0 │         0 │         0 │         0 │         0 │         0 │         0 │     10000 │
 ├─────────────────────────────────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┤
@@ -502,160 +503,50 @@ TZF.DefaultFinder.getTimezone.per_call
 ├─────────────────────────────────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┤
 │ Memory (allocated resident)         │         0 │         0 │         0 │         0 │         0 │         0 │         0 │     10000 │
 ├─────────────────────────────────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┤
-│ Memory (resident peak) (M)          │       285 │       285 │       285 │       285 │       285 │       285 │       285 │     10000 │
+│ Memory (resident peak) (M)          │       203 │       204 │       204 │       204 │       204 │       204 │       204 │     10000 │
 ├─────────────────────────────────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┤
 │ Memory (virtual peak) (G)           │       446 │       446 │       446 │       446 │       446 │       446 │       446 │     10000 │
 ├─────────────────────────────────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┤
-│ Memory Δ (resident peak) (K)        │         0 │        33 │        49 │        49 │        49 │        49 │        49 │     10000 │
+│ Memory Δ (resident peak) (K)        │         0 │       312 │       312 │       328 │       344 │       344 │       344 │     10000 │
 ├─────────────────────────────────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┤
 │ Object allocs *                     │         0 │         0 │         0 │         0 │         0 │         0 │         0 │     10000 │
 ├─────────────────────────────────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┤
-│ Releases *                          │         5 │         5 │         5 │         6 │        16 │        30 │        46 │     10000 │
+│ Releases *                          │         5 │         5 │         5 │         6 │        13 │        24 │        34 │     10000 │
 ├─────────────────────────────────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┤
-│ Retains *                           │         5 │         5 │         5 │         6 │        16 │        30 │        46 │     10000 │
+│ Retains *                           │         5 │         5 │         5 │         6 │        13 │        24 │        34 │     10000 │
 ├─────────────────────────────────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┤
-│ Syscalls (total) *                  │         2 │         2 │         2 │         2 │         2 │         2 │         3 │     10000 │
+│ Syscalls (total) *                  │         2 │         2 │         2 │         2 │         2 │         2 │         4 │     10000 │
 ├─────────────────────────────────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┤
 │ Syscalls (write) *                  │         0 │         0 │         0 │         0 │         0 │         0 │         0 │     10000 │
 ├─────────────────────────────────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┤
-│ Threads (peak)                      │         4 │         4 │         4 │         4 │         4 │         4 │         4 │     10000 │
+│ Threads (peak)                      │        17 │        17 │        17 │        17 │        17 │        17 │        17 │     10000 │
 ├─────────────────────────────────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┤
 │ Threads (running)                   │         1 │         2 │         2 │         2 │         2 │         2 │         2 │     10000 │
 ├─────────────────────────────────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┤
-│ Throughput (# / s) (K)              │      1412 │      1000 │       923 │       686 │       400 │       151 │        23 │     10000 │
+│ Throughput (# / s) (K)              │      1200 │       889 │       800 │       649 │       400 │       155 │        22 │     10000 │
 ├─────────────────────────────────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┤
-│ Time (system CPU) (ns) *            │      1208 │      1458 │      1500 │      1625 │      1959 │      4085 │     21041 │     10000 │
+│ Time (system CPU) (ns) *            │      1708 │      1958 │      2000 │      2125 │      2501 │      2917 │     30250 │     10000 │
 ├─────────────────────────────────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┤
-│ Time (total CPU) (ns) *             │      1959 │      2333 │      2501 │      3001 │      3917 │      8127 │     25875 │     10000 │
+│ Time (total CPU) (ns) *             │      2459 │      2835 │      3001 │      3543 │      4459 │      8503 │     38583 │     10000 │
 ├─────────────────────────────────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┤
-│ Time (user CPU) (ns) *              │       583 │       833 │       958 │      1167 │      2209 │      5211 │     13500 │     10000 │
+│ Time (user CPU) (ns) *              │       583 │       834 │       959 │      1208 │      2209 │      6127 │     10584 │     10000 │
 ├─────────────────────────────────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┤
-│ Time (wall clock) (ns) *            │       708 │      1000 │      1084 │      1459 │      2501 │      6627 │     42625 │     10000 │
+│ Time (wall clock) (ns) *            │       833 │      1125 │      1250 │      1541 │      2501 │      6419 │     44792 │     10000 │
 ╘═════════════════════════════════════╧═══════════╧═══════════╧═══════════╧═══════════╧═══════════╧═══════════╧═══════════╧═══════════╛
 
 TZF.DefaultFinder.getTimezone.random.1_million
 ╒═════════════════════════════════════╤═══════════╤═══════════╤═══════════╤═══════════╤═══════════╤═══════════╤═══════════╤═══════════╕
 │ Metric                              │        p0 │       p25 │       p50 │       p75 │       p90 │       p99 │      p100 │   Samples │
 ╞═════════════════════════════════════╪═══════════╪═══════════╪═══════════╪═══════════╪═══════════╪═══════════╪═══════════╪═══════════╡
-│ (Alloc + Retain) - Release Δ *      │         0 │         0 │         0 │         0 │         0 │         0 │         0 │         3 │
-├─────────────────────────────────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┤
-│ Bytes (read physical) *             │         0 │         0 │         0 │         0 │         0 │         0 │         0 │         3 │
-├─────────────────────────────────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┤
-│ Bytes (write physical) *            │         0 │         0 │         0 │         0 │         0 │         0 │         0 │         3 │
-├─────────────────────────────────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┤
-│ Context switches                    │        64 │        64 │        91 │       185 │       185 │       185 │       185 │         3 │
-├─────────────────────────────────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┤
-│ Instructions (M) *                  │      4084 │      4085 │      4087 │      4108 │      4108 │      4108 │      4108 │         3 │
-├─────────────────────────────────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┤
-│ Malloc (large) *                    │         0 │         0 │         0 │         0 │         0 │         0 │         0 │         3 │
-├─────────────────────────────────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┤
-│ Malloc (small) *                    │         0 │         0 │         0 │         0 │         0 │         0 │         0 │         3 │
-├─────────────────────────────────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┤
-│ Malloc (total) *                    │         0 │         0 │         0 │         0 │         0 │         0 │         0 │         3 │
-├─────────────────────────────────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┤
-│ Malloc / free Δ *                   │         0 │         0 │         0 │         0 │         0 │         0 │         0 │         3 │
-├─────────────────────────────────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┤
-│ Memory (allocated resident)         │         0 │         0 │         0 │         0 │         0 │         0 │         0 │         3 │
-├─────────────────────────────────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┤
-│ Memory (resident peak) (M)          │       285 │       285 │       285 │       285 │       285 │       285 │       285 │         3 │
-├─────────────────────────────────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┤
-│ Memory (virtual peak) (G)           │       446 │       446 │       446 │       446 │       446 │       446 │       446 │         3 │
-├─────────────────────────────────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┤
-│ Memory Δ (resident peak) (K)        │         0 │         0 │        33 │        33 │        33 │        33 │        33 │         3 │
-├─────────────────────────────────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┤
-│ Object allocs *                     │         0 │         0 │         0 │         0 │         0 │         0 │         0 │         3 │
-├─────────────────────────────────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┤
-│ Releases (K) *                      │      3778 │      3779 │      3795 │      3796 │      3796 │      3796 │      3796 │         3 │
-├─────────────────────────────────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┤
-│ Retains (K) *                       │      3778 │      3779 │      3795 │      3796 │      3796 │      3796 │      3796 │         3 │
-├─────────────────────────────────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┤
-│ Syscalls (total) *                  │       135 │       135 │       136 │       140 │       140 │       140 │       140 │         3 │
-├─────────────────────────────────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┤
-│ Syscalls (write) *                  │         0 │         0 │         0 │         0 │         0 │         0 │         0 │         3 │
-├─────────────────────────────────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┤
-│ Threads (peak)                      │         4 │         4 │         4 │         4 │         4 │         4 │         4 │         3 │
-├─────────────────────────────────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┤
-│ Threads (running)                   │         2 │         2 │         2 │         2 │         2 │         2 │         2 │         3 │
-├─────────────────────────────────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┤
-│ Throughput (# / s) (#)              │         2 │         2 │         2 │         2 │         2 │         2 │         2 │         3 │
-├─────────────────────────────────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┤
-│ Time (system CPU) (μs) *            │      1320 │      1320 │      1378 │      2993 │      2993 │      2993 │      2993 │         3 │
-├─────────────────────────────────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┤
-│ Time (total CPU) (ms) *             │       473 │       473 │       476 │       482 │       482 │       482 │       482 │         3 │
-├─────────────────────────────────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┤
-│ Time (user CPU) (ms) *              │       472 │       472 │       473 │       481 │       481 │       481 │       481 │         3 │
-├─────────────────────────────────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┤
-│ Time (wall clock) (ms) *            │       474 │       474 │       477 │       482 │       482 │       482 │       482 │         3 │
-╘═════════════════════════════════════╧═══════════╧═══════════╧═══════════╧═══════════╧═══════════╧═══════════╧═══════════╧═══════════╛
-
-TZF.Finder.getTimezone.per_call
-╒═════════════════════════════════════╤═══════════╤═══════════╤═══════════╤═══════════╤═══════════╤═══════════╤═══════════╤═══════════╕
-│ Metric                              │        p0 │       p25 │       p50 │       p75 │       p90 │       p99 │      p100 │   Samples │
-╞═════════════════════════════════════╪═══════════╪═══════════╪═══════════╪═══════════╪═══════════╪═══════════╪═══════════╪═══════════╡
-│ (Alloc + Retain) - Release Δ *      │         0 │         0 │         0 │         0 │         0 │         0 │         0 │     10000 │
-├─────────────────────────────────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┤
-│ Bytes (read physical) *             │         0 │         0 │         0 │         0 │         0 │         0 │         0 │     10000 │
-├─────────────────────────────────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┤
-│ Bytes (write physical) *            │         0 │         0 │         0 │         0 │         0 │         0 │         0 │     10000 │
-├─────────────────────────────────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┤
-│ Context switches                    │         0 │         0 │         0 │         0 │         0 │         0 │         1 │     10000 │
-├─────────────────────────────────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┤
-│ Instructions *                      │      2760 │      5419 │      6643 │      9583 │     12423 │     20159 │     66947 │     10000 │
-├─────────────────────────────────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┤
-│ Malloc (large) *                    │         0 │         0 │         0 │         0 │         0 │         0 │         0 │     10000 │
-├─────────────────────────────────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┤
-│ Malloc (small) *                    │         0 │         0 │         0 │         0 │         0 │         0 │         0 │     10000 │
-├─────────────────────────────────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┤
-│ Malloc (total) *                    │         0 │         0 │         0 │         0 │         0 │         0 │         0 │     10000 │
-├─────────────────────────────────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┤
-│ Malloc / free Δ *                   │         0 │         0 │         0 │         0 │         0 │         0 │         0 │     10000 │
-├─────────────────────────────────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┤
-│ Memory (allocated resident)         │         0 │         0 │         0 │         0 │         0 │         0 │         0 │     10000 │
-├─────────────────────────────────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┤
-│ Memory (resident peak) (M)          │       268 │       269 │       269 │       269 │       269 │       269 │       269 │     10000 │
-├─────────────────────────────────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┤
-│ Memory (virtual peak) (G)           │       446 │       446 │       446 │       446 │       446 │       446 │       446 │     10000 │
-├─────────────────────────────────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┤
-│ Memory Δ (resident peak) (K)        │         0 │        98 │        98 │       115 │       115 │       115 │       115 │     10000 │
-├─────────────────────────────────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┤
-│ Object allocs *                     │         0 │         0 │         0 │         0 │         0 │         0 │         0 │     10000 │
-├─────────────────────────────────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┤
-│ Releases *                          │         5 │        13 │        14 │        21 │        22 │        31 │        46 │     10000 │
-├─────────────────────────────────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┤
-│ Retains *                           │         5 │        13 │        14 │        21 │        22 │        31 │        46 │     10000 │
-├─────────────────────────────────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┤
-│ Syscalls (total) *                  │         2 │         2 │         2 │         2 │         2 │         2 │         4 │     10000 │
-├─────────────────────────────────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┤
-│ Syscalls (write) *                  │         0 │         0 │         0 │         0 │         0 │         0 │         0 │     10000 │
-├─────────────────────────────────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┤
-│ Threads (peak)                      │         4 │         4 │         4 │         4 │         4 │         4 │         4 │     10000 │
-├─────────────────────────────────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┤
-│ Threads (running)                   │         1 │         2 │         2 │         2 │         2 │         2 │         2 │     10000 │
-├─────────────────────────────────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┤
-│ Throughput (# / s) (K)              │      1600 │       858 │       686 │       534 │       387 │       197 │        62 │     10000 │
-├─────────────────────────────────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┤
-│ Time (system CPU) (ns) *            │      1292 │      1458 │      1500 │      1625 │      2000 │      3417 │     13209 │     10000 │
-├─────────────────────────────────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┤
-│ Time (total CPU) (ns) *             │      1959 │      2543 │      2875 │      3293 │      4043 │      6627 │     17584 │     10000 │
-├─────────────────────────────────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┤
-│ Time (user CPU) (ns) *              │       500 │      1041 │      1292 │      1666 │      2167 │      4587 │      6167 │     10000 │
-├─────────────────────────────────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┤
-│ Time (wall clock) (ns) *            │       625 │      1166 │      1458 │      1875 │      2583 │      5083 │     16125 │     10000 │
-╘═════════════════════════════════════╧═══════════╧═══════════╧═══════════╧═══════════╧═══════════╧═══════════╧═══════════╧═══════════╛
-
-TZF.Finder.getTimezone.random.1_million
-╒═════════════════════════════════════╤═══════════╤═══════════╤═══════════╤═══════════╤═══════════╤═══════════╤═══════════╤═══════════╕
-│ Metric                              │        p0 │       p25 │       p50 │       p75 │       p90 │       p99 │      p100 │   Samples │
-╞═════════════════════════════════════╪═══════════╪═══════════╪═══════════╪═══════════╪═══════════╪═══════════╪═══════════╪═══════════╡
-│ (Alloc + Retain) - Release Δ *      │         2 │         2 │         2 │         2 │         2 │         2 │         2 │         2 │
+│ (Alloc + Retain) - Release Δ *      │         0 │         0 │         0 │         0 │         0 │         0 │         0 │         2 │
 ├─────────────────────────────────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┤
 │ Bytes (read physical) *             │         0 │         0 │         0 │         0 │         0 │         0 │         0 │         2 │
 ├─────────────────────────────────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┤
 │ Bytes (write physical) *            │         0 │         0 │         0 │         0 │         0 │         0 │         0 │         2 │
 ├─────────────────────────────────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┤
-│ Context switches                    │        48 │        48 │        48 │        63 │        63 │        63 │        63 │         2 │
+│ Context switches                    │       150 │       150 │       150 │       165 │       165 │       165 │       165 │         2 │
 ├─────────────────────────────────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┤
-│ Instructions (M) *                  │      5495 │      5499 │      5499 │      5543 │      5543 │      5543 │      5543 │         2 │
+│ Instructions (M) *                  │      3885 │      3886 │      3886 │      3902 │      3902 │      3902 │      3902 │         2 │
 ├─────────────────────────────────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┤
 │ Malloc (large) *                    │         0 │         0 │         0 │         0 │         0 │         0 │         0 │         2 │
 ├─────────────────────────────────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┤
@@ -667,38 +558,148 @@ TZF.Finder.getTimezone.random.1_million
 ├─────────────────────────────────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┤
 │ Memory (allocated resident)         │         0 │         0 │         0 │         0 │         0 │         0 │         0 │         2 │
 ├─────────────────────────────────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┤
-│ Memory (resident peak) (M)          │       268 │       268 │       268 │       268 │       268 │       268 │       268 │         2 │
+│ Memory (resident peak) (M)          │       203 │       203 │       203 │       203 │       203 │       203 │       203 │         2 │
 ├─────────────────────────────────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┤
 │ Memory (virtual peak) (G)           │       446 │       446 │       446 │       446 │       446 │       446 │       446 │         2 │
 ├─────────────────────────────────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┤
-│ Memory Δ (resident peak) (K)        │         0 │         0 │         0 │        49 │        49 │        49 │        49 │         2 │
+│ Memory Δ (resident peak) (K)        │         0 │         0 │         0 │       492 │       492 │       492 │       492 │         2 │
 ├─────────────────────────────────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┤
-│ Object allocs *                     │         5 │         5 │         5 │         5 │         5 │         5 │         5 │         2 │
+│ Object allocs *                     │         0 │         0 │         0 │         0 │         0 │         0 │         0 │         2 │
 ├─────────────────────────────────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┤
-│ Releases (M) *                      │        12 │        12 │        12 │        12 │        12 │        12 │        12 │         2 │
+│ Releases (K) *                      │      3311 │      3312 │      3312 │      3317 │      3317 │      3317 │      3317 │         2 │
 ├─────────────────────────────────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┤
-│ Retains (M) *                       │        12 │        12 │        12 │        12 │        12 │        12 │        12 │         2 │
+│ Retains (K) *                       │      3311 │      3312 │      3312 │      3317 │      3317 │      3317 │      3317 │         2 │
 ├─────────────────────────────────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┤
-│ Syscalls (total) *                  │       143 │       143 │       143 │       169 │       169 │       169 │       169 │         2 │
+│ Syscalls (total) *                  │       147 │       147 │       147 │       154 │       154 │       154 │       154 │         2 │
 ├─────────────────────────────────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┤
 │ Syscalls (write) *                  │         0 │         0 │         0 │         0 │         0 │         0 │         0 │         2 │
 ├─────────────────────────────────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┤
-│ Threads (peak)                      │         4 │         4 │         4 │         4 │         4 │         4 │         4 │         2 │
+│ Threads (peak)                      │        17 │        17 │        17 │        17 │        17 │        17 │        17 │         2 │
 ├─────────────────────────────────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┤
 │ Threads (running)                   │         2 │         2 │         2 │         2 │         2 │         2 │         2 │         2 │
 ├─────────────────────────────────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┤
 │ Throughput (# / s) (#)              │         2 │         2 │         2 │         2 │         2 │         2 │         2 │         2 │
 ├─────────────────────────────────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┤
-│ Time (system CPU) (μs) *            │      1023 │      1023 │      1023 │      1489 │      1489 │      1489 │      1489 │         2 │
+│ Time (system CPU) (μs) *            │      2762 │      2763 │      2763 │      3061 │      3061 │      3061 │      3061 │         2 │
 ├─────────────────────────────────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┤
-│ Time (total CPU) (ms) *             │       586 │       587 │       587 │       650 │       650 │       650 │       650 │         2 │
+│ Time (total CPU) (ms) *             │       543 │       543 │       543 │       551 │       551 │       551 │       551 │         2 │
 ├─────────────────────────────────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┤
-│ Time (user CPU) (ms) *              │       585 │       585 │       585 │       649 │       649 │       649 │       649 │         2 │
+│ Time (user CPU) (ms) *              │       540 │       540 │       540 │       548 │       548 │       548 │       548 │         2 │
 ├─────────────────────────────────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┤
-│ Time (wall clock) (ms) *            │       586 │       586 │       586 │       649 │       649 │       649 │       649 │         2 │
+│ Time (wall clock) (ms) *            │       543 │       543 │       543 │       551 │       551 │       551 │       551 │         2 │
 ╘═════════════════════════════════════╧═══════════╧═══════════╧═══════════╧═══════════╧═══════════╧═══════════╧═══════════╧═══════════╛
 
-TZF.PreindexFinder.getTimezone.per_call
+TZF.DefaultFinder.getTimezones.random.1_million
+╒═════════════════════════════════════╤═══════════╤═══════════╤═══════════╤═══════════╤═══════════╤═══════════╤═══════════╤═══════════╕
+│ Metric                              │        p0 │       p25 │       p50 │       p75 │       p90 │       p99 │      p100 │   Samples │
+╞═════════════════════════════════════╪═══════════╪═══════════╪═══════════╪═══════════╪═══════════╪═══════════╪═══════════╪═══════════╡
+│ (Alloc + Retain) - Release Δ (K) *  │      2000 │      2000 │      2000 │      2000 │      2000 │      2000 │      2000 │         1 │
+├─────────────────────────────────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┤
+│ Bytes (read physical) *             │         0 │         0 │         0 │         0 │         0 │         0 │         0 │         1 │
+├─────────────────────────────────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┤
+│ Bytes (write physical) *            │         0 │         0 │         0 │         0 │         0 │         0 │         0 │         1 │
+├─────────────────────────────────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┤
+│ Context switches                    │       383 │       383 │       383 │       383 │       383 │       383 │       383 │         1 │
+├─────────────────────────────────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┤
+│ Instructions (G) *                  │        12 │        12 │        12 │        12 │        12 │        12 │        12 │         1 │
+├─────────────────────────────────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┤
+│ Malloc (large) *                    │         0 │         0 │         0 │         0 │         0 │         0 │         0 │         1 │
+├─────────────────────────────────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┤
+│ Malloc (small) *                    │         0 │         0 │         0 │         0 │         0 │         0 │         0 │         1 │
+├─────────────────────────────────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┤
+│ Malloc (total) *                    │         0 │         0 │         0 │         0 │         0 │         0 │         0 │         1 │
+├─────────────────────────────────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┤
+│ Malloc / free Δ *                   │         0 │         0 │         0 │         0 │         0 │         0 │         0 │         1 │
+├─────────────────────────────────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┤
+│ Memory (allocated resident)         │         0 │         0 │         0 │         0 │         0 │         0 │         0 │         1 │
+├─────────────────────────────────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┤
+│ Memory (resident peak) (M)          │       203 │       203 │       203 │       203 │       203 │       203 │       203 │         1 │
+├─────────────────────────────────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┤
+│ Memory (virtual peak) (G)           │       446 │       446 │       446 │       446 │       446 │       446 │       446 │         1 │
+├─────────────────────────────────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┤
+│ Memory Δ (resident peak)            │         0 │         0 │         0 │         0 │         0 │         0 │         0 │         1 │
+├─────────────────────────────────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┤
+│ Object allocs (K) *                 │      2000 │      2000 │      2000 │      2000 │      2000 │      2000 │      2000 │         1 │
+├─────────────────────────────────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┤
+│ Releases (M) *                      │        35 │        35 │        35 │        35 │        35 │        35 │        35 │         1 │
+├─────────────────────────────────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┤
+│ Retains (M) *                       │        31 │        31 │        31 │        31 │        31 │        31 │        31 │         1 │
+├─────────────────────────────────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┤
+│ Syscalls (total) *                  │       297 │       297 │       297 │       297 │       297 │       297 │       297 │         1 │
+├─────────────────────────────────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┤
+│ Syscalls (write) *                  │         0 │         0 │         0 │         0 │         0 │         0 │         0 │         1 │
+├─────────────────────────────────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┤
+│ Threads (peak)                      │        17 │        17 │        17 │        17 │        17 │        17 │        17 │         1 │
+├─────────────────────────────────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┤
+│ Threads (running)                   │         2 │         2 │         2 │         2 │         2 │         2 │         2 │         1 │
+├─────────────────────────────────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┤
+│ Throughput (# / s) (#)              │         1 │         1 │         1 │         1 │         1 │         1 │         1 │         1 │
+├─────────────────────────────────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┤
+│ Time (system CPU) (μs) *            │      7294 │      7294 │      7294 │      7294 │      7294 │      7294 │      7294 │         1 │
+├─────────────────────────────────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┤
+│ Time (total CPU) (ms) *             │      1319 │      1319 │      1319 │      1319 │      1319 │      1319 │      1319 │         1 │
+├─────────────────────────────────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┤
+│ Time (user CPU) (ms) *              │      1312 │      1312 │      1312 │      1312 │      1312 │      1312 │      1312 │         1 │
+├─────────────────────────────────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┤
+│ Time (wall clock) (ms) *            │      1320 │      1320 │      1320 │      1320 │      1320 │      1320 │      1320 │         1 │
+╘═════════════════════════════════════╧═══════════╧═══════════╧═══════════╧═══════════╧═══════════╧═══════════╧═══════════╧═══════════╛
+
+TZF.DefaultFinder.init
+╒═════════════════════════════════════╤═══════════╤═══════════╤═══════════╤═══════════╤═══════════╤═══════════╤═══════════╤═══════════╕
+│ Metric                              │        p0 │       p25 │       p50 │       p75 │       p90 │       p99 │      p100 │   Samples │
+╞═════════════════════════════════════╪═══════════╪═══════════╪═══════════╪═══════════╪═══════════╪═══════════╪═══════════╪═══════════╡
+│ (Alloc + Retain) - Release Δ (K) *  │        13 │        13 │        13 │        13 │        13 │        13 │        13 │        50 │
+├─────────────────────────────────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┤
+│ Bytes (read physical) *             │         0 │         0 │         0 │         0 │         0 │         0 │         0 │        50 │
+├─────────────────────────────────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┤
+│ Bytes (write physical) *            │         0 │         0 │         0 │         0 │         0 │         0 │         0 │        50 │
+├─────────────────────────────────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┤
+│ Context switches                    │        34 │        46 │        61 │        82 │       123 │       214 │       214 │        50 │
+├─────────────────────────────────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┤
+│ Instructions (M) *                  │       441 │       441 │       441 │       442 │       442 │       459 │       459 │        50 │
+├─────────────────────────────────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┤
+│ Malloc (large) *                    │         0 │         0 │         0 │         0 │         0 │         0 │         0 │        50 │
+├─────────────────────────────────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┤
+│ Malloc (small) *                    │         0 │         0 │         0 │         0 │         0 │         0 │         0 │        50 │
+├─────────────────────────────────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┤
+│ Malloc (total) *                    │         0 │         0 │         0 │         0 │         0 │         0 │         0 │        50 │
+├─────────────────────────────────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┤
+│ Malloc / free Δ *                   │         0 │         0 │         0 │         0 │         0 │         0 │         0 │        50 │
+├─────────────────────────────────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┤
+│ Memory (allocated resident)         │         0 │         0 │         0 │         0 │         0 │         0 │         0 │        50 │
+├─────────────────────────────────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┤
+│ Memory (resident peak) (M)          │        59 │        76 │        77 │        77 │        77 │        77 │        77 │        50 │
+├─────────────────────────────────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┤
+│ Memory (virtual peak) (G)           │       446 │       446 │       446 │       446 │       446 │       446 │       446 │        50 │
+├─────────────────────────────────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┤
+│ Memory Δ (resident peak) (M)        │         1 │        18 │        18 │        18 │        18 │        18 │        18 │        50 │
+├─────────────────────────────────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┤
+│ Object allocs (K) *                 │       103 │       103 │       103 │       103 │       103 │       103 │       103 │        50 │
+├─────────────────────────────────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┤
+│ Releases (K) *                      │       223 │       223 │       223 │       223 │       223 │       223 │       223 │        50 │
+├─────────────────────────────────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┤
+│ Retains (K) *                       │       107 │       107 │       107 │       107 │       107 │       107 │       107 │        50 │
+├─────────────────────────────────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┤
+│ Syscalls (total) *                  │        92 │       107 │       117 │       134 │       142 │       164 │       164 │        50 │
+├─────────────────────────────────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┤
+│ Syscalls (write) *                  │         0 │         0 │         0 │         0 │         0 │         0 │         0 │        50 │
+├─────────────────────────────────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┤
+│ Threads (peak)                      │        17 │        18 │        18 │        18 │        18 │        18 │        18 │        50 │
+├─────────────────────────────────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┤
+│ Threads (running)                   │         2 │        12 │        16 │        17 │        17 │        17 │        17 │        50 │
+├─────────────────────────────────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┤
+│ Throughput (# / s) (#)              │        68 │        64 │        63 │        61 │        59 │        57 │        57 │        50 │
+├─────────────────────────────────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┤
+│ Time (system CPU) (μs) *            │       957 │      1077 │      1227 │      1305 │      1545 │      1845 │      1845 │        50 │
+├─────────────────────────────────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┤
+│ Time (total CPU) (ms) *             │        42 │        46 │        47 │        49 │        50 │        51 │        51 │        50 │
+├─────────────────────────────────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┤
+│ Time (user CPU) (ms) *              │        41 │        45 │        46 │        47 │        48 │        49 │        49 │        50 │
+├─────────────────────────────────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┤
+│ Time (wall clock) (ms) *            │        15 │        16 │        16 │        16 │        17 │        18 │        18 │        50 │
+╘═════════════════════════════════════╧═══════════╧═══════════╧═══════════╧═══════════╧═══════════╧═══════════╧═══════════╧═══════════╛
+
+TZF.EmbeddedFinder.getTimezone.per_call
 ╒═════════════════════════════════════╤═══════════╤═══════════╤═══════════╤═══════════╤═══════════╤═══════════╤═══════════╤═══════════╕
 │ Metric                              │        p0 │       p25 │       p50 │       p75 │       p90 │       p99 │      p100 │   Samples │
 ╞═════════════════════════════════════╪═══════════╪═══════════╪═══════════╪═══════════╪═══════════╪═══════════╪═══════════╪═══════════╡
@@ -708,9 +709,9 @@ TZF.PreindexFinder.getTimezone.per_call
 ├─────────────────────────────────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┤
 │ Bytes (write physical) *            │         0 │         0 │         0 │         0 │         0 │         0 │         0 │     10000 │
 ├─────────────────────────────────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┤
-│ Context switches                    │         0 │         0 │         0 │         0 │         0 │         0 │         1 │     10000 │
+│ Context switches                    │         0 │         0 │         0 │         0 │         0 │         0 │         2 │     10000 │
 ├─────────────────────────────────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┤
-│ Instructions *                      │      3346 │      4187 │      4499 │      5163 │      6151 │      8495 │     16413 │     10000 │
+│ Instructions (K) *                  │         4 │         4 │         5 │         5 │        37 │       110 │       257 │     10000 │
 ├─────────────────────────────────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┤
 │ Malloc (large) *                    │         0 │         0 │         0 │         0 │         0 │         0 │         0 │     10000 │
 ├─────────────────────────────────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┤
@@ -722,11 +723,11 @@ TZF.PreindexFinder.getTimezone.per_call
 ├─────────────────────────────────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┤
 │ Memory (allocated resident)         │         0 │         0 │         0 │         0 │         0 │         0 │         0 │     10000 │
 ├─────────────────────────────────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┤
-│ Memory (resident peak) (M)          │       179 │       179 │       179 │       179 │       179 │       179 │       179 │     10000 │
+│ Memory (resident peak) (M)          │       169 │       169 │       169 │       169 │       169 │       169 │       169 │     10000 │
 ├─────────────────────────────────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┤
 │ Memory (virtual peak) (G)           │       446 │       446 │       446 │       446 │       446 │       446 │       446 │     10000 │
 ├─────────────────────────────────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┤
-│ Memory Δ (resident peak) (K)        │         0 │         0 │       344 │       377 │       393 │       393 │       393 │     10000 │
+│ Memory Δ (resident peak) (K)        │         0 │       312 │       344 │       344 │       344 │       377 │       377 │     10000 │
 ├─────────────────────────────────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┤
 │ Object allocs *                     │         0 │         0 │         0 │         0 │         0 │         0 │         0 │     10000 │
 ├─────────────────────────────────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┤
@@ -734,77 +735,132 @@ TZF.PreindexFinder.getTimezone.per_call
 ├─────────────────────────────────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┤
 │ Retains *                           │         5 │         5 │         5 │         6 │         6 │         7 │         7 │     10000 │
 ├─────────────────────────────────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┤
-│ Syscalls (total) *                  │         2 │         2 │         2 │         2 │         2 │         2 │         4 │     10000 │
+│ Syscalls (total) *                  │         2 │         2 │         2 │         2 │         2 │         2 │         3 │     10000 │
 ├─────────────────────────────────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┤
 │ Syscalls (write) *                  │         0 │         0 │         0 │         0 │         0 │         0 │         0 │     10000 │
 ├─────────────────────────────────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┤
 │ Threads (peak)                      │         4 │         4 │         4 │         4 │         4 │         4 │         4 │     10000 │
 ├─────────────────────────────────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┤
-│ Threads (running)                   │         1 │         1 │         2 │         2 │         2 │         2 │         2 │     10000 │
+│ Threads (running)                   │         1 │         2 │         2 │         2 │         2 │         2 │         2 │     10000 │
 ├─────────────────────────────────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┤
-│ Throughput (# / s) (K)              │      1412 │      1044 │       960 │       858 │       775 │       511 │       109 │     10000 │
+│ Throughput (# / s) (K)              │      1412 │      1000 │       923 │       667 │       233 │       112 │        16 │     10000 │
 ├─────────────────────────────────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┤
-│ Time (system CPU) (ns) *            │      1291 │      1458 │      1459 │      1541 │      1667 │      2293 │      9625 │     10000 │
+│ Time (system CPU) (ns) *            │      1166 │      1416 │      1458 │      1542 │      1709 │      2209 │     20042 │     10000 │
 ├─────────────────────────────────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┤
-│ Time (total CPU) (ns) *             │      2041 │      2293 │      2375 │      2541 │      2709 │      3459 │     10500 │     10000 │
+│ Time (total CPU) (ns) *             │      1916 │      2333 │      2459 │      3083 │      5711 │     10583 │     58126 │     10000 │
 ├─────────────────────────────────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┤
-│ Time (user CPU) (ns) *              │       541 │       833 │       916 │      1000 │      1125 │      1375 │      2792 │     10000 │
+│ Time (user CPU) (ns) *              │       583 │       875 │       959 │      1333 │      4167 │      8631 │     38084 │     10000 │
 ├─────────────────────────────────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┤
-│ Time (wall clock) (ns) *            │       708 │       958 │      1042 │      1166 │      1291 │      1958 │      9208 │     10000 │
+│ Time (wall clock) (ns) *            │       708 │      1000 │      1084 │      1500 │      4295 │      8919 │     62875 │     10000 │
 ╘═════════════════════════════════════╧═══════════╧═══════════╧═══════════╧═══════════╧═══════════╧═══════════╧═══════════╧═══════════╛
 
-TZF.PreindexFinder.getTimezone.random.1_million
+TZF.EmbeddedFinder.getTimezone.random.1_million
 ╒═════════════════════════════════════╤═══════════╤═══════════╤═══════════╤═══════════╤═══════════╤═══════════╤═══════════╤═══════════╕
 │ Metric                              │        p0 │       p25 │       p50 │       p75 │       p90 │       p99 │      p100 │   Samples │
 ╞═════════════════════════════════════╪═══════════╪═══════════╪═══════════╪═══════════╪═══════════╪═══════════╪═══════════╪═══════════╡
-│ (Alloc + Retain) - Release Δ *      │         1 │         1 │         1 │         1 │         1 │         1 │         1 │         4 │
+│ (Alloc + Retain) - Release Δ *      │         0 │         0 │         0 │         0 │         0 │         0 │         0 │         1 │
 ├─────────────────────────────────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┤
-│ Bytes (read physical) *             │         0 │         0 │         0 │         0 │         0 │         0 │         0 │         4 │
+│ Bytes (read physical) *             │         0 │         0 │         0 │         0 │         0 │         0 │         0 │         1 │
 ├─────────────────────────────────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┤
-│ Bytes (write physical) *            │         0 │         0 │         0 │         0 │         0 │         0 │         0 │         4 │
+│ Bytes (write physical) *            │         0 │         0 │         0 │         0 │         0 │         0 │         0 │         1 │
 ├─────────────────────────────────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┤
-│ Context switches                    │        25 │        25 │        27 │        31 │       157 │       157 │       157 │         4 │
+│ Context switches                    │       581 │       581 │       581 │       581 │       581 │       581 │       581 │         1 │
 ├─────────────────────────────────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┤
-│ Instructions (M) *                  │      3431 │      3431 │      3433 │      3435 │      3443 │      3443 │      3443 │         4 │
+│ Instructions (G) *                  │        12 │        12 │        12 │        12 │        12 │        12 │        12 │         1 │
 ├─────────────────────────────────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┤
-│ Malloc (large) *                    │         0 │         0 │         0 │         0 │         0 │         0 │         0 │         4 │
+│ Malloc (large) *                    │         0 │         0 │         0 │         0 │         0 │         0 │         0 │         1 │
 ├─────────────────────────────────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┤
-│ Malloc (small) *                    │         0 │         0 │         0 │         0 │         0 │         0 │         0 │         4 │
+│ Malloc (small) *                    │         0 │         0 │         0 │         0 │         0 │         0 │         0 │         1 │
 ├─────────────────────────────────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┤
-│ Malloc (total) *                    │         0 │         0 │         0 │         0 │         0 │         0 │         0 │         4 │
+│ Malloc (total) *                    │         0 │         0 │         0 │         0 │         0 │         0 │         0 │         1 │
 ├─────────────────────────────────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┤
-│ Malloc / free Δ *                   │         0 │         0 │         0 │         0 │         0 │         0 │         0 │         4 │
+│ Malloc / free Δ *                   │         0 │         0 │         0 │         0 │         0 │         0 │         0 │         1 │
 ├─────────────────────────────────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┤
-│ Memory (allocated resident)         │         0 │         0 │         0 │         0 │         0 │         0 │         0 │         4 │
+│ Memory (allocated resident)         │         0 │         0 │         0 │         0 │         0 │         0 │         0 │         1 │
 ├─────────────────────────────────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┤
-│ Memory (resident peak) (M)          │       179 │       179 │       179 │       179 │       179 │       179 │       179 │         4 │
+│ Memory (resident peak) (M)          │       169 │       169 │       169 │       169 │       169 │       169 │       169 │         1 │
 ├─────────────────────────────────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┤
-│ Memory (virtual peak) (G)           │       446 │       446 │       446 │       446 │       446 │       446 │       446 │         4 │
+│ Memory (virtual peak) (G)           │       446 │       446 │       446 │       446 │       446 │       446 │       446 │         1 │
 ├─────────────────────────────────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┤
-│ Memory Δ (resident peak) (K)        │        16 │        16 │       508 │       524 │       524 │       524 │       524 │         4 │
+│ Memory Δ (resident peak)            │         0 │         0 │         0 │         0 │         0 │         0 │         0 │         1 │
 ├─────────────────────────────────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┤
-│ Object allocs *                     │         4 │         4 │         4 │         4 │         4 │         4 │         4 │         4 │
+│ Object allocs *                     │         0 │         0 │         0 │         0 │         0 │         0 │         0 │         1 │
 ├─────────────────────────────────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┤
-│ Releases (K) *                      │      1344 │      1345 │      1345 │      1345 │      1345 │      1345 │      1345 │         4 │
+│ Releases (K) *                      │      1397 │      1397 │      1397 │      1397 │      1397 │      1397 │      1397 │         1 │
 ├─────────────────────────────────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┤
-│ Retains (K) *                       │      1344 │      1345 │      1345 │      1345 │      1345 │      1345 │      1345 │         4 │
+│ Retains (K) *                       │      1397 │      1397 │      1397 │      1397 │      1397 │      1397 │      1397 │         1 │
 ├─────────────────────────────────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┤
-│ Syscalls (total) *                  │        90 │        90 │       101 │       105 │       112 │       112 │       112 │         4 │
+│ Syscalls (total) *                  │       264 │       264 │       264 │       264 │       264 │       264 │       264 │         1 │
 ├─────────────────────────────────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┤
-│ Syscalls (write) *                  │         0 │         0 │         0 │         0 │         0 │         0 │         0 │         4 │
+│ Syscalls (write) *                  │         0 │         0 │         0 │         0 │         0 │         0 │         0 │         1 │
 ├─────────────────────────────────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┤
-│ Threads (peak)                      │         4 │         4 │         4 │         4 │         4 │         4 │         4 │         4 │
+│ Threads (peak)                      │         4 │         4 │         4 │         4 │         4 │         4 │         4 │         1 │
 ├─────────────────────────────────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┤
-│ Threads (running)                   │         2 │         2 │         2 │         2 │         2 │         2 │         2 │         4 │
+│ Threads (running)                   │         2 │         2 │         2 │         2 │         2 │         2 │         2 │         1 │
 ├─────────────────────────────────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┤
-│ Throughput (# / s) (#)              │         3 │         3 │         3 │         3 │         3 │         3 │         3 │         4 │
+│ Throughput (# / s) (#)              │         1 │         1 │         1 │         1 │         1 │         1 │         1 │         1 │
 ├─────────────────────────────────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┤
-│ Time (system CPU) (μs) *            │       359 │       360 │       455 │       839 │       986 │       986 │       986 │         4 │
+│ Time (system CPU) (μs) *            │      5542 │      5542 │      5542 │      5542 │      5542 │      5542 │      5542 │         1 │
 ├─────────────────────────────────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┤
-│ Time (total CPU) (ms) *             │       302 │       303 │       313 │       322 │       353 │       353 │       353 │         4 │
+│ Time (total CPU) (ms) *             │      1043 │      1043 │      1043 │      1043 │      1043 │      1043 │      1043 │         1 │
 ├─────────────────────────────────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┤
-│ Time (user CPU) (ms) *              │       302 │       302 │       312 │       322 │       352 │       352 │       352 │         4 │
+│ Time (user CPU) (ms) *              │      1037 │      1037 │      1037 │      1037 │      1037 │      1037 │      1037 │         1 │
 ├─────────────────────────────────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┤
-│ Time (wall clock) (ms) *            │       302 │       302 │       313 │       322 │       356 │       356 │       356 │         4 │
+│ Time (wall clock) (ms) *            │      1186 │      1186 │      1186 │      1186 │      1186 │      1186 │      1186 │         1 │
+╘═════════════════════════════════════╧═══════════╧═══════════╧═══════════╧═══════════╧═══════════╧═══════════╧═══════════╧═══════════╛
+
+TZF.EmbeddedFinder.init
+╒═════════════════════════════════════╤═══════════╤═══════════╤═══════════╤═══════════╤═══════════╤═══════════╤═══════════╤═══════════╕
+│ Metric                              │        p0 │       p25 │       p50 │       p75 │       p90 │       p99 │      p100 │   Samples │
+╞═════════════════════════════════════╪═══════════╪═══════════╪═══════════╪═══════════╪═══════════╪═══════════╪═══════════╪═══════════╡
+│ (Alloc + Retain) - Release Δ *      │         6 │         6 │         6 │         6 │         6 │         6 │         6 │        50 │
+├─────────────────────────────────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┤
+│ Bytes (read physical) *             │         0 │         0 │         0 │         0 │         0 │         0 │         0 │        50 │
+├─────────────────────────────────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┤
+│ Bytes (write physical) *            │         0 │         0 │         0 │         0 │         0 │         0 │         0 │        50 │
+├─────────────────────────────────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┤
+│ Context switches                    │         0 │         0 │         0 │         1 │         1 │         2 │         2 │        50 │
+├─────────────────────────────────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┤
+│ Instructions (M) *                  │        22 │        23 │        23 │        23 │        23 │        24 │        24 │        50 │
+├─────────────────────────────────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┤
+│ Malloc (large) *                    │         0 │         0 │         0 │         0 │         0 │         0 │         0 │        50 │
+├─────────────────────────────────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┤
+│ Malloc (small) *                    │         0 │         0 │         0 │         0 │         0 │         0 │         0 │        50 │
+├─────────────────────────────────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┤
+│ Malloc (total) *                    │         0 │         0 │         0 │         0 │         0 │         0 │         0 │        50 │
+├─────────────────────────────────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┤
+│ Malloc / free Δ *                   │         0 │         0 │         0 │         0 │         0 │         0 │         0 │        50 │
+├─────────────────────────────────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┤
+│ Memory (allocated resident)         │         0 │         0 │         0 │         0 │         0 │         0 │         0 │        50 │
+├─────────────────────────────────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┤
+│ Memory (resident peak) (M)          │        24 │        24 │        24 │        24 │        24 │        24 │        24 │        50 │
+├─────────────────────────────────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┤
+│ Memory (virtual peak) (G)           │       446 │       446 │       446 │       446 │       446 │       446 │       446 │        50 │
+├─────────────────────────────────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┤
+│ Memory Δ (resident peak) (K)        │         0 │       393 │       426 │       443 │       443 │       475 │       475 │        50 │
+├─────────────────────────────────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┤
+│ Object allocs *                     │       364 │       364 │       364 │       364 │       364 │       364 │       364 │        50 │
+├─────────────────────────────────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┤
+│ Releases *                          │       378 │       378 │       378 │       378 │       378 │       378 │       378 │        50 │
+├─────────────────────────────────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┤
+│ Retains *                           │         8 │         8 │         8 │         8 │         8 │         8 │         8 │        50 │
+├─────────────────────────────────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┤
+│ Syscalls (total) *                  │         6 │         6 │         6 │         6 │         8 │         8 │         8 │        50 │
+├─────────────────────────────────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┤
+│ Syscalls (write) *                  │         0 │         0 │         0 │         0 │         0 │         0 │         0 │        50 │
+├─────────────────────────────────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┤
+│ Threads (peak)                      │         4 │         4 │         4 │         4 │         4 │         4 │         4 │        50 │
+├─────────────────────────────────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┤
+│ Threads (running)                   │         1 │         2 │         2 │         2 │         2 │         2 │         2 │        50 │
+├─────────────────────────────────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┤
+│ Throughput (# / s) (#)              │       516 │       493 │       478 │       448 │       422 │       343 │       343 │        50 │
+├─────────────────────────────────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┤
+│ Time (system CPU) (μs) *            │       158 │       202 │       232 │       336 │       431 │       684 │       684 │        50 │
+├─────────────────────────────────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┤
+│ Time (total CPU) (μs) *             │      1939 │      2032 │      2087 │      2230 │      2343 │      2913 │      2913 │        50 │
+├─────────────────────────────────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┤
+│ Time (user CPU) (μs) *              │      1712 │      1811 │      1844 │      1889 │      2009 │      2229 │      2229 │        50 │
+├─────────────────────────────────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┼───────────┤
+│ Time (wall clock) (μs) *            │      1938 │      2030 │      2085 │      2230 │      2341 │      2919 │      2919 │        50 │
 ╘═════════════════════════════════════╧═══════════╧═══════════╧═══════════╧═══════════╧═══════════╧═══════════╧═══════════╧═══════════╛
 

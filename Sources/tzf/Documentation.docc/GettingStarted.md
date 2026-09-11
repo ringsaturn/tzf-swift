@@ -33,6 +33,10 @@ if let macauGeoJSON = finder.getTimezoneGeoJSON(timezoneName: "Asia/Macau") {
   print("Asia/Macau features:", macauGeoJSON.features.count)
   print(try macauGeoJSON.toJSONString(pretty: false))
 }
+
+// Low-memory alternative: query the .tzb bytes in place.
+let embedded = try EmbeddedFinder()
+print("Embedded finder:", try embedded.getTimezone(lng: 139.6917, lat: 35.6895))
 ```
 <!-- demo-main:end -->
 
@@ -42,8 +46,9 @@ Output:
 ```txt
 Beijing timezone: Asia/Shanghai
 Multiple possible timezones: ["Asia/Shanghai", "Asia/Urumqi"]
-Data version: 2026a/2026a
+Data version: 2026c
 Asia/Macau features: 1
-{"type":"FeatureCollection","features":[{"geometry":{"type":"MultiPolygon","coor...
+{"features":[{"geometry":{"coordinates":[[[[113.54701,22.13804],[113.54703,22.13...
+Embedded finder: Asia/Tokyo
 ```
 <!-- demo-output:end -->

@@ -5,6 +5,7 @@ on:
     paths:
       - "Package.swift"
       - "**/*.swift"
+      - "Sources/Resources/*.tzb"
   workflow_dispatch:
 
 concurrency:

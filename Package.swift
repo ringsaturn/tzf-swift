@@ -16,7 +16,6 @@ let package = Package(
             targets: ["tzf"]),
     ],
     dependencies: [
-        .package(url: "https://github.com/apple/swift-protobuf.git", from: "1.29.0"),
         .package(url: "https://github.com/apple/swift-testing.git", revision: "e76a44f"),
         .package(url: "https://github.com/ringsaturn/cities-swift.git", from: "0.1.1"),
         .package(url: "https://github.com/swiftlang/swift-docc-plugin", from: "1.4.5"),
@@ -31,13 +30,11 @@ let package = Package(
         .target(
             name: "tzf",
             dependencies: [
-                .product(name: "SwiftProtobuf", package: "swift-protobuf"),
                 "geometry"
             ],
             path: "Sources",
             resources: [
-                .copy("Resources/combined-with-oceans.topology.preindex.bin"),
-                .copy("Resources/combined-with-oceans.topology.compress.topo.bin")
+                .copy("Resources/lite.tzb")
             ]
         ),
         .testTarget(

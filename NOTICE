@@ -1,0 +1,38 @@
+NOTICE
+
+This product includes software developed by [github.com/ringsaturn/tzf-swift].
+------------------------------------------------------------------------
+
+ringsaturn/tzf-dist
+License: MIT
+Copyright (c) 2026 Han Xiao
+
+tidwall/geojson (ray-casting point-in-polygon, ported in Geometry/geo.swift)
+License: MIT
+Copyright (c) 2018 Josh Baker
+
+ringsaturn/tzf-dist (timezone boundary data)
+License: ODbL-1.0
+The bundled timezone binary data (lite.tzb, TZF embedded binary format) is
+derived from timezone-boundary-builder by Evan Siroky, which in turn is built
+from OpenStreetMap data. OpenStreetMap data is made available under the Open
+Database License (ODbL) v1.0.
+  https://github.com/evansiroky/timezone-boundary-builder
+  https://www.openstreetmap.org/copyright
+
+------------------------------------------------------------------------
+Test dependencies (not distributed with the library):
+
+apple/swift-testing
+License: Apache-2.0
+Copyright 2024 Apple Inc. and the Swift project authors
+
+ringsaturn/cities-swift
+License: MIT
+Copyright (c) 2025 ringsaturn
+
+ringsaturn/cities-swift (cities dataset)
+License: CC-BY-4.0
+The cities dataset embedded in cities-swift is derived from cities.json
+by lutangar, licensed under Creative Commons Attribution 4.0 International.
+  https://github.com/lutangar/cities.json
