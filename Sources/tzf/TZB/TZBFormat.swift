@@ -132,27 +132,39 @@ enum CRC32 {
   }()
 
   static func checksum(_ data: UnsafeRawBufferPointer) -> UInt32 {
-    tables.withUnsafeBufferPointer { t in
+    return tables.withUnsafeBufferPointer { (t: UnsafeBufferPointer<UInt32>) -> UInt32 in
       var crc: UInt32 = ~0
       var pos = 0
       let n = data.count
       while pos + 8 <= n {
-        let lo =
+        let lo: UInt32 =
           UInt32(littleEndian: data.loadUnaligned(fromByteOffset: pos, as: UInt32.self)) ^ crc
-        let hi = UInt32(littleEndian: data.loadUnaligned(fromByteOffset: pos + 4, as: UInt32.self))
-        crc =
-          t[7 * 256 + Int(lo & 0xff)]
-          ^ t[6 * 256 + Int((lo >> 8) & 0xff)]
-          ^ t[5 * 256 + Int((lo >> 16) & 0xff)]
-          ^ t[4 * 256 + Int(lo >> 24)]
-          ^ t[3 * 256 + Int(hi & 0xff)]
-          ^ t[2 * 256 + Int((hi >> 8) & 0xff)]
-          ^ t[1 * 256 + Int((hi >> 16) & 0xff)]
-          ^ t[Int(hi >> 24)]
+        let hi: UInt32 =
+          UInt32(littleEndian: data.loadUnaligned(fromByteOffset: pos + 4, as: UInt32.self))
+        // Split into typed sub-expressions: Swift 6.0's type-checker times
+        // out on the single 8-term XOR chain.
+        let lo0: Int = Int(lo & 0xff)
+        let lo1: Int = Int((lo >> 8) & 0xff)
+        let lo2: Int = Int((lo >> 16) & 0xff)
+        let lo3: Int = Int(lo >> 24)
+        let hi0: Int = Int(hi & 0xff)
+        let hi1: Int = Int((hi >> 8) & 0xff)
+        let hi2: Int = Int((hi >> 16) & 0xff)
+        let hi3: Int = Int(hi >> 24)
+        var acc: UInt32 = t[7 * 256 + lo0]
+        acc ^= t[6 * 256 + lo1]
+        acc ^= t[5 * 256 + lo2]
+        acc ^= t[4 * 256 + lo3]
+        acc ^= t[3 * 256 + hi0]
+        acc ^= t[2 * 256 + hi1]
+        acc ^= t[1 * 256 + hi2]
+        acc ^= t[hi3]
+        crc = acc
         pos += 8
       }
       while pos < n {
-        crc = t[Int((crc ^ UInt32(data[pos])) & 0xff)] ^ (crc >> 8)
+        let idx: Int = Int((crc ^ UInt32(data[pos])) & 0xff)
+        crc = t[idx] ^ (crc >> 8)
         pos += 1
       }
       return ~crc
