@@ -57,9 +57,9 @@ Output:
 ```txt
 Beijing timezone: Asia/Shanghai
 Multiple possible timezones: ["Asia/Shanghai", "Asia/Urumqi"]
-Data version: 2026c
+Data version: 2026e
 Asia/Macau features: 1
-{"features":[{"geometry":{"coordinates":[[[[113.54701,22.13804],[113.54703,22.13...
+{"features":[{"geometry":{"coordinates":[[[[113.54696,22.13802],[113.54697,22.13...
 Embedded finder: Asia/Tokyo
 ```
 <!-- demo-output:end -->
@@ -104,7 +104,7 @@ let full = try DefaultFinder(tzb: try Data(contentsOf: URL(fileURLWithPath: "ful
 | `Finder()`                            | `DefaultFinder()` (polygon-exact queries via `getTimezones`)         |
 | `PreindexFinder()`                    | removed; the preindex is the fast path inside every finder           |
 | `FinderError.noTimezoneFound`         | `TZFError.noTimezoneFound`                                          |
-| `dataVersion()` → `"2026a/2026a"`     | one dataset version, e.g. `"2026c"`                                 |
+| `dataVersion()` → `"2026a/2026a"`     | one dataset version, e.g. `"2026e"`                                 |
 | `getTimezones` order                  | now sorted lexicographically                                        |
 | preindex tile GeoJSON on `PreindexFinder` | `toPreindexGeoJSON()` / `getTimezonePreindexGeoJSON(timezoneName:)` on every finder |
 

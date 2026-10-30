@@ -31,14 +31,14 @@ private func assertKnownLocations(_ finder: any F) throws {
 @Test func defaultFinderSmoke() throws {
   let finder = try DefaultFinder()
   try assertKnownLocations(finder)
-  #expect(finder.dataVersion() == "2026c")
+  #expect(finder.dataVersion() == "2026e")
   #expect(finder.timezoneNames().count == 444)
 }
 
 @Test func embeddedFinderSmoke() throws {
   let finder = try EmbeddedFinder()
   try assertKnownLocations(finder)
-  #expect(finder.dataVersion() == "2026c")
+  #expect(finder.dataVersion() == "2026e")
   #expect(finder.timezoneNames().count == 444)
 }
 
