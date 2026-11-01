@@ -46,7 +46,7 @@ Output:
 ```txt
 Beijing timezone: Asia/Shanghai
 Multiple possible timezones: ["Asia/Shanghai", "Asia/Urumqi"]
-Data version: 2026e
+Data version: 2026f
 Asia/Macau features: 1
 {"features":[{"geometry":{"coordinates":[[[[113.54696,22.13802],[113.54697,22.13...
 Embedded finder: Asia/Tokyo

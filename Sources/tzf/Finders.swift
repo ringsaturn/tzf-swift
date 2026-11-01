@@ -61,7 +61,7 @@ public enum TZFDist {
 
 /// The interface every timezone finder implements.
 public protocol F: Sendable {
-  /// Returns the dataset release the finder was built from (e.g. `2026e`).
+  /// Returns the dataset release the finder was built from (e.g. `2026f`).
   func dataVersion() -> String
 
   /// Returns the timezone for a geographic coordinate.
